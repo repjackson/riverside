@@ -79,7 +79,7 @@ if Meteor.isClient
     Template.food_page.onCreated ->
         @autorun => @subscribe 'doc_by_id', Router.current().params.doc_id, ->
     Template.food.onCreated ->
-        document.title = 'gr food'
+        document.title = 'rv food'
         
         # @autorun => @subscribe 'model_docs','artist', ->
         @autorun => @subscribe 'food_facets',
@@ -372,7 +372,6 @@ if Meteor.isServer
         # match.over_18 = porn
         # else 
         # added_tags = [term]
-        # match = {model:'reddit'}
         # match.thumbnail = $nin:['default','self']
         # match.url = { $regex: /^.*(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png).*/, $options: 'i' }
         # console.log "added tags", added_tags

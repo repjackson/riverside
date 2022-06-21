@@ -44,9 +44,7 @@ force_loggedin =  ()->
 
 
 
-Router.route '/reddit', -> @render 'posts'
 Router.route '*', -> @render 'food'
-# Router.route '/', -> @render 'reddit'
 
 Router.route '/user/:username/m/:type', -> @render 'user_layout', 'user_section'
 Router.route '/forgot_password', -> @render 'forgot_password'
@@ -84,7 +82,7 @@ Docs.before.insert (userId, doc)->
         if Meteor.user()
             doc._author_id = Meteor.userId()
             doc._author_username = Meteor.user().username
-    doc.app = 'goldrun'
+    doc.app = 'riverside'
     doc.points = 0
     doc.downvoters = []
     doc.upvoters = []

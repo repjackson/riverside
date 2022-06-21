@@ -66,7 +66,6 @@ if Meteor.isClient
                 reverse   : 'auto'
                 interval  : 30
               })
-            # Meteor.call 'search_reddit', @valueOf(), ->
             Session.set('model',doc.model)
             Meteor.setTimeout ->
                 $(e.currentTarget).closest('.grid').transition('fly right', 1000)
@@ -160,7 +159,7 @@ if Meteor.isClient
         result_docs: ->
             match = {}
             if Session.get('model') is 'post'
-                match.model=$in:['post','reddit']
+                match.model='post'
             else 
                 match.model = Session.get('model')
             Docs.find match, 

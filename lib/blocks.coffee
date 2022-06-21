@@ -134,7 +134,6 @@ if Meteor.isClient
             picked_tags.push @name
             window.speechSynthesis.speak new SpeechSynthesisUtterance @name
             
-            # Meteor.call 'search_reddit', @name, ->
         # 'click .pick_flat_tag': -> picked_tags.push @valueOf()
         'click .unpick_tag': -> picked_tags.remove @valueOf()
     
@@ -169,8 +168,6 @@ if Meteor.isClient
             search = $('.query').val().trim().toLowerCase()
             # if search.length > 1
             #     Session.set('current_search', search)
-            # if e.which is 13
-            #     Meteor.call 'search_reddit', search, ->            
             console.log Session.get('current_search')
             picked_tags.push search
             console.log 'search', search

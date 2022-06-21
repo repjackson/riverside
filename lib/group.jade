@@ -360,10 +360,6 @@ template(name='group_posts')
         .ui.selection.animated.list
             each group_post_docs 
                 a.ui.header.fly_right(href="/group/#{_id}") #{title}
-        if is source 'reddit'
-            .ui.header reddit posts
-            each group_reddit_docs
-                +post_item
 
 
 template(name='group_events')
@@ -494,12 +490,10 @@ template(name='group_edit')
                     div
                     +text_edit key='contact_info' label='contact info' icon='info' 
                     +text_edit key='source' label='source' icon='info' 
-                    +key_value_edit key='source' value='reddit' icon='reddit'
-                    +key_value_edit key='source' value='local' icon='yin yang'
                     +boolean_edit key='private' label='private' 
                    
 template(name='group_card')
-    .ui.card.alpha.pull_subreddit
+    .ui.card.alpha
         // if background_image_id
         //     img.ui.image.item_background(src="{{c.url background_image_id height=1000 crop='crop'}}")
         // else if image_id
@@ -509,35 +503,13 @@ template(name='group_card')
         else if image_id
             a.ui.image.fly_right.zoomer(href="/group/#{_id}")
                 img(src="{{c.url image_id height=300 width=500 crop='fit'}}" class=currentUser.invert_class)
-        if reddit_data.banner_img
-            a.ui.image.fly_right.zoomer(href="/group/#{_id}")
-                img(src=reddit_data.banner_img class=currentUser.invert_class)
-        if reddit_data.banner_background_image
-            a.ui.image.fly_right.zoomer(href="/group/#{_id}")
-                img(src=reddit_data.banner_background_image class=currentUser.invert_class)
         .content
             // +model_label
-            if reddit_data.over_18 
-                i.large.red.exclamation.icon(title='nsfw')
             if published 
                 i.green.eye.icon.invert(title='published')
             else 
                 i.yellow.save.icon.invert(title='draft')
-            if reddit_data.header_img
-                a.ui.image.fly_right.zoomer(href="/group/#{_id}")
-                    img(src=reddit_data.header_img class=currentUser.invert_class)
-            if reddit_data.display_name 
-                a.ui.inline.header.fly_right(href="/group/#{_id}" class=emotion_color) 
-                    img.ui.image.invert(src=reddit_data.icon_img class=currentUser.invert_class)
-                    |#{reddit_data.display_name}
-            else 
-                a.ui.inline.header.fly_right(href="/group/#{_id}" class=emotion_color) !{title}
-            // .smallcut
-            //     | !{content}
-            // if reddit_data.subscribers 
-            //     .ui.label(title'subscribers/member count')
-            //         i.users.icon 
-            //         |#{reddit_data.subscribers} #{member_count}
+            a.ui.inline.header.fly_right #{title}
         .content
             .right.floated.meta
                 |#{_when}
@@ -561,8 +533,6 @@ template(name='group_card')
             //     a.ui.circular.icon.button(href="/group/#{_id}/edit")
             //         i.pencil.blue.icon
         .content
-            if reddit_data.public_description
-                |!{reddit_data.public_description}
             if is_dev
                 +print_this
             +voting
@@ -581,9 +551,6 @@ template(name='group_card')
                 +group_info
             each seven_tags 
                 .ui.label.flat_group_tag_pick #{this}
-            if watson 
-                +doc_sentiment
-                +doc_emotion
 
             a.ui.circular.icon.button.zoomer.fly_right(href="/group/#{_id}")
                 +i name='chevron-right'

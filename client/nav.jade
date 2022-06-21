@@ -3,12 +3,12 @@ template(name='nav')
         https://fomantic-ui.com/elements/icon.html#/icon
     // #topnav.topnav.ui.attached.borderless.big.menu.hscroll(style="background-color:#{currentUser.theme_color_main}")
     #topnav.topnav.ui.attached.borderless.menu.hscroll
-        a.item(href="/" title='the riverside')
-            // i.search.large.icon
-            |the riverside
         if is_connected
             a.icon.item.toggle_leftbar
                 i.large.bars.grey.icon
+            // a.item(href="/" title='the riverside')
+            //     i.home.icon
+            //     // |the riverside
             if currentUser
                 if unread_count
                     a.item(href="/user/#{currentUser.username}/inbox" title='unread messages')
@@ -50,23 +50,6 @@ template(name='nav')
                 i.large.fire.icon
                 // unless currentUser.hide_labels
                 //     |groups
-            a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/food" class="{{isActiveRoute regex='food'}}" title='food')
-                i.large.food.icon
-                // +i name='food'
-                // unless currentUser.hide_labels
-                //     |recipes
-            a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/music" class="{{isActiveRoute regex='music'}}" title='music')
-                i.large.music.icon
-                // +i name='music'
-                // unless currentUser.hide_labels
-                //     |music
-            +nav_item key='event' icon='calendar'
-            +nav_item key='transfer' icon='exchange'
-            +nav_item key='service' icon='wrench'
-            +nav_item key='rental' icon='clock'
-            +nav_item key='task' icon='tasks'
-            // +nav_item key='checkin' icon='checkmark'
-            +nav_item key='log' icon='code'
         unless currentUser
             // a.item(href="/register" title='register')
             //     +i name='plus'
@@ -104,8 +87,28 @@ template(name='nav')
                 //         i.user.big.icon
                 // strong.mobilehidden #{currentUser.name}
                 i.bars.large.grey.icon
-                            
-                            
+    .ui.attached.menu.hscroll          
+        a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/food" class="{{isActiveRoute regex='food'}}" title='food')
+            i.large.food.icon
+            // +i name='food'
+            // unless currentUser.hide_labels
+            //     |recipes
+        a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/music" class="{{isActiveRoute regex='music'}}" title='music')
+            i.large.music.icon
+            // +i name='music'
+            // unless currentUser.hide_labels
+            //     |music
+        +nav_item key='event' icon='calendar'
+        +nav_item key='transfer' icon='exchange'
+        +nav_item key='service' icon='wrench'
+        +nav_item key='rental' icon='clock'
+        +nav_item key='task' icon='tasks'
+        // +nav_item key='checkin' icon='checkmark'
+        // +nav_item key='log' icon='code'
+
+
+
+       
 template(name='footer')
     .ui.fluid.segment.stackable.grid.alpha
         .two.column.row
@@ -202,7 +205,7 @@ template(name='recent_alert')
             
             
 template(name='rightbar')
-    .ui.right.sidebar.vertical.small.borderless.menu.rightbar
+    .ui.right.sidebar.vertical.big.borderless.menu.rightbar
         with currentUser
             a.item.toggle_rightbar.no_blink(href="/user/#{currentUser.username}" class="{{isActiveRoute 'user_layout'}}")
                 img.ui.avatar.compact.image(src="{{c.url currentUser.image_id height=200 width=200 gravity='face' crop='fill'}}")

@@ -1,6 +1,6 @@
 if Meteor.isClient
     Template.posts.onCreated ->
-        document.title = 'gr posts'
+        document.title = 'rv posts'
         
         Session.setDefault('current_search', null)
         Session.setDefault('porn', false)
@@ -16,7 +16,7 @@ if Meteor.isClient
             Session.get('dummy')
             
     Template.doc_results.onCreated ->
-        @autorun => @subscribe 'reddit_doc_results',
+        @autorun => @subscribe 'doc_results',
             picked_tags.array()
             Session.get('porn')
             # Session.get('dummy')
@@ -32,7 +32,7 @@ if Meteor.isClient
         @render 'posts'
         ), name:'posts'
     Template.posts.onCreated ->
-        @autorun => Meteor.subscribe 'model_counter',('reddit'), ->
+        @autorun => Meteor.subscribe 'model_counter',('post'), ->
     Template.posts.helpers
         total_post_count: -> Counts.get('model_counter') 
 
@@ -42,10 +42,6 @@ if Meteor.isClient
     Template.post_view.onRendered ->
         # console.log @
         found_doc = Docs.findOne Router.current().params.doc_id
-        if found_doc 
-            unless found_doc.watson
-                Meteor.call 'call_watson',Router.current().params.doc_id,'rd.selftext', ->
-                    console.log 'autoran watson'
 
 
     Template.agg_tag.onCreated ->
@@ -55,7 +51,7 @@ if Meteor.isClient
         term_image: ->
             # console.log Template.currentData().name
             found = Docs.findOne {
-                model:'reddit'
+                model:'post'
                 tags:$in:[Template.currentData().name]
                 "watson.metadata.image":$exists:true
             }, sort:ups:-1
@@ -68,7 +64,7 @@ if Meteor.isClient
         flat_term_image: ->
             # console.log Template.currentData()
             found = Docs.findOne {
-                model:'reddit'
+                model:'post'
                 tags:$in:[Template.currentData()]
                 "watson.metadata.image":$exists:true
             }, sort:ups:-1
@@ -86,13 +82,6 @@ if Meteor.isClient
             Session.set('is_loading', true)
             # Meteor.call 'call_wiki', @name, ->
     
-            Meteor.call 'search_reddit', picked_tags.array(), ->
-                Session.set('is_loading', false)
-                Session.set('searching', false)
-            Meteor.setTimeout ->
-                Session.set('dummy',!Session.get('dummy'))
-            , 5000
-            
     
     Template.posts.events
         'click .toggle_porn': ->
@@ -101,7 +90,6 @@ if Meteor.isClient
             picked_tags.push @name
             Session.set('full_doc_id', null)
     
-            Meteor.call 'search_reddit', picked_tags.array(), ->
             $('#search').val('')
             Session.set('current_search', null)
     
@@ -129,8 +117,6 @@ if Meteor.isClient
             Session.set('full_doc_id', null)
     
             Session.set('loading',true)
-            Meteor.call 'search_reddit', picked_tags.array(), ->
-                Session.set('loading',false)
     Template.post_card_big.events
         'click .minimize': ->
             Session.set('full_doc_id', null)
@@ -198,81 +184,12 @@ if Meteor.isClient
             $(e.currentTarget).closest('.pick_flat_tag').transition('fly up', 500)
     
             Session.set('loading',true)
-            Meteor.call 'search_reddit', picked_tags.array(), ->
-                Session.set('loading',false)
-        # 'click .pick_subreddit': -> Session.set('subreddit',@subreddit)
-        # 'click .pick_domain': -> Session.set('domain',@domain)
-        'click .autotag': (e)->
-            console.log @
-            # console.log Template.currentData()
-            # console.log Template.parentData()
-            # console.log Template.parentData(1)
-            # console.log Template.parentData(2)
-            # console.log Template.parentData(3)
-            # if @rd and @rd.selftext_html
-            #     dom = document.createElement('textarea')
-            #     # dom.innerHTML = doc.body
-            #     dom.innerHTML = @rd.selftext_html
-            #     # console.log 'innner html', dom.value
-            #     # return dom.value
-            #     Docs.update @_id,
-            #         $set:
-            #             parsed_selftext_html:dom.value
-            Meteor.call 'get_reddit_post', @_id, (err,res)->
-    
-            # doc = Template.parentData()
-            # doc = Docs.findOne Template.parentData()._id
-            # Meteor.call 'call_watson', Template.parentData()._id, parent.key, @mode, ->
-            # if doc 
-            # console.log 'calling client watson',doc, 'rd.selftext'
-            $('body').toast({
-                title: "breaking down emotions"
-                # message: 'Please see desk staff for key.'
-                class : 'black'
-                showIcon:'chess loading'
-                # showProgress:'bottom'
-                position:'bottom right'
-                # className:
-                #     toast: 'ui massive message'
-                # displayTime: 5000
-                transition:
-                  showMethod   : 'zoom',
-                  showDuration : 250,
-                  hideMethod   : 'fade',
-                  hideDuration : 250
-                })
-            
-            Meteor.call 'call_watson', @_id, 'rd.selftext', 'html', (err,res)->
-                # $(e.currentTarget).closest('.button').transition('scale', 500)
-                $('body').toast({
-                    title: "emotions brokedown"
-                    # message: 'Please see desk staff for key.'
-                    class : 'black'
-                    showIcon:'smile'
-                    # showProgress:'bottom'
-                    position:'bottom right'
-                    # className:
-                    #     toast: 'ui massive message'
-                    # displayTime: 5000
-                    transition:
-                      showMethod   : 'zoom',
-                      showDuration : 250,
-                      hideMethod   : 'fade',
-                      hideDuration : 250
-                    })
-                Session.set('dummy', !Session.get('dummy'))
-            # Meteor.call 'call_watson', doc._id, @key, @mode, ->
     Template.unpick_tag.events
         'click .unpick_tag': ->
             picked_tags.remove @valueOf()
             console.log picked_tags.array()
             if picked_tags.array().length > 0
                 Session.set('is_loading', true)
-                Meteor.call 'search_reddit', picked_tags.array(), =>
-                    Session.set('is_loading', false)
-                Meteor.setTimeout ->
-                    Session.set('dummy', !Session.get('dummy'))
-                , 5000
             
     
     
@@ -298,12 +215,6 @@ if Meteor.isClient
                         Session.set('full_doc_id',null)
                         # console.log 'search', search
                         Session.set('is_loading', true)
-                        Meteor.call 'search_reddit', picked_tags.array(), ->
-                            Session.set('is_loading', false)
-                            # Session.set('searching', false)
-                        # Meteor.setTimeout ->
-                        #     Session.set('dummy', !Session.get('dummy'))
-                        # , 5000
                         $('#search').val('')
                         $('#search').blur()
                         Session.set('current_search', null)
@@ -323,10 +234,6 @@ if Meteor.isClient
         'click .reconnect': -> Meteor.reconnect()
     
         'click .toggle_tag': (e,t)-> picked_tags.push @valueOf()
-        # 'click .pick_subreddit': -> Session.set('subreddit',@name)
-        # 'click .unpick_subreddit': -> Session.set('subreddit',null)
-        # 'click .pick_domain': -> Session.set('domain',@name)
-        # 'click .unpick_domain': -> Session.set('domain',null)
         'click .print_me': (e,t)->
             console.log @
             
@@ -363,7 +270,7 @@ if Meteor.isClient
         current_bg:->
             # console.log picked_tags.array()
             found = Docs.findOne {
-                model:'reddit'
+                model:'post'
                 tags:$in:picked_tags.array()
                 "watson.metadata.image":$exists:true
                 # thumbnail:$nin:['default','self']
@@ -390,14 +297,6 @@ if Meteor.isClient
                 else 
                     'big' 
               
-        # domain_results: ->
-        #     Results.find 
-        #         model:'domain'
-        # picked_subreddit: -> Session.get('subreddit')
-        # picked_domain: -> Session.get('domain')
-        # subreddit_results: ->
-        #     Results.find 
-        #         model:'subreddit'
                     
         curent_date_setting: -> Session.get('date_setting')
     
@@ -473,7 +372,7 @@ if Meteor.isClient
             # if picked_tags.array().length > 0
             cursor =
                 Docs.find {
-                    model:'reddit'
+                    model:'post'
                 },
                     sort:
                         "#{Session.get('sort_key')}":Session.get('sort_direction')
@@ -549,32 +448,16 @@ if Meteor.isClient
         
         
     Template.user_post.onCreated ->
-        @autorun => Meteor.subscribe 'user_post_mined_counter', Router.current().params.username, ->
-        @autorun => Meteor.subscribe 'latest_mined_reddit_posts', Router.current().params.username, ->
-        @autorun => Meteor.subscribe 'latest_upvoted_reddit_posts', Router.current().params.username, ->
         if Meteor.user()
             username = Meteor.user().username
         else 
             username = null
-        @autorun => Meteor.subscribe 'reddit_mined_overlap', 
+        @autorun => Meteor.subscribe 'overlap', 
             Router.current().params.username, 
             username, 
             picked_tags.array(),
     Template.user_post.helpers
         mined_counter: -> Counts.get('mined_counter') 
-        latest_mined_posts: ->
-            user = Meteor.users.findOne username:Router.current().params.username
-            Docs.find {
-                model:'reddit'
-                _author_id:user._id
-            }, sort:_timestamp:-1
-        overlap_tags: ->
-        latest_upvoted_posts: ->
-            user = Meteor.users.findOne username:Router.current().params.username
-            Docs.find {
-                model:'reddit'
-                upvoter_ids:$in:[user._id]
-            }, sort:_timestamp:-1
         overlap_tags: ->
             Results.find 
                 model:'overlap_tag'
@@ -587,7 +470,7 @@ if Meteor.isClient
             # Docs.findOne Session.get('selected_doc_id')
             doc_count = Docs.find().count()
             # if doc_count is 1
-            Docs.find({model:'reddit'}, 
+            Docs.find({model:'post'}, 
                 limit:20
                 sort:
                     points:-1
@@ -599,58 +482,6 @@ if Meteor.isClient
 
   
 if Meteor.isServer 
-    Meteor.methods 
-        get_reddit_comments: (post_id)->
-            post =
-                Docs.findOne post_id
-            # console.log post
-            # response = HTTP.get("http://reddit.com/search.json?q=#{query}")
-            # HTTP.get "http://reddit.com/search.json?q=#{query}+nsfw:0+sort:top",(err,response)=>
-            # HTTP.get "http://reddit.com/search.json?q=#{query}",(err,response)=>
-            link = "http://reddit.com/comments/#{post.reddit_id}?depth=1"
-            HTTP.get link,(err,response)=>
-                console.log _.keys(response)
-                # if response.data.data.dist > 1
-                #     _.each(response.data.data.children, (item)=>
-                #         console.log 'item', item
-                        # unless item.domain is "OneWordBan"
-                        #     data = item.data
-
-    Meteor.publish 'latest_mined_reddit_posts', (username)->
-        user = Meteor.users.findOne username:username
-        Docs.find {
-            model:'reddit'
-            _author_id:user._id
-        }, 
-            limit:10
-            sort:_timestamp:-1
-            fields:
-                "watson.metadata.image":1
-                title:1
-                tags:1
-                model:1
-                _timestamp:1
-                
-        
-    Meteor.publish 'latest_upvoted_reddit_posts', (username)->
-        user = Meteor.users.findOne username:username
-        Docs.find {
-            model:'reddit'
-            upvoter_ids:$in:[user._id]
-        }, 
-            limit:10
-            sort:_timestamp:-1
-        
-    Meteor.publish 'user_post_mined_counter', (username)->
-        user = Meteor.users.findOne username:username
-        Counts.publish this, 'mined_counter', 
-            Docs.find({
-                _author_id:user._id
-                model:'reddit'
-            })
-        return undefined    # otherwise coffeescript returns a Counts.publish
-                          # handle when Meteor expects a Mongo.Cursor object.
-        
     Meteor.publish 'product_counter', ()->
         Counts.publish this, 'product_counter', 
             Docs.find({
@@ -671,8 +502,7 @@ if Meteor.isServer
         self = @
         match = {}
     
-        # match.model = $in: ['reddit','wikipedia']
-        match.model = 'reddit'
+        match.model = 'post'
         # if query
         # if view_nsfw
         match.over_18 = porn
@@ -720,16 +550,15 @@ if Meteor.isServer
         # if picked_tags.length > 0
         #     added_tags = picked_tags.push(term)
         match = {
-            model:'reddit'
+            model:'post'
             tags: $in: [term]
-            "watson.metadata.image": $exists:true
-            $where: "this.watson.metadata.image.length > 1"
+            # "watson.metadata.image": $exists:true
+            # $where: "this.watson.metadata.image.length > 1"
         }
         # if porn
-        match.over_18 = porn
         # else 
         # added_tags = [term]
-        # match = {model:'reddit'}
+        # match = {model:'post'}
         # match.thumbnail = $nin:['default','self']
         # match.url = { $regex: /^.*(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png).*/, $options: 'i' }
         # console.log "added tags", added_tags
@@ -744,7 +573,8 @@ if Meteor.isServer
                 points:-1
                 ups:-1
             fields:
-                "watson.metadata.image":1
+                image_id:1
+                image_link:1
                 model:1
                 thumbnail:1
                 tags:1
@@ -755,21 +585,20 @@ if Meteor.isServer
         # else
         #     backup = 
         #         Docs.findOne 
-        #             model:'reddit'
+        #             model:'post'
         #             thumbnail:$exists:true
         #             tags:$in:[term]
         #     console.log 'BACKUP', backup
         #     if backup
         #         Docs.find { 
-        #             model:'reddit'
+        #             model:'post'
         #             thumbnail:$exists:true
         #             tags:$in:[term]
         #         }, 
         #             limit:1
         #             sort:ups:1
-    Meteor.publish 'reddit_doc_results', (
+    Meteor.publish 'doc_results', (
         picked_tags=null
-        porn=false
         sort_key='_timestamp'
         sort_direction=-1
         # dummy
@@ -778,15 +607,11 @@ if Meteor.isServer
         )->
         # else
         self = @
-        # match = {model:$in:['reddit','wikipedia']}
-        match = {model:'reddit'}
+        match = {model:'post'}
         # match.over_18 = $ne:true
         #         yesterday = now-day
         #         match._timestamp = $gt:yesterday
-        # if picked_subreddit
-        #     match.subreddit = picked_subreddit
         # if porn
-        match.over_18 = porn
         # if picked_tags.length > 0
         #     # if picked_tags.length is 1
         #     #     found_doc = Docs.findOne(title:picked_tags[0])
@@ -803,35 +628,6 @@ if Meteor.isServer
                 points:-1
                 ups:-1
             limit:20
-            fields:
-                # youtube_id:1
-                "rd.media_embed":1
-                "rd.url":1
-                "rd.thumbnail":1
-                "rd.analyzed_text":1
-                subreddit:1
-                thumbnail:1
-                doc_sentiment_label:1
-                doc_sentiment_score:1
-                joy_percent:1
-                sadness_percent:1
-                fear_percent:1
-                disgust_percent:1
-                anger_percent:1
-                over_18:1
-                points:1
-                upvoter_ids:1
-                downvoter_ids:1
-                url:1
-                ups:1
-                "watson.metadata":1
-                "watson.analyzed_text":1
-                title:1
-                model:1
-                num_comments:1
-                tags:1
-                _timestamp:1
-                domain:1
         # else 
         #     Docs.find match,
         #         sort:_timestamp:-1
@@ -839,7 +635,7 @@ if Meteor.isServer
     
     
     
-    Meteor.publish 'reddit_mined_overlap', (
+    Meteor.publish 'overlap', (
         username1
         username2
         picked_tags=null
@@ -853,8 +649,7 @@ if Meteor.isServer
         match = {}
         user1 = Meteor.users.findOne username:username1
         user2 = Meteor.users.findOne username:username2
-        # match.model = $in: ['reddit','wikipedia']
-        match.model = 'reddit'
+        match.model = 'post'
         # if query
         # if view_nsfw
         match.upvoter_ids = $all:[user1._id,user2._id]
@@ -892,68 +687,6 @@ if Meteor.isServer
         
         self.ready()
         # else []
-    Meteor.methods
-        search_reddit: (query,porn)->
-            # response = HTTP.get("http://reddit.com/search.json?q=#{query}")
-            # HTTP.get "http://reddit.com/search.json?q=#{query}+nsfw:0+sort:top",(err,response)=>
-            # HTTP.get "http://reddit.com/search.json?q=#{query}",(err,response)=>
-            if porn 
-                link = "http://reddit.com/search.json?q=#{query}&nsfw=1&include_over_18=on"
-            else
-                link = "http://reddit.com/search.json?q=#{query}&nsfw=0&include_over_18=off"
-            HTTP.get link,(err,response)=>
-                # console.log response
-                if response.data.data.dist > 1
-                    _.each(response.data.data.children, (item)=>
-                        # console.log 'item', item
-                        unless item.domain is "OneWordBan"
-                            data = item.data
-                            len = 200
-                            # added_tags = [query]
-                            # added_tags.push data.domain.toLowerCase()
-                            # added_tags.push data.author.toLowerCase()
-                            # added_tags = _.flatten(added_tags)
-                            # console.log 'data', data
-                            reddit_post =
-                                reddit_id: data.id
-                                url: data.url
-                                domain: data.domain
-                                comment_count: data.num_comments
-                                permalink: data.permalink
-                                title: data.title
-                                # root: query
-                                ups:data.ups
-                                num_comments:data.num_comments
-                                # selftext: false
-                                points:0
-                                over_18:data.over_18
-                                thumbnail: data.thumbnail
-                                tags: query
-                                model:'reddit'
-                            existing_doc = Docs.findOne url:data.url
-                            if existing_doc
-                                # if Meteor.isDevelopment
-                                if typeof(existing_doc.tags) is 'string'
-                                    Docs.update existing_doc._id,
-                                        $unset: tags: 1
-                                Docs.update existing_doc._id,
-                                    $addToSet: tags: $each: query
-                                    $set:
-                                        title:data.title
-                                        ups:data.ups
-                                        num_comments:data.num_comments
-                                        over_18:data.over_18
-                                        thumbnail:data.thumbnail
-                                        permalink:data.permalink
-                                # Meteor.call 'get_reddit_post', existing_doc._id, data.id, (err,res)->
-                                # Meteor.call 'call_watson', new_reddit_post_id, data.id, (err,res)->
-                            unless existing_doc
-                                new_reddit_post_id = Docs.insert reddit_post
-                                # Meteor.call 'get_reddit_post', new_reddit_post_id, data.id, (err,res)->
-                                # Meteor.call 'call_watson', new_reddit_post_id, data.id, (err,res)->
-                            return true
-                    )
-                    Meteor.call 'calc_user_points', ->
 if Meteor.isClient
     Template.post_view.onCreated ->
         @autorun => @subscribe 'related_group',Router.current().params.doc_id, ->
@@ -966,17 +699,9 @@ if Meteor.isClient
             $(e.currentTarget).closest('.pick_flat_tag').transition('fly up', 500)
     
             Session.set('loading',true)
-            Meteor.call 'search_reddit', picked_tags.array(), ->
-                Session.set('loading',false)
             Router.go "/posts"
-        'click .goto_subreddit': ->
-            # console.log @subreddit
-            Meteor.call 'find_tribe', @subreddit, (err,res)->
-                console.log res
-                Router.go "/group/#{res}"
         'click .get_comments': ->
             console.log @
-            Meteor.call 'get_reddit_comments', (Router.current().params.doc_id), ->
                 
                 
 if Meteor.isServer 
@@ -993,7 +718,6 @@ if Meteor.isServer
                 new_id = 
                     Docs.insert 
                         model:'tribe'
-                        source:'reddit'
                         title:tribe_slug
                         slug:tribe_slug
                 return new_id

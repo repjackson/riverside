@@ -20,7 +20,7 @@ if Meteor.isClient
     
     
     Template.music.onCreated ->
-        document.title = 'gr music'
+        document.title = 'rv music'
     Template.music.onCreated ->
         @autorun => Meteor.subscribe 'music_counter', ->
     Template.music.helpers

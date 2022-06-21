@@ -299,17 +299,6 @@ if Meteor.isClient
         if Session.get 'loading' then 'disabled' else ''
     
     
-    # Template.reddit_card.onRendered ->
-    #     console.log @
-    #     found_doc = @data
-    #     if found_doc 
-    #         unless found_doc.doc_sentiment_label
-    #             Meteor.call 'call_watson',found_doc._id,'title','html',->
-    #                 console.log 'autoran watson'
-    
-        # @autorun => @subscribe 'doc_by_id', Router.current().params.doc_id, ->
-    
-
     Template.registerHelper 'comma', (input) ->
         input.toLocaleString("en-US")
     Template.registerHelper 'emotion_color', () ->

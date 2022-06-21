@@ -32,11 +32,6 @@ if Meteor.isClient
     Template.group_card.events
         'click .flat_group_tag_pick': -> 
             picked_tags.push @valueOf()
-            Meteor.call 'search_subreddits', @valueOf(), ->
-        'click .pull_subreddit': ->
-            console.log @reddit_data.public_description
-            if @reddit_data.public_description
-                Meteor.call 'call_watson', @_id, '@reddit_data.public_description', 'subreddit', ->
     Template.group_members_small.helpers
         group_members:->
             Meteor.users.find 
@@ -84,7 +79,7 @@ if Meteor.isClient
     # Template.groups.onRendered ->
     #     Session.set('model',Router.current().params.model)
     Template.groups.onCreated ->
-        document.title = 'gr groups'
+        document.title = 'rv groups'
         
         Session.setDefault('limit',20)
         Session.setDefault('sort_key','_timestamp')
@@ -109,8 +104,6 @@ if Meteor.isClient
     Template.groups.events
         'click .pick_group_tag': -> 
             picked_tags.push @name
-            Meteor.call 'search_subreddits',@name,true, ->
-            
         'click .unpick_group_tag': -> picked_tags.remove @valueOf()
         'click .pick_source': -> picked_sources.push @name
         'click .unpick_source': -> picked_sources.remove @valueOf()
@@ -126,18 +119,6 @@ if Meteor.isClient
                         icon:'checkmark'
                         position:'bottom right'
                     })
-                    Meteor.call 'search_subreddits',val,true, ->
-                        console.log 'searched subreddits'
-                        $('body').toast({
-                            title: "search complete"
-                            # message: 'Please see desk staff for key.'
-                            class : 'success'
-                            icon:'checkmark'
-                            position:'bottom right'
-                            # className:
-                            #     toast: 'ui massive message'
-                            # displayTime: 5000
-                        })
                     $('.group_search').val('')
                     picked_tags.clear()
                     picked_tags.push val
@@ -505,30 +486,6 @@ if Meteor.isServer
             sort:"#{sort_key}":sort_direction
             # sort:_timestamp:-1
             limit: 10
-            # fields:
-            #     title:1
-            #     model:1
-            #     image_id:1
-            #     "reddit_data.display_name":1
-            #     "reddit_data.header_img":1
-            #     "reddit_data.banner_background_image":1
-            #     "reddit_data.public_description":1
-            #     "reddit_data.over_18":1
-            #     tags:1
-            #     content:1
-            #     _author_id:1
-            #     published:1
-            #     target_id:1
-            #     _timestamp:1
-            #     group_id:1
-            #     emotion:1
-            #     watson:1
-            #     upvoter_ids:1
-            #     downvoter_ids:1
-            #     views:1
-            #     youtube_id:1
-            #     points:1
-            # # sort:_timestamp:-1                    
     Meteor.publish 'user_group_memberships', (username)->
         user = Meteor.users.findOne username:username
         Docs.find {
@@ -701,17 +658,6 @@ if Meteor.isClient
         @autorun => Meteor.subscribe 'group_events', Router.current().params.doc_id, ->
         @autorun => Meteor.subscribe 'group_posts', Router.current().params.doc_id, ->
         @autorun => Meteor.subscribe 'group_products', Router.current().params.doc_id, ->
-    
-    Template.group_posts.onCreated ->
-        @autorun => Meteor.subscribe 'group_reddit_docs', Router.current().params.doc_id, ->
-    Template.group_posts.helpers
-        group_reddit_docs: ->
-            group = 
-                Docs.findOne _id:Router.current().params.doc_id
-            if group
-                Docs.find 
-                    model:'reddit'
-                    subreddit:group.slug
     Template.group_layout.helpers
         group_log_docs: ->
             Docs.find {
@@ -788,15 +734,6 @@ if Meteor.isClient
 
 
 if Meteor.isServer
-    Meteor.publish 'group_reddit_docs', (group_id)->
-        group = 
-            Docs.findOne group_id
-        if group and group.slug
-            Docs.find 
-                model:'reddit'
-                subreddit:group.slug
-    
-        
     Meteor.publish 'group_events', (group_id)->
         # group = Docs.findOne
         #     model:'group'

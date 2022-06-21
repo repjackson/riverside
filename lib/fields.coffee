@@ -381,7 +381,6 @@ if Meteor.isClient
             picked_tags.clear()
             picked_tags.push @valueOf()
             Router.go "/#{Router.current().params.group}"
-            Router.call 'search_reddit', @valueOf(), ->
         'keyup .new_element': (e,t)->
             if e.which is 13
                 element_val = t.$('.new_element').val().trim().toLowerCase()
