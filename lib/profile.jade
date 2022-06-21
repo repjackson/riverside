@@ -1,0 +1,642 @@
+template(name='profile_layout')
+    div(class=darkmode_class)
+        +nav
+        .ui.bottom.attached.pushable.segment.scrollin(class=darkmode_class)
+            img.ui.fluid.image.checkin_banner(src="{{c.url 'frontrange' width=1000 height=1000 crop='crop'}}")
+            +topbar
+            +leftbar
+            +rightbar
+            // unless currentUser.darkmode
+            // img.ui.fluid.image.checkin_banner(src="{{c.url 'frontrange' width=1000 height=1000 crop='crop'}}")
+            .scrolling
+                with user_from_username_param
+                    if background_image_id
+                        img.ui.image.profile_banner.invert(src="{{c.url background_image_id height=1000 crop='crop'}}")
+                    else 
+                        img.ui.image.profile_banner.invert(src="{{c.url image_id height=1000 crop='crop'}}")
+                // .ui.bottom.attached.pushable.segment.scrolling(class=darkmode_class)
+                //     +topbar
+                //     +leftbar
+                //     +rightbar
+                with user_from_username_param
+                    // if background_image_id
+                    //     img.ui.image.checkin_banner(src="{{c.url background_image_id height=1000 crop='crop'}}")
+                    // else 
+                    //     img.ui.image.checkin_banner(src="{{c.url image_id height=1000 crop='crop'}}")
+                    // img.ui.fluid.image.checkin_banner(src="{{c.url 'frontrange' width=1000 height=1000 crop='crop'}}")
+                    .ui.stackable.padded.grid
+                        .row
+                            //- img.ui.image.checkin_banner(src="{{c.url banner_image width=1000 height=1000 crop='crop'}}")
+                            .four.wide.column
+                                +profile_sidebar
+                            .twelve.wide.column
+                                .ui.segment.alpha
+                                    +profile_nav_item section='dashboard' icon='dashboard'
+                                    +profile_nav_item section='posts' icon='news'
+                                    +profile_nav_item section='inbox' icon='inbox'
+                                    +profile_nav_item section='events' icon='calendar'
+                                    +profile_nav_item section='points' icon='coins'
+                                    +profile_nav_item section='groups' icon='groups'
+                                    // +profile_nav_item section='reviews' icon='megaphone'
+                                    +profile_nav_item section='checkins' icon='checkmark'
+                                    +profile_nav_item section='products' icon='shopping-cart'
+                                    +profile_nav_item section='services' icon='wrench'
+                                    +profile_nav_item section='tasks' icon='tasks'
+                                    if is_current_user
+                                        +profile_nav_item section='drafts' icon='save'
+                                    +profile_nav_item section='favorites' icon='heart'
+                                    +profile_nav_item section='social' icon='friends'
+                                    +profile_nav_item section='music' icon='music'
+                                    +profile_nav_item section='food' icon='food'
+                                    +profile_nav_item section='voting' icon='facebook-like'
+                                    +profile_nav_item section='reddit' icon='reddit'
+                                    div
+                                    +yield
+        +footer     
+                            
+template(name='user_dashboard')    
+    +user_posts
+    .ui.one.column.grid
+        .column
+            if status 
+                .ui.label(title='status')
+                    +i name='clock'
+                    |#{status}
+            +text_view key='display_name' label='display name'
+            div
+            +array_view key='tags' label='tags' icon='tags'
+            +html_view key='bio' label='bio'
+            +text_view key='status' label='status' icon='clock'
+            +text_view key='address' label='address' icon='marker' 
+            +text_view key='city' label='city' icon='marker' 
+            +text_view key='state' label='state' icon='marker' 
+            +phone_view key='phone' label='phone' icon='phone' 
+            +text_view key='company' label='company' icon='business'
+        // .column
+        //     +user_checkins
+        // .column
+        //     +user_points
+        // .column
+        //     +user_drafts
+        // .column
+        //     +user_events
+        if instagram_code
+            .column
+                |!{instagram_code}
+        .column
+            +user_inbox
+        .column
+            a.ui.header.zoomers.calc_user_points
+                // i.line.chart.icon
+                +i name='line-chart'
+                |stats
+            +send_points_button
+            +profile_stats
+        .column 
+            .ui.inline.header 
+                +i name='binoculars'
+                |currently viewing
+            with current_viewing_doc
+                a.ui.header.zoomers.fly_right(href="/doc/#{_id}")
+                    img.ui.avatar.image(src="{{c.url image_id height=300 crop='crop'}}")
+        
+                    |#{title}
+                    +model_label
+        .content
+            .ui.header 
+                +i name='history'
+                |viewing history
+        if watson
+            +watson_view
+            // else 
+            //     .ui.center.aligned.segment
+            //         i.massive.loading.refresh.icon
+              
+
+template(name='profile_section')
+    +Template.dynamic template=section_template
+
+
+
+template(name='user_voting')
+    .ui.header 
+        i.large.thumbs.up.icon
+        |upvoted
+    .ui.selection.animated.list
+        each upvoted_docs
+            a.item.fly_right(href="/doc/#{_id}") 
+                img.ui.avatar.image(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}")
+                |#{title}
+                .ui.label #{model}
+    
+    .ui.header 
+        i.large.thumbs.down.icon
+        |downvoted
+    .ui.selection.animated.list
+        each downvoted_docs
+            a.item.fly_right(href="/doc/#{_id}") 
+                img.ui.avatar.image(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}")
+                |#{title}
+                .ui.label #{model}
+template(name='user_inbox')
+    .column
+        .ui.inline.header 
+            +i name='inbox'
+            |inbox
+            .ui.label 
+                |#{user_unread_log_docs.count}
+        if is_current_user
+            .ui.button.mark_all_read
+                |mark all read
+        // if currentUser
+        //     unless is_current_user
+        //         +send_message_button
+        // if user_unread_log_docs.count
+        .ui.items
+            each user_unread_log_docs
+                +log_item
+        .ui.small.header
+            +i name='sent'
+            |sent
+        .ui.list 
+            each user_messages_sent
+                |#{body}
+        .ui.small.header
+            +i name='internal'
+            |received
+        .ui.list 
+            each user_messages_received
+                |#{body}
+
+
+template(name='profile_music')
+    .ui.header 
+        +i name='music'
+        |music
+template(name='profile_stats')
+    .ui.list 
+        .item 
+            i.eye.grey.icon
+            |#{profile_views} 
+            |profile views
+        .item 
+            i.lock.grey.icon
+            |#{profile_views_anon} 
+            |anon views
+        .item 
+            i.user.grey.icon
+            |#{profile_views_logged_in} 
+            |logged in views
+        .item 
+            i.thumbs.up.grey.icon
+            |#{upvote_total} 
+            |upvoted points
+        .item 
+            i.thumbs.down.grey.icon
+            |#{downvote_total} 
+            |downvoted points
+        .item 
+            i.coins.icon 
+            |#{tip_count} tips totalling #{tip_total}pts
+        .item 
+            i.chat.icon
+            |comment amount: #{comment_count}
+        .item
+            i.chat.icon
+            |spent points:#{comment_total}
+        .item
+            i.eye.icon
+            |viewed docs:#{viewed_total}
+
+
+template(name='profile_sidebar')                          
+    a(href="/user/#{username}")
+        .ui.inline.header
+            |@#{username}
+        // +user_pill
+    if first_name
+        .ui.inline.header #{first_name}
+    if last_name
+        .ui.inline.header #{last_name}
+    if status 
+        .ui.big.label(title='status')
+            i.clock.icon 
+            |#{status}
+    a.ui.large.label(href="/user/#{username}/points" title='points')
+        //- +i name='coins'
+        //- i.coins.icon
+        |#{points} pts
+    +link_view key='link' icon='globe'
+    +online_label
+    if linkedin_link
+        a.ui.circular.icon.large.compact.button.zoomers.pointer(href=linkedin_link target='_window' title='view linkedin profile')
+            +i name='linkedin'
+    if twitter_link
+        a.ui.circular.icon.large.compact.button.zoomers.pointer(href=twitter_link target='_window' title='view twitter profile')
+            +i name='twitter'
+    if instagram_link
+        a.ui.circular.icon.large.compact.button.zoomers.pointer(href=instagram_link target='_window' title='view instagram profile')
+            +i name='instagram'
+    if facebook_link
+        a.ui.circular.icon.large.compact.button.zoomers.pointer(href=facebook_link target='_window' title='view facebook profile')
+            +i name='facebook'
+    if one_link
+        a.ui.circular.icon.large.compact.button.zoomers.pointer(href=facebook_link target='_window' title='view facebook profile')
+            img.ui.avatar.image(src="{{c.url 'one_logo' height=500 width=500 gravity='face' crop='fill'}}")
+    if is_current_user
+        a.ui.large.icon.button.fly_up(href="/user/#{_id}/edit" title='profile settings')
+            +i name='settings'
+            unless currentUser.hide_labels
+                |account
+    else if currentUser.admin_mode
+        a.ui.large.icon.button.fly_up(href="/user/#{_id}/edit" title='profile settings')
+            +i name='settings'
+            unless currentUser.hide_labels
+                |account
+    img.ui.medium.rounded.image.boop.pointer.zoomer(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}")
+    // if subs_ready
+    // a(href="/user/#{username}")
+    // a(href="/user/#{username}")
+    //     img.ui.small.rounded.image.inline.boop.mobile.only(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}")
+    .ui.inline.small.header(title='boops')
+        +i name='tap-gesture'
+        |#{boops}
+    if publish_profile 
+        .ui.label
+            i.large.green.eye.icon(title='published profile')
+            |public profile
+    else 
+        .ui.label
+            i.large.lock.icon(title='private profile')
+            |private profile
+    div
+    if company 
+        .ui.large.label
+            +i name='business' 
+            |#{company}
+    // if bio
+    //     .smallscroll
+    //         |!{bio}
+    // .smallscroll
+    //     each tags 
+    //         .ui.large.label #{this}
+    //         // |!{bio}
+    if is_current_user
+        +logout_button
+        +logout_other_clients_button
+    if in_dev 
+        +print_this
+    unless is_current_user
+        // +request_button
+        +follow_button
+        +friend_button
+                          
+                          
+template(name='profile_nav_item')        
+    a.ui.big.image.label.zoomer(href="/user/#{current_user.username}/#{section}" title=section)
+        +i name=icon cl='zoomer'
+        unless currentUser.hide_labels
+            |#{section}
+template(name='online_label')
+    if online 
+        .ui.large.green.label 
+            |online
+                      
+                            
+template(name='user_events')
+    .ui.inline.header 
+        +i name='calendar'
+        | events
+    .ui.two.column.grid 
+        .column
+            .ui.header 
+                +i name='king'
+                |hosted
+            each hosted_docs
+                +event_item_small
+        .column
+            +i name='queen'
+            .ui.header supported
+            each hosted_docs
+                +event_item_small
+        .column
+            .ui.header 
+                +i name='checkmark'
+                |attended
+            each hosted_docs
+                +event_item_small
+        .column
+            .ui.header 
+                +i name='question'
+                | maybe
+            each maybe_docs
+                +event_item_small
+        .column
+            .ui.header 
+                +i name='cancel'
+                | no
+            each no_docs
+                +event_item_small
+    .ui.selection.animated.link.divided.list
+        each user_favorite_docs
+            .item
+                .content
+                    .header
+                        a.inline.fly_up(href="/doc/#{_id}")
+                            img.ui.avatar.image(src="{{c.url image_id height=300 width=300 crop='crop'}}")
+                            .ui.inline.header #{title}
+                    .description
+                        +favorite_icon_toggle
+                        +when
+                        +model_label
+                        each three_tags
+                            .ui.small.label #{this}
+
+template(name='event_item_small')
+    .item #{title}
+
+
+template(name='user_tasks')
+    .ui.inline.header 
+        +i name='tasks'
+        |#{user_task_docs.count} tasks
+    .ui.header authored
+    .ui.header assigned
+    .ui.header completed
+        
+        
+template(name='user_checkins')
+    .ui.inline.header 
+        +i name='checkmark'
+        |#{user_task_docs.count} checkins
+    each user_checkin_docs
+        img.ui.avatar.image(src="{{c.url _parent_doc.image_id height=300 crop='crop'}}")
+    .ui.header authored
+    .ui.header assigned
+    .ui.header completed
+        
+        
+        
+template(name='user_drafts')
+    if user_draft_docs.count
+        .ui.inline.header 
+            +i name='save'
+            |#{user_draft_docs.count} drafts
+        // if subs_ready
+        |sort by
+        +session_set key='sort_key' value='points' label='points'
+        +session_set key='sort_key' value='_timestamp' label='added'
+        .ui.selection.animated.link.divided.list
+            each user_draft_docs
+                .item
+                    .content
+                        .inline.header
+                            a.inline.fly_up(href="/doc/#{_id}")
+                                img.ui.avatar.image(src="{{c.url image_id height=300 width=300 crop='crop'}}")
+                                .ui.inline.header #{title}
+                            +when
+                            +model_label
+                            each three_tags
+                                .ui.small.label #{this}
+        // else 
+        //     +loading_segment
+                        
+template(name='user_favorites')
+    if user_favorite_docs.count
+        .ui.inline.header 
+            +i name='heart'
+            |#{user_favorite_docs.count} favorites
+        each user_favorite_docs
+            // +model_label
+            img.ui.avatar.image(src="{{c.url image_id height=300 width=300 crop='crop'}}" title="#{model}:#{title}")
+        .ui.selection.animated.link.divided.list
+            each user_favorite_docs
+                .item
+                    .content
+                        +model_label
+                        a.inline.header.fly_up(href="/doc/#{_id}")
+                            img.ui.avatar.image(src="{{c.url image_id height=300 width=300 crop='crop'}}")
+                            | #{title}
+                        +favorite_icon_toggle
+                        +when
+                        each three_tags
+                            .ui.small.label #{this}
+                        
+template(name='when')
+    .ui.label(title="{{long_date _timestamp}}") #{_when}
+                    
+                    
+                 
+template(name='user_points')        
+    .ui.inline.header 
+        +i name='coins'
+        |balance: #{current_user.points}
+    .ui.dividing.header
+        +i name='internal'
+        |points in
+    .ui.list
+        each points_in_docs
+            .ui.inline.header #{body} 
+            |{amount}pts
+    .ui.dividing.header
+        +i name='donate'
+        |points out
+    .ui.list
+        each points_out_docs
+            .ui.inline.header #{body} 
+            |{amount}pts
+    .ui.dividing.header
+        +i name='donate'
+        |tips
+    .ui.list
+        each tips_docs
+            a.item.fly_left(href="/#{_parent.model}/#{parent_id}")
+                strong #{_parent.title} 
+                small {amount}pts
+    .ui.dividing.header 
+        +i name='news'
+        |posts
+    .ui.small.header publish costs
+    .ui.small.header earned points
+    
+
+    .ui.dividing.header 
+        +i name='chat'
+        |comments
+    .ui.small.header 
+        small comment amount:
+        strong #{comment_count}
+    .ui.small.header 
+        small spent points:
+        strong #{comment_total}
+    // if venmo_image
+    //     img.ui.image(src="{{c.url venmo_image }}")
+            
+    
+                 
+template(name='user_products')  
+    .ui.dividing.header 
+        +i name='shop'
+        |#{current_user.username}'s products
+    .ui.selection.link.animated.list
+        each user_product_docs 
+            a.item.fly_right(href="/doc/#{_id}")
+                img.ui.tiny.inline.image(src="{{c.url image_id height=200 width=200 background='white' crop='pad'}}")
+                .ui.inline.header #{title}
+                .ui.label
+                    |#{_when}
+                .ui.label
+                    |#{points}pts
+                 
+                 
+template(name='user_comments')   
+    .ui.header 
+        +i name='chat'
+        ||#{current_user.username}'s comments
+    .ui.divided.animated.link.list
+        each user_comment_docs
+            a.item(href="/#{parent_model}/#{parent_id}")
+                .meta
+                    |#{_when}
+                .description #{body}
+                +print_this
+    +comments
+                 
+                 
+                     
+template(name='user_services')
+    .ui.inline.header 
+        +i name='wrench'
+        |services
+    .ui.selection.animated.link.list
+        each user_service_docs 
+            a.item.zoomer.fly_right(href="/doc/#{_id}")
+                img.ui.tiny.inline.image(src="{{c.url image_id height=200 width=200 background='white' crop='pad'}}")
+                |#{title}
+    .ui.header 
+        +i name='shopping-cart'
+        |purchases
+    .ui.list 
+        each service_purchase_docs 
+            a.item.zoomer.fly_right(href="/doc/#{_id}")
+                img.ui.avatar.image(src="{{c.url parent_image_id height=200 width=200 background='white' crop='pad'}}")
+                |#{parent_title} #{amount}
+            
+        
+                     
+                    
+template(name='user_social')
+    .ui.inline.header 
+        +i name='friends'
+        |social
+    if refered_user_docs.count
+        span(title='refered users')
+            +i name='omnichannel'
+            each refered_user_docs
+                img.ui.avatar.image(src="{{c.url image_id height=200 width=200 background='white' crop='pad'}}" title=title)
+    .ui.two.column.stackable.grid
+        .column
+            +friend_button
+            .ui.header friended
+            .ui.selection.link.animated.list
+                each user_friended
+                    +user_info
+            .ui.header friended by
+            .ui.selection.link.animated.list
+                each user_friended_by
+                    +user_info
+        .column
+            .ui.header following
+            .ui.header followed by
+            .ui.header comments
+            +user_following
+        .column
+            .ui.inline.header refered by
+            with refered_by_user
+                +user_info
+            div
+            .ui.inline.header 
+                +i name='omnichannel'
+                |refered
+            each refered_user_docs
+                +user_info
+   
+template(name='user_friends')
+            
+template(name='user_following')
+    +follow_button
+    .ui.header 
+        +i name='renew-subscription'
+        |following
+    .ui.selection.link.animated.list
+        each following_users
+            +user_info
+    .ui.header 
+        |followed by
+    .ui.selection.link.animated.list
+        each followed_by_users
+            +user_info
+  
+            
+template(name='send_message_button')
+    .ui.button.send_message
+        +i name='envelope'
+        span.mobile.hidden
+            unless currentUser.hide_labels
+                |send message
+            
+template(name="user_reviews") 
+    if user_review_docs.count
+        // .ui.fluid.styled.accordion.alpha
+        .column
+            .ui.header 
+                +i name='star'
+                |#{user_review_docs.count} reviews
+            .ui.link.selection.animated.list 
+                each user_review_docs
+                    |#{amount}
+
+template(name='user_posts')
+    if user_authored_post_docs.count
+        // .ui.fluid.styled.accordion.alpha
+        .ui.inline.header 
+            +i name='news'
+            |#{user_authored_post_docs.count}
+            |recent posts
+        // if is_current_user
+        //     .ui.circular.button.add_user_post
+        //         i.large.plus.icon
+        .ui.selection.link.animated.divided.list.scrolling
+            each user_authored_post_docs
+                a.item.fly_left(href="/doc/#{_id}") 
+                    if image_id
+                        img.ui.avatar.image(src="{{c.url image_id height=200 width=200 background='white' crop='pad'}}")
+                    .ui.inline.small.header
+                        |#{title}
+                    .description
+                        |#{_when}
+                        each five_tags
+                            .ui.black.label #{this}
+                    // if watson 
+                    //     +doc_sentiment
+                    //     +doc_emotion
+                            
+
+
+
+template(name='logout_other_clients_button')
+    .ui.compact.button.logout_other_clients(title='logout other clients')
+        +i name='globe'
+        span.mobile.hidden
+            unless currentUser.hide_labels
+                |log out other clients
+
+
+
+template(name='logout_button')
+    .ui.large.button.logout(title='log out')
+        // i.sign.out.alternate.icon
+        +i name='exit'
+        span.mobile.hidden
+            unless currentUser.hide_labels
+                |log out
