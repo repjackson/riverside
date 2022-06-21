@@ -42,9 +42,6 @@ if Meteor.isClient
         # console.log @
         found_doc = Docs.findOne Router.current().params.doc_id
         if found_doc 
-            unless found_doc.watson
-                Meteor.call 'call_watson',Router.current().params.doc_id,'content','html', ->
-                    console.log 'autoran watson'
             unless found_doc.details 
                 Meteor.call 'product_details', Router.current().params.doc_id, ->
                     console.log 'pulled product details'

@@ -328,11 +328,6 @@ template(name='group_stats')
             |#{member_ids.length} members
         .item #{event_ids.length} events
         .item #{transfer_ids.length} credits exchanged
-    if watson 
-        .column
-            +watson_view
-        if tone 
-            +tone
     //     each log_items
     //         +log_item
     //     i.refresh.link.icon.refresh_group_stats
@@ -428,8 +423,6 @@ template(name='group_edit')
                             +html_edit key='content' label='content'
                             if watson 
                                 i.large.green.checkmark
-                            +call_watson key='content'
-                            +call_tone
                         .column
                             +array_edit key='tags' label='tags' icon='tags'
                             div

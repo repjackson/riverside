@@ -5,29 +5,22 @@ if Meteor.isClient
         @autorun => Meteor.subscribe 'user_groups_small', @data.username, -> 
         
         
-    Router.route '/u/:name', (->
-        @layout 'layout'
-        @render 'redditor_view'
-        ), name:'redditor_view'
         
-    Template.redditor_view.onCreated ->
-        @autorun => @subscribe 'redditor_by_name', Router.current().params.name, ->
-    Template.redditor_view.helpers
-        current_redditor: ->
+    Template.user_view.onCreated ->
+        @autorun => @subscribe 'user_by_name', Router.current().params.name, ->
+    Template.user_view.helpers
+        current_user: ->
             Docs.findOne 
-                model:'redditor'
+                model:'user'
     Template.users.onCreated ->
-        @autorun => Meteor.subscribe 'redditor_counter', ->
-    Template.user_post_doc.events
-        'click .call_watson_comment': ->
-            Meteor.call 'call_watson', @_id, 'reddit_data.body', 'comment', ->
+        @autorun => Meteor.subscribe 'user_counter', ->
     Template.users.onCreated ->
         Session.set('view_friends', false)
         # @autorun -> Meteor.subscribe('users')
         Session.setDefault 'limit', 42
         Session.setDefault 'sort_key', 'points'
         Session.setDefault('view_mode','grid')
-        @autorun => Meteor.subscribe 'redditors_pub',
+        @autorun => Meteor.subscribe 'users_pub',
             Session.get('current_search')
             picked_user_tags.array()
             picked_porn_tags.array()
@@ -37,7 +30,7 @@ if Meteor.isClient
             Session.get('limit')
             Session.get('dummy')
             ->
-        @autorun => Meteor.subscribe 'redditor_tags', 
+        @autorun => Meteor.subscribe 'user_tags', 
             picked_user_tags.array()
             picked_porn_tags.array()
             Session.get('dummy')
@@ -52,22 +45,18 @@ if Meteor.isClient
         #     ->
         # @autorun => Meteor.subscribe 'user_tags', picked_user_tags.array(), ->
      
-    Template.redditor_card.events
+    Template.user_card.events
         'click .calc_stats': ->
-            Meteor.call 'calc_redditor_stats', @reddit_data.name, ->
+            Meteor.call 'calc_user_stats', @reddit_data.name, ->
             
             # unless @details 
-            #     Meteor.call 'redditor_details', @_id, ->
-            #         console.log 'pulled redditor details'
-            unless @watson
-                Meteor.call 'call_watson',@_id,'reddit_data.subreddit.public_description','redditor', ->
-                    console.log 'autoran watson'
-                    Session.set('dummy', !Session.get('dummy'))
+            #     Meteor.call 'user_details', @_id, ->
+            #         console.log 'pulled user details'
 
         'click .flat_user_tag': ->
             # picked_user_tags.clear()
             picked_user_tags.push @valueOf()
-            Meteor.call 'search_redditors', picked_user_tags.array(),true, ->
+            Meteor.call 'search_users', picked_user_tags.array(),true, ->
             
             $('body').toast({
                 title: "browsing #{@valueOf()}"
@@ -85,21 +74,21 @@ if Meteor.isClient
                   hideMethod   : 'fade',
                   hideDuration : 250
                 })
-    Template.redditor_view.onCreated ->
-        @autorun => @subscribe 'redditor_posts', Router.current().params.name, ->
-    Template.redditor_view.helpers
+    Template.user_view.onCreated ->
+        @autorun => @subscribe 'user_posts', Router.current().params.name, ->
+    Template.user_view.helpers
         user_post_docs: ->
             Docs.find
                 model:'reddit'
-    Template.redditor_view.events
-        'click .calc_redditor_stats': ->
-            Meteor.call 'calc_redditor_stats', Router.current().params.name, ->
+    Template.user_view.events
+        'click .calc_user_stats': ->
+            Meteor.call 'calc_user_stats', Router.current().params.name, ->
         'click .get_user_posts': ->
             Meteor.call 'get_user_posts', Router.current().params.name, ->
         'click .pick_flat_tag': ->
             picked_user_tags.clear()
             picked_user_tags.push @valueOf()
-            Meteor.call 'search_redditors', picked_user_tags.array(),true, ->
+            Meteor.call 'search_users', picked_user_tags.array(),true, ->
             Router.go "/users"
             $('body').toast({
                 title: "browsing #{@valueOf()}"
@@ -120,18 +109,7 @@ if Meteor.isClient
      
             
 if Meteor.isServer 
-    Meteor.publish 'redditor_posts', (name)->
-        Docs.find {
-            model:'reddit'
-            "reddit_data.author": name
-        }, 
-            limit:42
-            sort:_timestamp:-1
-    Meteor.publish 'redditor_by_name', (name)->
-        Docs.find 
-            model:'redditor'
-            "reddit_data.name":name
-    Meteor.publish 'redditors_pub', (
+    Meteor.publish 'users_pub', (
         username_search, 
         picked_user_tags=[], 
         picked_porn_tags=[]
@@ -141,11 +119,10 @@ if Meteor.isServer
         limit=50
         dummy
     )->
-        match = {model:'redditor'}
+        match = {model:'user'}
         if picked_user_tags.length > 0 then match.tags = $all:picked_user_tags 
-        if picked_porn_tags.length > 0 then match['reddit_data.subreddit.over_18'] = $all:picked_porn_tags 
         
-        # console.log 'redditor pub match', match
+        # console.log 'user pub match', match
         Docs.find match, {
             # sort:_timestamp:-1
             "#{sort_key}":sort_direction
@@ -194,7 +171,7 @@ if Meteor.isClient
                 icon:'checkmark'
                 position:'bottom right'
             })
-            Meteor.call 'search_redditors',picked_user_tags.array(),true, ->
+            Meteor.call 'search_users',picked_user_tags.array(),true, ->
                 # console.log 'searched users for', @name
                 $('body').toast({
                     title: "search complete"
@@ -214,7 +191,7 @@ if Meteor.isClient
         'click .unpick_user_tag': -> 
             picked_user_tags.remove @valueOf()
             if picked_user_tags.array().length > 0
-                Meteor.call 'search_redditors',picked_user_tags.array(),true, ->
+                Meteor.call 'search_users',picked_user_tags.array(),true, ->
         'click .pick_porn_tag': -> picked_porn_tags.push @name
         'click .unpick_porn_tag': -> picked_porn_tags.remove @valueOf()
         # 'click .add_user': ->
@@ -289,7 +266,7 @@ if Meteor.isClient
                         icon:'checkmark'
                         position:'bottom right'
                     })
-                    Meteor.call 'search_redditors',picked_user_tags.array(),true, ->
+                    Meteor.call 'search_users',picked_user_tags.array(),true, ->
                         console.log 'searched users for', picked_user_tags.array()
                         $('body').toast({
                             title: "search complete"
@@ -305,7 +282,7 @@ if Meteor.isClient
             
             
     Template.users.helpers
-        redditor_count: ->  Counts.get('redditor_counter')
+        user_count: ->  Counts.get('user_counter')
         toggle_friends_class: -> if Session.get('view_friends',true) then 'blue large' else ''
         picked_user_tags: -> picked_user_tags.array()
         all_user_tags: -> Results.find model:'user_tag'
@@ -313,7 +290,6 @@ if Meteor.isClient
         location_tags: -> Results.find model:'location_tag'
         # all_user_tags: -> Results.find model:'user_tag'
         
-        picked_porn_tags: -> picked_porn_tags.array()
         porn_tag_results: -> Results.find model:'porn_tag'
         one_result: ->
             # console.log 'one'
@@ -335,8 +311,8 @@ if Meteor.isClient
                 limit:42
                 sort:"#{Session.get('sort_key')}":Session.get('sort_direction')
             )
-        redditor_docs: ->
-            match = {model:'redditor'}
+        user_docs: ->
+            match = {model:'user'}
             username_query = Session.get('username_query')
             # if username_query
             #     match.username = {$regex:"#{username_query}", $options: 'i'}
@@ -396,7 +372,7 @@ if Meteor.isServer
         self.ready()
         
         
-    Meteor.publish 'redditor_tags', (
+    Meteor.publish 'user_tags', (
         picked_tags
         picked_porn_tags
         )->
@@ -404,7 +380,7 @@ if Meteor.isServer
         # current_herd = user.profile.current_herd
     
         self = @
-        match = {model:'redditor'}
+        match = {model:'user'}
     
         # picked_tags.push current_herd
         if picked_tags.length > 0
@@ -551,10 +527,10 @@ if Meteor.isServer
             },{ limit:150})
             
             
-    Meteor.publish 'redditor_counter', ()->
-        Counts.publish this, 'redditor_counter', 
+    Meteor.publish 'user_counter', ()->
+        Counts.publish this, 'user_counter', 
             Docs.find({
-                model:'redditor'
+                model:'user'
             })
         return undefined    # otherwise coffeescript returns a Counts.publish
                           # handle when Meteor expects a Mongo.Cursor object.

@@ -164,8 +164,6 @@ template(name='product_view')
                     .ui.compact.button.pick_product_tag
                         |#{this}
                 .f7 !{content}
-                if currentUser.admin_mode
-                    +call_watson key='content' mode='html'
                 .ui.inline.header 
                     |related products
                 if currentUser.admin_mode
@@ -241,9 +239,6 @@ template(name='product_view')
 
                 +print_this
 
-            if watson
-                .twelve.wide.column
-                    +watson_view
             .four.wide.column
                 // +text_view key='size_content' label='size content' 
                 a.ui.circular.button(href=product_link)

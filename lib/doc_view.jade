@@ -76,11 +76,6 @@ template(name='doc_view')
                                     span.flat_tags
                                         each tags 
                                             a.ui.basic.label.pick_flat_tag.zoomer(title='browse tag') #{this}
-                                    if watson 
-                                        .column
-                                            +watson_view
-                                        if tone 
-                                            +tone
                             .three.column.row
                                 .column
                                     +message_author_button

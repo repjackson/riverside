@@ -385,8 +385,6 @@ template(name='music_artist')
                     // a(href=strWebsite target='_window')
                     |#{strMusicBrainzID}
                 .f6.scrolling #{strBiographyEN}
-                if currentUser.admin_mod
-                    +call_watson key='strBiographyEN'
                 +comments
                 .ui.button.pull_albums
                     |download albums
@@ -398,9 +396,6 @@ template(name='music_artist')
                                 .ui.header #{strAlbum}
                                 +print_this
                     
-            .sixteen.wide.column
-                if watson 
-                    +watson_view
 template(name='album_view')
     with current_album
         if strAlbumBanner
@@ -498,8 +493,6 @@ template(name='album_view')
                     // a(href=strWebsite target='_window')
                     |#{strMusicBrainzID}
                 .f7 #{strBiographyEN}
-                if currentUser.admin_mod
-                    +call_watson key='strBiographyEN'
                 +comments
                 .ui.button.pull_tracks
                     |download tracks
@@ -512,7 +505,3 @@ template(name='album_view')
                                 .ui.header #{strAlbum}
                                 |#{strTrackLyrics}
                                 +print_this
-                    
-            .sixteen.wide.column
-                if watson 
-                    +watson_view

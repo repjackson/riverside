@@ -75,10 +75,6 @@ template(name='doc_edit_leftbar')
             if tone 
                 +i name='happy' title='has tone'
             +html_edit key='content' label='content'
-            if watson 
-                i.large.green.checkmark
-            +call_watson key='content'
-            +call_tone
         .column
             +array_edit key='tags' label='tags' icon='tags'
             div

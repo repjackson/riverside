@@ -96,23 +96,9 @@ if Meteor.isClient
         # console.log @
         found_doc = Docs.findOne Router.current().params.doc_id
         if found_doc 
-            unless found_doc.watson
-                Meteor.call 'call_watson',Router.current().params.doc_id,'content','html', ->
-                    console.log 'autoran watson'
             unless found_doc.details 
                 Meteor.call 'recipe_details', Router.current().params.doc_id, ->
                     console.log 'pulled recipe details'
-    # Template.recipe_card.onRendered ->
-    # Template.recipe_card. ->
-    #     console.log @
-    #     # found_doc = Docs.findOne Template.currentData()
-    #     unless @data.watson
-    #         Meteor.call 'call_watson',@data._id,'content','html', ->
-    #             console.log 'autoran watson'
-    #     unless @data.details 
-    #         Meteor.call 'recipe_details', @data._id, ->
-    #             console.log 'pulled recipe details'
-                
     
     Template.food_page.helpers
         instruction_steps: ->
@@ -121,13 +107,10 @@ if Meteor.isClient
             @details.analyzedInstructions[0].steps
             
     Template.recipe_card.events
-        'click .call_watson': ->
+        'click .get_details': ->
             unless @details 
                 Meteor.call 'recipe_details', @_id, ->
                     console.log 'pulled recipe details'
-            unless @watson
-                Meteor.call 'call_watson',@_id,'content','html', ->
-                    console.log 'autoran watson'
             
         'click .pick_food_tag': ->
             picked_food_tags.clear()

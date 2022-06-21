@@ -556,7 +556,6 @@ if Meteor.isServer
                             strItunesID: album.strItunesID
                             strAmazonID: album.strAmazonID
                             strLocked: album.strLocked
-                        # Meteor.call 'call_watson', new_id, 'strDescriptionEN', ->
                     
         search_artist: (search)->
             HTTP.get "https://www.theaudiodb.com/api/v1/json/523532/search.php?s=#{search}",(err,response)=>
@@ -611,5 +610,4 @@ if Meteor.isServer
                             "intCharted":artist.intCharted
                             "strLocked":artist.strLocked
                             strBiographyEN:artist.strBiographyEN
-                        Meteor.call 'call_watson', new_id, 'strBiographyEN', ->
                             

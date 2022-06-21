@@ -179,13 +179,6 @@ template(name='post_card')
             //     .ui.red.label
             //         i.alert.icon
             //         // +i name='nsfw'
-            if doc_sentiment_label
-                +doc_sentiment
-                +doc_emotion
-            // unless doc_sentiment_label 
-            //     .ui.icon.big.button.autotag.zoomer(title='breakdown emotions') 
-            //         i.large.chess.grey.icon
-            //     // +call_watson key=rd.selftext
         .ui.attached.basic.buttons
             .ui.icon.circular.button.vote_up
                 i.thumbs.up.green.icon(class=upvote_class)
@@ -219,11 +212,6 @@ template(name='post_item')
         if over_18
             .ui.red.label over 18
         +voting
-        if doc_sentiment_label
-            +doc_sentiment
-            +doc_emotion
-        else 
-            +call_watson key=rd.selftext
             
             
             
@@ -267,19 +255,6 @@ template(name='post_card_big')
                 |#{_when}
             each tags
                 +flat_tag_picker
-            // if over_18
-            //     .ui.red.label
-            //         i.alert.icon
-            //         // +i name='nsfw'
-            if watson 
-                +watson_view
-            // if doc_sentiment_label
-            //     +doc_sentiment
-            //     +doc_emotion
-            // unless doc_sentiment_label 
-            //     .ui.icon.big.button.autotag.zoomer(title='breakdown emotions') 
-            //         i.large.chess.grey.icon
-            //     // +call_watson key=rd.selftext
         
 // template(name='session_toggle')
 //     .ui.button.toggle
@@ -376,21 +351,10 @@ template(name='post_view')
                     |post
                 .ui.segment.alpha.scrollin
                     .ui.inline.header !{title}
-                    if rd.selftext_html
-                        |!{unescaped}
                     // blockquote(class="imgur-embed-pub" lang="en" data-id="UsxLSe0")
                     //     a(href=rd.url) Lauren, supergirl, batgirl [Super best friends &amp; lauren faust])
                     // script(async src="//s.imgur.com/min/embed.js" charset="utf-8")
                     a.ui.header(href=rd.url target='_window') #{rd.url}
-                    
-                    // with rd
-                    //     embed(src=url)
-                    // if rd.media_embed
-                    //     // 
-                    //     |!{unescaped_content}
-                    // +call_watson key=rd.selftext
-                    if watson 
-                        +watson_view
                     if in_dev
                         +print_this
                     if is_image

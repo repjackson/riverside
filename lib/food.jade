@@ -79,7 +79,7 @@ template(name='agg_food_tag')
                     
 template(name='recipe_card')
     // a.card(href="/food/#{_id}")
-    .card.call_watson
+    .card.get_details
         a.fly_right(href="/food/#{_id}")
             img.ui.fluid.image.zoomer(src=image)
         .content
@@ -171,8 +171,6 @@ template(name='recipe_card_big')
                         |#{this}
             .sixteen.wide.column
                 .f7 !{content}
-                if currentUser.admin_mode
-                    +call_watson key='content' mode='html'
             .eight.wide.column
                 .ui.header 
                     |related recipes
@@ -279,9 +277,6 @@ template(name='recipe_card_big')
                 if currentUser.admin_mode
                     +print_this
     
-            if watson
-                .sixteen.wide.column
-                    +watson_view
 
             
 template(name='food_page')
@@ -334,8 +329,6 @@ template(name='food_page')
                     .ui.compact.button.pick_food_tag
                         |#{this}
                 .f7 !{content}
-                if currentUser.admin_mode
-                    +call_watson key='content' mode='html'
             .five.wide.column
                 .ui.header 
                     |related recipes
@@ -385,7 +378,7 @@ template(name='food_page')
                         .item
                             small gaps: 
                             strong #{gaps}
-            .five.wide.column
+            .eight.wide.column
                 .ui.header 
                     +i name='list'
                     |instructions
@@ -394,6 +387,7 @@ template(name='food_page')
                         .item.zoomer
                             |##{number}:
                             strong #{step}
+            .sixteen.wide.column
                 .ui.header 
                     +i name='ingredients'
                     |ingredients
@@ -441,10 +435,6 @@ template(name='food_page')
 
                 +print_this
 
-            if watson
-                .sixteen.wide.column
-                    +watson_view
-            
             
             
             
