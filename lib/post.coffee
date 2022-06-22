@@ -3,7 +3,6 @@ if Meteor.isClient
         document.title = 'rv posts'
         
         Session.setDefault('current_search', null)
-        Session.setDefault('porn', false)
         Session.setDefault('dummy', false)
         Session.setDefault('is_loading', false)
         @autorun => @subscribe 'doc_by_id', Session.get('full_doc_id'), ->
@@ -12,13 +11,10 @@ if Meteor.isClient
             Session.get('dummy')
         @autorun => @subscribe 'post_tag_results',
             picked_tags.array()
-            Session.get('porn')
-            Session.get('dummy')
             
     Template.doc_results.onCreated ->
         @autorun => @subscribe 'doc_results',
             picked_tags.array()
-            Session.get('porn')
             # Session.get('dummy')
     
     
@@ -32,7 +28,9 @@ if Meteor.isClient
         @render 'posts'
         ), name:'posts'
     Template.posts.onCreated ->
-        @autorun => Meteor.subscribe 'model_counter',('post'), ->
+        @autorun => Meteor.subscribe 'model_counter','post', ->
+    Template.posts.onCreated ->
+        @autorun => Meteor.subscribe 'model_docs','post', ->
     Template.posts.helpers
         total_post_count: -> Counts.get('model_counter') 
 

@@ -36,7 +36,9 @@ if Meteor.isClient
         @autorun => Meteor.subscribe 'model_counter',('transfer'), ->
     Template.transfers.helpers
         total_transfer_count: -> Counts.get('model_counter') 
-
+        transfer_docs: ->
+            Docs.find 
+                model:'transfer'
     Template.transfers.events 
         'click .new_transfer': ->
             new_id = 

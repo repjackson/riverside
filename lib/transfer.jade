@@ -7,11 +7,11 @@ template(name='transfers')
             if current_search 
                 i.large.red.circular.link.remove.icon.clear
             .ui.large.input 
-                input.artist_search(type='text' placeholder='search artist...' value=current_search)
+                input.transfer_search(type='text' placeholder='search...' value=current_search)
         .four.wide.column.scrolling
             .ui.header your points #{currentUser.points}
-            a.ui.button.new_transfer
-                |new transfer
+            a.ui.big.icon.button.new_transfer
+                i.big.green.plus.icon
             +i name='tags'
             each picked_transfers_tags
                 button.ui.blue.compact.circular.button.unpick_tag(tabindex='0')
@@ -43,15 +43,15 @@ template(name='transfers')
                     .ui.stackable.cards.scrolling
                         if one_result
                             .ui.one.cards
-                                each transfers_docs 
-                                    +transfers_card
+                                each transfer_docs 
+                                    +transfer_card
                         else
                             .ui.cards
-                                each transfers_docs 
-                                    +transfers_card
+                                each transfer_docs 
+                                    +transfer_card
                 else
                     .ui.large.list 
-                        each transfers_docs 
+                        each transfer_docs 
                             +transfers_item
             else 
                 .ui.center.aligned.basic.segment
@@ -71,14 +71,16 @@ template(name='transfers')
 
 
 template(name='transfer_card')
-    .content
-        span(title='recipient')
-            +i name='lend'
-            with _target
-                +user_info
-        span.smallscroll
-            |!{description}
-                    
+    .card
+        .content
+            span(title='recipient')
+                +i name='lend'
+                with _target
+                    +user_info
+            span.smallscroll
+                |!{description}
+            a.ui.icon.button.zoomer(href="/transfer/#{_id}")
+                i.right.large.chevron.icon
 
 template(name='transfer_view')
     with current_doc
@@ -89,7 +91,6 @@ template(name='transfer_view')
                         img.ui.circular.centered.pointer.zoom.image(src="{{c.url _author.image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
                         .ui.large.center.aligned.header.pointer.zoom
                             |#{_author.name}
-                .five.wide.column
                     .ui.huge.center.aligned.header
                         |#{amount}pts
                     if currentUser.admin_mode
