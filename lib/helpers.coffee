@@ -138,8 +138,6 @@ if Meteor.isClient
     Template.registerHelper 'current_day', () -> moment(Date.now()).format("DD")
     
     
-    Template.registerHelper 'current_doc', () -> Docs.findOne Router.current().params.doc_id
-    
     Template.registerHelper 'total_potential_revenue', () ->
         @price_per_serving * @servings_amount
     

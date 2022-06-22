@@ -2,26 +2,16 @@ template(name='transfers')
     .ui.stackable.padded.grid 
         .sixteen.wide.column
             .ui.inline.header 
-                +i name='transfers'
-                // |#{artist_docs.count} artists
+                +i name='exchange'
+                |#{artist_docs.count} transfers
             if current_search 
                 i.large.red.circular.link.remove.icon.clear
             .ui.large.input 
                 input.artist_search(type='text' placeholder='search artist...' value=current_search)
-            +i name='database'
-            each picked_models
-                button.ui.blue.compact.circular.button.unpick_model(tabindex='0')
-                    //- i.remove.icon
-                    | #{this}
-            each model_results
-                button.ui.circular.compact.black.button.pick_model(tabindex="0" class=result_class title=count)
-                    if is name 'artist'
-                        +i name='artist'
-                    else if is name 'album'
-                        +i name='database'
-                    |#{name}
-                    // small #{count}
         .four.wide.column.scrolling
+            .ui.header your points #{currentUser.points}
+            a.ui.button.new_transfer
+                |new transfer
             +i name='tags'
             each picked_transfers_tags
                 button.ui.blue.compact.circular.button.unpick_tag(tabindex='0')
@@ -31,44 +21,6 @@ template(name='transfers')
                 button.ui.circular.compact.black.button.pick_tag(tabindex="0" class=result_class title=count)
                     |#{name}
                     // small #{count}
-
-            .ui.inline.small.header
-                .ui.small.inline.header
-                    +i name='transfers'
-                    |#{genre_results.count} genres
-                each picked_genres
-                    button.ui.blue.compact.circular.button.unpick_genre(tabindex='0')
-                        //- i.remove.icon
-                        | #{this}
-                each genre_results
-                    if name
-                        button.ui.circular.compact.black.button.pick_genre(tabindex="0" class=result_class title=count)
-                            |#{name}
-                            // small #{count}
-            .ui.inline.small.header
-                +i name='artist'
-                |#{style_results.count} styles
-            each picked_styles
-                button.ui.blue.compact.circular.button.unpick_style(tabindex='0')
-                    //- i.remove.icon
-                    | #{this}
-            each style_results
-                if name
-                    button.ui.circular.compact.black.button.pick_style(tabindex="0" class=result_class title=count)
-                        |#{name}
-                        // small #{count}
-            .ui.inline.small.header
-                +i name='happy'
-                |#{mood_results.count} moods
-            each picked_moods
-                button.ui.blue.compact.circular.button.unpick_mood(tabindex='0')
-                    //- i.remove.icon
-                    | #{this}
-            each mood_results
-                if name
-                    button.ui.circular.compact.black.button.pick_mood(tabindex="0" class=result_class title=count)
-                        |#{name}
-                        // small #{count}
         .twelve.wide.column
             unless one_result
                 .ui.inline.header(title='result count') #{result_docs.count}
@@ -116,3 +68,93 @@ template(name='transfers')
             // .ui.list 
             //     each album_docs 
             //         .ui.header #{title}
+
+
+template(name='transfer_card')
+    .content
+        span(title='recipient')
+            +i name='lend'
+            with _target
+                +user_info
+        span.smallscroll
+            |!{description}
+                    
+
+template(name='transfer_view')
+    with current_doc
+        .ui.stackable.padded.grid
+            .centered.row 
+                .five.wide.column
+                    a(href="/user/#{_author.username}") 
+                        img.ui.circular.centered.pointer.zoom.image(src="{{c.url _author.image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+                        .ui.large.center.aligned.header.pointer.zoom
+                            |#{_author.name}
+                .five.wide.column
+                    .ui.huge.center.aligned.header
+                        |#{amount}pts
+                    if currentUser.admin_mode
+                        +remove_button
+                        +edit_button
+                        +print_this
+                    .f14
+                        |!{content}
+                    .spacer
+                    
+                    div 
+                    if tags
+                        i.tags.icon
+                        each tags 
+                            .ui.big.basic.circular.label #{this}
+                    .ui.small.header
+                        i.clock.icon
+                        | #{_when}
+                    .spacer
+                    .spacer
+                    //- +array_view key='location_tags' label='location_tags' 
+                .five.wide.column
+                    a.fly_right(href="/user/#{_target.username}")
+                        img.ui.circular.centered.fluid.pointer.zoom.image(src="{{c.url _target.image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+                        .ui.large.center.aligned.header.pointer.zoom
+                            |#{_target.name}
+                                
+
+template(name='transfer_edit')
+    with current_doc
+        .ui.stackable.padded.grid
+            .row 
+                .sixteen.wide.column
+                    .ui.segment
+                        .ui.inline.grey.header sender
+                        .ui.inline.header
+                            img.ui.small.image(src="{{c.url _author.image_id height=200 width=200 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+                            |#{_author.name}
+                    .ui.segment.alpha
+                        +single_user_edit key='target' label='recipient' icon='donate' 
+                    // +boolean_edit key='has_date' label='has date' icon='calendar' 
+                    // if has_date
+                    +date_edit key='date' label='date'    
+                    // +boolean_edit key='has_time' label='has time' icon='clock' 
+                    // if has_time
+                    +time_edit key='time' label='time'    
+                    +array_edit key='location_tags' label='location tags' icon='marker' 
+                    .ui.big.header #{amount}pts
+                    .ui.big.input
+                        input.point_amount(type='number' value=amount min='1' max=point_max)
+                    div
+                    +key_value_edit key='amount' value=1
+                    +key_value_edit key='amount' value=5
+                    +key_value_edit key='amount' value=10
+                    +key_value_edit key='amount' value=20
+                    +key_value_edit key='amount' value=50
+                    .spacer
+                    .ui.center.aligned.basic.segment
+                        if can_submit
+                            .ui.green.huge.circular.button.submit
+                                i.big.send.icon
+                                |send
+                        else 
+                            .ui.green.huge.circular.disabled.button
+                                i.send.big.icon
+                                |send
+                                
+                                    

@@ -98,8 +98,21 @@ template(name='nav')
             +i name='music'
             unless currentUser.hide_labels
                 |music
-        +nav_item key='event' icon='calendar'
-        +nav_item key='transfer' icon='exchange'
+        a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/transfers" class="{{isActiveRoute regex='transfers'}}" title='transfers')
+            // i.large.music.icon
+            +i name='exchange'
+            unless currentUser.hide_labels
+                |transfers
+        a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/events" class="{{isActiveRoute regex='events'}}" title='events')
+            // i.large.music.icon
+            +i name='calendar'
+            unless currentUser.hide_labels
+                |events
+        a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/tasks" class="{{isActiveRoute regex='tasks'}}" title='tasks')
+            // i.large.music.icon
+            +i name='tasks'
+            unless currentUser.hide_labels
+                |tasks
         +nav_item key='service' icon='wrench'
         +nav_item key='rental' icon='clock'
         +nav_item key='task' icon='tasks'

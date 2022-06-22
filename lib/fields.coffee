@@ -834,7 +834,7 @@ if Meteor.isClient
     Template.single_user_edit.onCreated ->
         @user_results = new ReactiveVar
         # console.log @data.key
-        # @autorun => Meteor.subscribe 'user_info_min', ->
+        @autorun => Meteor.subscribe 'user_info_min', ->
         @autorun => Meteor.subscribe 'user_by_ref', @data.key, Template.parentData(),->
             
 if Meteor.isServer
@@ -856,8 +856,11 @@ if Meteor.isClient
             else 
                 parent_user_value = Meteor.users.findOne(username:Router.current().params.username)["#{@key}_id"]
                 found = Meteor.users.findOne _id:parent_user_value
-        user_results: ->Template.instance().user_results.get()
-        current_user_search: -> Session.get('current_user_search')
+        user_results: ->
+            Meteor.users.find()
+            # Template.instance().user_results.get()
+        current_user_search: -> 
+            Session.get('current_user_search')
     Template.single_user_edit.events
         'click .clear_results': (e,t)->
             t.user_results.set null
