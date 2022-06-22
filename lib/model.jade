@@ -845,31 +845,7 @@ template(name='view_span')
                     
                                 
                         
-template(name='task_item')
-    +boolean_view key='complete'        
 
-template(name='task_view')
-    .ui.inline.grey.header {{from_now start_datetime}}
-    
-    +boolean_view key='complete' label='complete' icon='checkmark'
-
-
-
-
-template(name='task_edit')
-    +boolean_edit key='complete' label='complete' icon='checkmark' 
-    .ui.header
-        |audience
-    +boolean_edit key='private' label='private' icon='lock'
-    +range_edit
-    +datetime_edit key='start_datetime' label='start date/time' icon='calendar'
-    +datetime_edit key='end_datetime' label='end date/time' icon='calendar'
-    if private 
-        +multi_user_edit key='access_user_ids' label='user picker' 
-    // +boolean_edit key='has_content' icon='content' 
-    // if has_content
-    div
-    +array_edit key='location_tags' label='location tags' icon='marker' 
 template(name='inbox')
     .ui.padded.stackable.grid 
         .row

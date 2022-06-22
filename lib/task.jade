@@ -1,23 +1,23 @@
-template(name='transfers')
+template(name='tasks')
     .ui.stackable.padded.grid 
         .sixteen.wide.column
             .ui.inline.header 
                 +i name='exchange'
-                |#{artist_docs.count} transfers
+                |#{artist_docs.count} tasks
             if current_search 
                 i.large.red.circular.link.remove.icon.clear
             .ui.large.input 
-                input.transfer_search(type='text' placeholder='search...' value=current_search)
+                input.task_search(type='text' placeholder='search...' value=current_search)
         .four.wide.column.scrolling
             .ui.header your points #{currentUser.points}
-            a.ui.big.icon.button.new_transfer
+            a.ui.big.icon.button.new_task
                 i.big.green.plus.icon
             +i name='tags'
-            each picked_transfers_tags
+            each picked_tasks_tags
                 button.ui.blue.compact.circular.button.unpick_tag(tabindex='0')
                     //- i.remove.icon
                     | #{this}
-            each transfers_tag_results
+            each tasks_tag_results
                 button.ui.circular.compact.black.button.pick_tag(tabindex="0" class=result_class title=count)
                     |#{name}
                     // small #{count}
@@ -43,22 +43,22 @@ template(name='transfers')
                     .ui.stackable.cards.scrolling
                         if one_result
                             .ui.one.cards
-                                each transfer_docs 
-                                    +transfer_card
+                                each task_docs 
+                                    +task_card
                         else
                             .ui.cards
-                                each transfer_docs 
-                                    +transfer_card
+                                each task_docs 
+                                    +task_card
                 else
                     .ui.large.list 
-                        each transfer_docs 
-                            +transfer_item
+                        each task_docs 
+                            +task_item
             else 
                 .ui.center.aligned.basic.segment
                     i.massive.yin.yang.loading.grey.icon
 
 
-template(name='transfer_card')
+template(name='task_card')
     .card
         .content
             span(title='recipient')
@@ -67,9 +67,9 @@ template(name='transfer_card')
                     +user_info
             span.smallscroll
                 |!{description}
-            a.ui.icon.button.zoomer(href="/transfer/#{_id}")
+            a.ui.icon.button.zoomer(href="/task/#{_id}")
                 i.right.large.chevron.icon
-template(name='transfer_item')
+template(name='task_item')
     .item
         .content
             span(title='recipient')
@@ -78,10 +78,10 @@ template(name='transfer_item')
                     +user_info
             span.smallscroll
                 |!{description}
-            a.ui.icon.button.zoomer(href="/transfer/#{_id}")
+            a.ui.icon.button.zoomer(href="/task/#{_id}")
                 i.right.large.chevron.icon
 
-template(name='transfer_view')
+template(name='task_view')
     with current_doc
         .ui.stackable.padded.grid
             .centered.row 
@@ -94,7 +94,7 @@ template(name='transfer_view')
                         |#{amount}pts
                     if currentUser.admin_mode
                         +remove_button
-                        a.ui.icon.button(href="/transfer/#{_id}/edit")
+                        a.ui.icon.button(href="/task/#{_id}/edit")
                             i.pencil.icon
                         +edit_button
                         +print_this
@@ -120,7 +120,7 @@ template(name='transfer_view')
                             |#{_target.name}
                                 
 
-template(name='transfer_edit')
+template(name='task_edit')
     with current_doc
         .ui.stackable.padded.grid
             .row 
@@ -158,5 +158,18 @@ template(name='transfer_edit')
                             .ui.green.huge.circular.disabled.button
                                 i.send.big.icon
                                 |send
+                +boolean_edit key='complete' label='complete' icon='checkmark' 
+                .ui.header
+                    |audience
+                +boolean_edit key='private' label='private' icon='lock'
+                +range_edit
+                +datetime_edit key='start_datetime' label='start date/time' icon='calendar'
+                +datetime_edit key='end_datetime' label='end date/time' icon='calendar'
+                if private 
+                    +multi_user_edit key='access_user_ids' label='user picker' 
+                // +boolean_edit key='has_content' icon='content' 
+                // if has_content
+                div
+                +array_edit key='location_tags' label='location tags' icon='marker' 
                                 
                                     

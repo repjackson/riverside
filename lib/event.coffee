@@ -26,6 +26,32 @@ if Meteor.isClient
                 model:'event'
             }, sort: _timestamp:-1
             
+        one_result: ->
+            Docs.find({model:'event'}).count() is 1
+        
+        room_button_class: -> 
+            if Session.equals('viewing_room_id', @_id) then 'blue' else 'basic'
+        event_docs: ->
+            # console.log moment().format()
+            match = {}
+            match.model = 'event'
+            # published:true
+            if picked_tags.array().length > 0
+                match.tags = $all: picked_tags
+            
+            # if Session.get('viewing_past')
+            #     # match.date = $gt:moment().subtract(1,'days').format("YYYY-MM-DD")
+            #     match.start_datetime = $lt:moment().subtract(1,'days').format()
+            # else if Session.get('view_mode', 'all')
+            #     match.start_datetime = $gt:moment().subtract(1,'days').format()
+            # else
+            #     match.date = $lt:moment().subtract(1,'days').format("YYYY-MM-DD")
+            if Session.get('event_search')
+                match.title = {$regex:"#{Session.get('event_search')}", $options: 'i'}
+            Docs.find match,
+                sort:"#{Session.get('sort_key')}":parseInt(Session.get('sort_direction'))
+            
+            
     Template.event_edit.onCreated ->
         @autorun => Meteor.subscribe 'doc_by_id', Router.current().params.doc_id, ->
     Template.event_layout.onCreated ->

@@ -232,9 +232,9 @@ template(name='recipe_card_big')
                 .ui.header 
                     +i name='ingredients'
                     |ingredients
-                .ui.doubling.four.cards
+                .ui.doubling.cards
                     each details.extendedIngredients
-                        .card
+                        .card.pick_ingredient
                             img.ui.image(src="https://spoonacular.com/cdn/ingredients_250x250/#{image}")
                             .content
                                 .header #{originalName}
@@ -393,7 +393,7 @@ template(name='food_page')
                     |ingredients
                 .ui.doubling.four.cards
                     each details.extendedIngredients
-                        .card
+                        .card.pick_ingredient
                             img.ui.image(src="https://spoonacular.com/cdn/ingredients_250x250/#{image}")
                             .content
                                 .header #{originalName}

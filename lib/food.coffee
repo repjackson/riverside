@@ -134,6 +134,29 @@ if Meteor.isClient
                   hideDuration : 250
                 })
     Template.food_page.events
+        'click .pick_ingredient': ->
+            console.log @
+            Router.go "/food"
+            picked_food_tags.clear()
+            picked_food_tags.push @nameClean
+            $('body').toast({
+                title: "browsing #{@nameClean}"
+                # message: 'Please see desk staff for key.'
+                class : 'success'
+                showIcon:'hashtag'
+                # showProgress:'bottom'
+                position:'bottom right'
+                # className:
+                #     toast: 'ui massive message'
+                # displayTime: 5000
+                transition:
+                  showMethod   : 'zoom',
+                  showDuration : 250,
+                  hideMethod   : 'fade',
+                  hideDuration : 250
+                })
+
+            Meteor.call 'call_food', @nameClean, ->
         'click .pick_food_tag': ->
             Router.go "/food"
             picked_food_tags.clear()

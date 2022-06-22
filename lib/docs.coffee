@@ -1,11 +1,11 @@
 if Meteor.isClient
-    Router.route '/doc/:doc_id/edit', (->
-        @layout 'layout'
-        @render 'doc_edit'
-        ), name:'doc_edit'
-    Template.doc_edit.onCreated ->
-        @autorun => Meteor.subscribe 'doc_by_id', Router.current().params.doc_id
-        @autorun => Meteor.subscribe 'group_from_doc_id', Router.current().params.doc_id, ->
+    # Router.route '/doc/:doc_id/edit', (->
+    #     @layout 'layout'
+    #     @render 'doc_edit'
+    #     ), name:'doc_edit'
+    # Template.doc_edit.onCreated ->
+    #     @autorun => Meteor.subscribe 'doc_by_id', Router.current().params.doc_id
+    #     @autorun => Meteor.subscribe 'group_from_doc_id', Router.current().params.doc_id, ->
     Template.doc_edit.onRendered ->
         current_doc = Docs.findOne(Router.current().params.doc_id)
         document.title = "edit #{current_doc.title}";
@@ -35,7 +35,7 @@ if Meteor.isClient
     Template.doc_view.onRendered ->
         current_doc = Docs.findOne(Router.current().params.doc_id)
         if current_doc
-            document.title = "#{current_doc.title}";
+            document.title = "#{current_doc.title}"
         
         Meteor.call 'log_view', Router.current().params.doc_id, ->
         Meteor.setTimeout ->

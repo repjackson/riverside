@@ -8,7 +8,7 @@ template(name='nav')
                 i.large.bars.grey.icon
             a.item(href="/" title='the riverside')
                 +i name='creek'
-                |the riverside
+                |riverside
             if currentUser
                 if unread_count
                     a.item(href="/user/#{currentUser.username}/inbox" title='unread messages')
@@ -87,7 +87,7 @@ template(name='nav')
                 //         i.user.big.icon
                 // strong.mobilehidden #{currentUser.name}
                 i.bars.large.grey.icon
-    .ui.attached.menu.hscroll          
+    .ui.attached.small.menu.hscroll          
         a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/food" class="{{isActiveRoute regex='food'}}" title='food')
             // i.large.food.icon
             +i name='food'
@@ -115,7 +115,6 @@ template(name='nav')
                 |tasks
         +nav_item key='service' icon='wrench'
         +nav_item key='rental' icon='clock'
-        +nav_item key='task' icon='tasks'
         // +nav_item key='checkin' icon='checkmark'
         // +nav_item key='log' icon='code'
 
