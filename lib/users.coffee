@@ -20,29 +20,18 @@ if Meteor.isClient
         Session.setDefault 'limit', 42
         Session.setDefault 'sort_key', 'points'
         Session.setDefault('view_mode','grid')
-        @autorun => Meteor.subscribe 'users_pub',
+        @autorun => Meteor.subscribe 'user_tags', 
+            picked_user_tags.array()
+            Session.get('dummy')
+            , ->
+        @autorun => Meteor.subscribe 'users_pub', 
             Session.get('current_search')
             picked_user_tags.array()
-            picked_porn_tags.array()
-            # Session.get('view_friends')
+            Session.get('view_friends')
             Session.get('sort_key')
             Session.get('sort_direction')
             Session.get('limit')
-            Session.get('dummy')
             ->
-        @autorun => Meteor.subscribe 'user_tags', 
-            picked_user_tags.array()
-            picked_porn_tags.array()
-            Session.get('dummy')
-            , ->
-        # @autorun => Meteor.subscribe 'users_pub', 
-        #     Session.get('current_search')
-        #     picked_user_tags.array()
-        #     Session.get('view_friends')
-        #     Session.get('sort_key')
-        #     Session.get('sort_direction')
-        #     Session.get('limit')
-        #     ->
         # @autorun => Meteor.subscribe 'user_tags', picked_user_tags.array(), ->
      
     Template.user_card.events
@@ -112,52 +101,33 @@ if Meteor.isServer
     Meteor.publish 'users_pub', (
         username_search, 
         picked_user_tags=[], 
-        picked_porn_tags=[]
         view_friends=false
-        sort_key='_timestamp'
+        sort_key='points'
         sort_direction=-1
         limit=50
-        dummy
     )->
-        match = {model:'user'}
+        match = {}
+        if view_friends
+            match._id = $in: Meteor.user().friend_ids
         if picked_user_tags.length > 0 then match.tags = $all:picked_user_tags 
-        
-        # console.log 'user pub match', match
-        Docs.find match, {
-            # sort:_timestamp:-1
-            "#{sort_key}":sort_direction
-            limit:20
-        }
-    # Meteor.publish 'users_pub', (
-    #     username_search, 
-    #     picked_user_tags=[], 
-    #     view_friends=false
-    #     sort_key='points'
-    #     sort_direction=-1
-    #     limit=50
-    # )->
-    #     match = {}
-    #     if view_friends
-    #         match._id = $in: Meteor.user().friend_ids
-    #     if picked_user_tags.length > 0 then match.tags = $all:picked_user_tags 
-    #     if username_search
-    #         match.username = {$regex:"#{username_search}", $options: 'i'}
-    #     Meteor.users.find(match,{ 
-    #         limit:20, 
-    #         sort:
-    #             "#{sort_key}":sort_direction
-    #         fields:
-    #             username:1
-    #             image_id:1
-    #             tags:1
-    #             points:1
-    #             credit:1
-    #             first_name:1
-    #             last_name:1
-    #             group_memberships:1
-    #             createdAt:1
-    #             profile_views:1
-    #     })
+        if username_search
+            match.username = {$regex:"#{username_search}", $options: 'i'}
+        Meteor.users.find(match,{ 
+            limit:20, 
+            sort:
+                "#{sort_key}":sort_direction
+            fields:
+                username:1
+                image_id:1
+                tags:1
+                points:1
+                credit:1
+                first_name:1
+                last_name:1
+                group_memberships:1
+                createdAt:1
+                profile_views:1
+        })
             
 if Meteor.isClient
     Template.users.events
@@ -171,70 +141,51 @@ if Meteor.isClient
                 icon:'checkmark'
                 position:'bottom right'
             })
-            Meteor.call 'search_users',picked_user_tags.array(),true, ->
-                # console.log 'searched users for', @name
-                $('body').toast({
-                    title: "search complete"
-                    # message: 'Please see desk staff for key.'
-                    class : 'success'
-                    icon:'checkmark'
-                    position:'bottom right'
-                    # className:
-                    #     toast: 'ui massive message'
-                    # displayTime: 5000
-                })
-                Meteor.setTimeout ->
-                    Session.set('dummy', !Session.get('dummy'))
-                , 5000
                         
             
         'click .unpick_user_tag': -> 
             picked_user_tags.remove @valueOf()
-            if picked_user_tags.array().length > 0
-                Meteor.call 'search_users',picked_user_tags.array(),true, ->
-        'click .pick_porn_tag': -> picked_porn_tags.push @name
-        'click .unpick_porn_tag': -> picked_porn_tags.remove @valueOf()
-        # 'click .add_user': ->
-        #     new_username = prompt('username')
-        #     splitted = new_username.split(' ')
-        #     formatted = new_username.split(' ').join('_').toLowerCase()
-        #     console.log formatted
-        #         #   return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        #     Meteor.call 'add_user', formatted, (err,res)->
-        #         console.log res
-        #         new_user = Meteor.users.findOne res
-        #         Meteor.users.update res,
-        #             $set:
-        #                 first_name:splitted[0]
-        #                 last_name:splitted[1]
+        'click .add_user': ->
+            new_username = prompt('username')
+            splitted = new_username.split(' ')
+            formatted = new_username.split(' ').join('_').toLowerCase()
+            console.log formatted
+                #   return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            Meteor.call 'add_user', formatted, (err,res)->
+                console.log res
+                new_user = Meteor.users.findOne res
+                Meteor.users.update res,
+                    $set:
+                        first_name:splitted[0]
+                        last_name:splitted[1]
 
-        #         Router.go "/user/#{formatted}"
-        #         $('body').toast({
-        #             title: "user created"
-        #             # message: 'Please see desk staff for key.'
-        #             class : 'success'
-        #             icon:'user'
-        #             position:'bottom right'
-        #             # className:
-        #             #     toast: 'ui massive message'
-        #             # displayTime: 5000
-        #             transition:
-        #               showMethod   : 'zoom',
-        #               showDuration : 250,
-        #               hideMethod   : 'fade',
-        #               hideDuration : 250
-        #             })
+                Router.go "/user/#{formatted}"
+                $('body').toast({
+                    title: "user created"
+                    # message: 'Please see desk staff for key.'
+                    class : 'success'
+                    icon:'user'
+                    position:'bottom right'
+                    # className:
+                    #     toast: 'ui massive message'
+                    # displayTime: 5000
+                    transition:
+                      showMethod   : 'zoom',
+                      showDuration : 250,
+                      hideMethod   : 'fade',
+                      hideDuration : 250
+                    })
                 
-        # 'keyup .search_user': (e,t)->
-        #     username_query = $('.search_user').val()
-        #     if e.which is 8
-        #         if username_query.length is 0
-        #             Session.set 'username_query',null
-        #             # Session.set 'checking_in',false
-        #         else
-        #             Session.set 'username_query',username_query
-        #     else
-        #         Session.set 'username_query',username_query
+        'keyup .search_user': (e,t)->
+            username_query = $('.search_user').val()
+            if e.which is 8
+                if username_query.length is 0
+                    Session.set 'username_query',null
+                    # Session.set 'checking_in',false
+                else
+                    Session.set 'username_query',username_query
+            else
+                Session.set 'username_query',username_query
 
         'click .clear_query': ->
             Session.set('username_query',null)
@@ -259,25 +210,6 @@ if Meteor.isClient
                 if e.which is 13
                     # picked_user_tags.clear()
                     picked_user_tags.push val
-                    $('body').toast({
-                        title: "searching #{val}"
-                        # message: 'Please see desk staff for key.'
-                        class : 'search'
-                        icon:'checkmark'
-                        position:'bottom right'
-                    })
-                    Meteor.call 'search_users',picked_user_tags.array(),true, ->
-                        console.log 'searched users for', picked_user_tags.array()
-                        $('body').toast({
-                            title: "search complete"
-                            # message: 'Please see desk staff for key.'
-                            class : 'success'
-                            icon:'checkmark'
-                            position:'bottom right'
-                            # className:
-                            #     toast: 'ui massive message'
-                            # displayTime: 5000
-                        })
                     $('.user_search').val('')
             
             
@@ -290,7 +222,6 @@ if Meteor.isClient
         location_tags: -> Results.find model:'location_tag'
         # all_user_tags: -> Results.find model:'user_tag'
         
-        porn_tag_results: -> Results.find model:'porn_tag'
         one_result: ->
             # console.log 'one'
             Meteor.users.find({_id:$ne:Meteor.userId()}).count() is 1
@@ -305,21 +236,6 @@ if Meteor.isClient
                 
             match._id = $ne:Meteor.userId()
             Meteor.users.find(match
-                # roles:$in:['resident','owner']
-            ,
-                # limit:Session.get('limit')
-                limit:42
-                sort:"#{Session.get('sort_key')}":Session.get('sort_direction')
-            )
-        user_docs: ->
-            match = {model:'user'}
-            username_query = Session.get('username_query')
-            # if username_query
-            #     match.username = {$regex:"#{username_query}", $options: 'i'}
-            # if picked_user_tags.array().length > 0
-            #     match.tags = $all: picked_user_tags.array()
-                
-            Docs.find(match
                 # roles:$in:['resident','owner']
             ,
                 # limit:Session.get('limit')
@@ -362,7 +278,6 @@ if Meteor.isServer
             { $project: _id: 0, name: '$_id', count: 1 }
             ]
         cloud.forEach (tag, i) ->
-    
             self.added 'results', Random.id(),
                 name: tag.name
                 count: tag.count
@@ -387,8 +302,8 @@ if Meteor.isServer
             match.tags = $all: picked_tags
         if picked_porn_tags.length > 0 then match['reddit_data.subreddit.over_18'] = $all:picked_porn_tags 
             
-        count = Docs.find(match).count()
-        cloud = Docs.aggregate [
+        count = Meteor.users.find(match).count()
+        cloud = Meteor.users.aggregate [
             { $match: match }
             { $project: tags: 1 }
             { $unwind: "$tags" }
@@ -406,7 +321,7 @@ if Meteor.isServer
                 count: tag.count
                 model:'user_tag'
                 index: i
-        location_cloud = Docs.aggregate [
+        location_cloud = Meteor.users.aggregate [
             { $match: match }
             { $project: location_tags: 1 }
             { $unwind: "$location_tags" }
@@ -422,23 +337,6 @@ if Meteor.isServer
                 name: tag.name
                 count: tag.count
                 model:'location_tag'
-                index: i
-        porn_cloud = Docs.aggregate [
-            { $match: match }
-            { $project: "reddit_data.subreddit.over_18": 1 }
-            # { $unwind: "$tags" }
-            { $group: _id: "$reddit_data.subreddit.over_18", count: $sum: 1 }
-            { $match: _id: $nin: picked_tags }
-            { $sort: count: -1, _id: 1 }
-            { $match: count: $lt: count }
-            { $limit: 20 }
-            { $project: _id: 0, name: '$_id', count: 1 }
-            ]
-        porn_cloud.forEach (tag, i) ->
-            self.added 'results', Random.id(),
-                name: tag.name
-                count: tag.count
-                model:'porn_tag'
                 index: i
 
         self.ready()
@@ -501,7 +399,7 @@ if Meteor.isServer
                 res = {}
                 if agg
                     agg.toArray()
-                    # printed = console.log(agg.toArray())
+                    printed = console.log(agg.toArray())
                     # console.log(agg.toArray())
                     # omega = Docs.findOne model:'omega_session'
                     # Docs.update omega._id,

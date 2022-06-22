@@ -8,7 +8,7 @@ template(name='groups')
         .sixteen.wide.column
             .ui.inline.header
                 +i name='fire'
-                |tribes
+                |groups
             // +facet key='tag'
             each picked_group_tags
                 .ui.active.button.unpick_group_tag
@@ -703,11 +703,15 @@ template(name='group_picker')
 
 
 template(name='user_groups')   
+    .ui.inline.header 
+        +i name='groups'
+        |#{current_user.username}'s
+        |groups
+    a.ui.button.fly_right(href="/groups")
+        i.chevron.left.icon
+        i.users.icon
+        |groups
     if user_group_memberships.count
-        .ui.inline.header 
-            +i name='groups'
-            |#{current_user.username}'s
-            |groups
         .ui.two.column.stackable.grid
             .column
                 .ui.header 

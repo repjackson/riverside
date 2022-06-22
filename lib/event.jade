@@ -1,24 +1,736 @@
 template(name='events')
+    img.ui.fluid.image.checkin_banner.invert(src="{{c.url 'frontrange' width=1000 height=1000 crop='crop'}}")
     .ui.stackable.padded.grid 
         .sixteen.wide.column
             .ui.inline.header 
-                +i name='events'
-                // |#{artist_docs.count} artists
-            if current_search 
-                i.large.red.circular.link.remove.icon.clear
-            .ui.large.input 
-                input.artist_search(type='text' placeholder='search artist...' value=current_search)
-            +i name='database'
-            each picked_models
-                button.ui.blue.compact.circular.button.unpick_model(tabindex='0')
-                    //- i.remove.icon
-                    | #{this}
-            each model_results
-                button.ui.circular.compact.black.button.pick_model(tabindex="0" class=result_class title=count)
-                    if is name 'artist'
-                        +i name='artist'
-                    else if is name 'album'
-                        +i name='database'
-                    |#{name}
+                +i name='calendar'
+                |{{comma event_count}}
+                |events
+            each picked_event_tags
+                +unpick_event_tag
+            .ui.large.icon.input
+                i.search.icon
+                input.event_search(type='text' placeholder='search events...' value=current_search)
+            each tag_results
+                +agg_event_tag
+                // button.ui.large.label.button.pick_tag(tabindex="0" class=result_class title=count)
+                    // |#{name}
                     // small #{count}
-        .four.wide.column.scrolling
+
+        .sixteen.wide.column.scrolling
+            if subs_ready
+                if one_event
+                    each event_docs
+                        +event_card_big
+                    // with one_doc
+                    //     +event_doc
+                else if two_events
+                    .ui.centered.stackable.two.cards 
+                        each event_docs
+                            +event_card
+                else 
+                    .ui.centered.stackable.cards 
+                        each event_docs
+                            +event_card
+            else 
+                .ui.basic.center.aligned.segment
+                    +ibig name='event' cl='spinning'
+                    
+                    
+                    
+template(name='event_layout')
+    div(class=darkmode_class)
+        // unless currentUser.darkmode
+        +nav
+        .ui.bottom.attached.pushable.segment.scrollin.fullheight(class=darkmode_class)
+            // img.ui.fluid.image.checkin_banner(src="{{c.url 'frontrange' width=1000 height=1000 crop='crop'}}")
+            +topbar
+            +leftbar
+            +rightbar
+            .scrolling
+                with current_doc
+                    if background_image_id
+                        img.ui.image.checkin_banner(src="{{c.url background_image_id height=1000 crop='crop'}}")
+                    else 
+                        img.ui.image.checkin_banner(src="{{c.url image_id height=1000 crop='crop'}}")
+                    .ui.stackable.padded.grid
+                        .sixteen.wide.column
+                            a.ui.circular.icon.button.fly_left(href="/events" title="back to events")
+                                i.chevron.left.icon
+                                +model_label
+                            .ui.large.inline.header 
+                                //- small viewing
+                                | #{title}
+                            +event_nav_item section='dashboard' icon='dashboard'
+                            if has_posts
+                                +event_nav_item section='posts' icon='news'
+                            if has_events
+                                +event_nav_item section='events' icon='calendar'
+                            if has_membership
+                                +event_nav_item section='membership' icon='events'
+                            +event_nav_item section='related' icon='fork'
+                            if has_products
+                                +event_nav_item section='products' icon='shopping-cart'
+                            
+                            +event_nav_item section='checkins' icon='checkmark'
+                        .five.wide.column
+                            +event_sidebar
+                            
+                        .eleven.wide.column
+                            div
+                            +yield
+    +footer
+    
+    
+    
+    
+template(name='event_sidebar')
+    if image_id 
+        img.ui.rounded.centered.large.image(src="{{c.url image_id width=800 crop='scale'}}")
+    if image_id2
+        img.ui.rounded.image.zoomer(src="{{c.url image_id2}}")
+
+    if can_edit
+        a.ui.button(href="/event/#{_id}/edit")
+            i.pencil.icon
+            |edit
+    if youtube_id 
+        span(title='has youtube video')
+            +i name='youtube'
+    if tone 
+        +tone
+    +publish_info
+    if facebook_link 
+        a.zoomer(href=facebook_link target='_window' title='visit facebook page')
+            +i name='facebook'
+    if instagram_link
+        a.zoomer(href=instagram_link target='_window' title='visit instagram page')
+            +i name='instagram'
+    if twitter_link
+        a.zoomer(href=twitter_link target='_window' title='visit twitter page')
+            +i name='twitter'
+    if link 
+        a.ui.big.compact.button.zoomer(href=link target='_window' title=link)
+            i.external.icon
+            |link
+            // |#{hostname}
+    i.big.eye.icon(title="#{read_user_ids.length} viewers") 
+    each read_user_ids
+        +user_avatar
+    +comments
+    +author_segment
+    .ui.inline.header                                
+        |#{tags.length}
+        +i name='tags'
+    span.flat_tags
+        each tags 
+            a.ui.label.pick_flat_tag.zoomer(title='browse tag') #{this}
+    +message_author_button
+    +event_widget
+    div
+    +voting_full
+    div
+    if nsfw
+        .ui.red.large.label
+            +i name='18-plus'
+            |nsfw
+    +favorites
+    +viewing_info
+        
+template(name='event_membership')
+    .ui.header 
+        +i name='events'
+        |event memberships
+    if member_ids
+        i.big.users.icon(title="#{member_ids.length} members") 
+        each member_ids
+            +user_avatar
+        // img.ui.avatar.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+    .ui.header
+        +i name='events'
+        |#{_members.count} members
+        // .ui.button.add_user_member
+        //     |add member
+    each _members 
+        .ui.label #{username}
+    // +multi_user_view key='member_ids' label='members' 
+    +join_button
+    // if leaders_id
+    //     .ui.inline.header 
+    //         +i name='crown' cl='ui avatar image'
+    //         // i.crown.icon
+    //         |leaders: 
+    //     each leader_ids 
+    //         +user_info
+    // div
+    // .ui.inline.header 
+    //     +i name='events'
+    //     // i.users.icon
+    //     |#{member_ids.length} members
+    // each member_ids
+    //     +user_info
+
+
+    
+    
+template(name='event_section')
+    +Template.dynamic template=section_template
+            
+            
+template(name='event_nav_item')        
+    a.ui.compact.button.zoomer(href="/event/#{current_doc._id}/#{section}")
+        +i name=icon
+        |#{section}
+            
+            
+template(name='event_dashboard')
+    +event_members_small
+    +event_posts
+    .ui.one.column.grid 
+        .column
+            if youtube_id
+                +youtube_view key='youtube_id'
+            .ui.segment.alpha.scrolling
+                |!{content}
+            div
+        .column
+            +voting_full
+            div
+            if nsfw
+                .ui.red.large.label
+                    +i name='18-plus'
+                    |nsfw
+            +event_stats
+            +follow_button
+            +tips
+            if has_price
+                +post_orders
+            div
+            +current_viewers
+        .column
+            if link
+                a.ui.circular.button(href=link target='_window')
+                    i.external.icon
+                    |#{link}
+                // .spacer
+            // div
+            if address
+                a.ui.compact.circular.button(href=address_link target='_window')
+                    i.marker.icon
+                    |#{address}
+            if in_dev 
+                i.circular.link.large.refresh.icon.refresh_event_stats
+        .column
+            .ui.header
+                +i name='rss'
+                |activity
+            .ui.list 
+                each event_log_docs 
+                    .item 
+                        |#{body} 
+                        +when
+                        +author_info
+        if has_shop
+            +event_products
+                
+               
+               
+template(name='event_related')
+    .content
+        .ui.header 
+            +i name='connect'
+            |related events 
+        .ui.cards
+            each related_event_docs
+                +event_card
+
+          
+          
+template(name='event_checkins')          
+    .ui.inline.header 
+        +i name='checkmark'
+        |checkins
+    if checked_in
+        .ui.big.red.button.checkout  
+            +i name='exit'
+            |checkout
+            |#{current_time}
+    else
+        .ui.big.green.button.checkin
+            +i name='internal'
+            |checkin
+            |#{current_time}
+    .ui.large.list
+        each checkin_docs 
+            .item 
+                strong 
+                    if active 
+                        i.large.green.clock.icon.invert(title='active')
+                    a.zoomer(href="/user/#{_author.username}")
+                        img.ui.avatar.image(src="{{c.url _author.image_id width=200 height=200}}")
+                        |#{_author.username}
+                small #{_when}
+                span(title="signed out {{long_date checkout_timestamp}}")
+                    i.red.sign.out.large.icon.invert
+                    |{{from_now checkout_timestamp}}
+                    small {{long_date checkout_timestamp}}
+    
+template(name='event_stats')    
+    .ui.dividing.header 
+        +i name='line-chart'
+        |stats
+    .ui.big.list
+        .item 
+            i.grey.line.chart.icon
+            |#{post_views_ranking} post views ranking
+        .item 
+            i.grey.eye.icon
+            |#{views} views
+        .item
+            i.grey.line.chart.icon
+            |#{views_ranking} view ranking
+        .item 
+            i.grey.user.secret.icon
+            |#{anon_views} anon views
+        .item 
+            |#{points}
+            |points
+        .item 
+            |#{tip_total}
+            |tip total
+        .item 
+            i.user.icon
+            |#{member_ids.length} members
+        .item #{event_ids.length} events
+        .item #{transfer_ids.length} credits exchanged
+    //     each log_items
+    //         +log_item
+    //     i.refresh.link.icon.refresh_event_stats
+            
+
+template(name='event_products')
+    .column
+        .ui.header 
+            +i name='shop'
+            |shop
+        .ui.list 
+            each event_products 
+                a.item(href="/event/#{_id}")
+                    img.ui.avatar.image(src="{{c.url image_id width=200 height=200}}")
+                    |#{title}
+
+template(name='event_posts')
+    .column
+        .ui.inline.header 
+            +i name='news'
+            |event posts
+        if currentUser 
+            .ui.icon.button.add_event_post(title='add event post')
+                i.plus.icon
+        .ui.selection.animated.list
+            each event_post_docs 
+                a.ui.header.fly_right(href="/event/#{_id}") #{title}
+
+
+template(name='event_events')
+    .column
+        .ui.inline.header
+            +i name='calendar' 
+            // i.calendar.large.icon
+            |events
+        if currentUser 
+            .ui.icon.button.add_event_event(title='add event event')
+                i.plus.icon
+        .ui.link.animated.list
+            each event_events
+                a.item(href="/event/#{_id}") 
+                    img.ui.avatar.image(src="{{c.url image_id width=200 height=200}}")
+                    .content
+                        .header #{title}
+                        .description
+                            if is_repeating
+                                i.refresh.icon
+                                |every #{repeating_day}
+                            if start_datetime
+                                |{{from_now start_datetime}}
+
+
+
+template(name='event_edit')
+    with current_doc
+        // if reservation_exists
+        //     .ui.header date: #{date}
+        //     .ui.header time: #{time}
+        // else
+        // +time_edit key='time' label='time' 
+        +float_edit key='hour_duration' label='hours' 
+        div
+        .ui.inline.small.header 
+            |event type
+        +key_value_edit key='event_type' value='online' label='online' icon='globe'
+        +key_value_edit key='event_type' value='physical' label='physical' icon='marker'
+        if is event_type 'physical'
+            div
+            +text_edit key='location' label='location' icon='marker' 
+        // +range_edit label='time range' 
+        // +single_user_edit key='facilitator_id' label='facilitator' icon='chess king' 
+        +boolean_edit key='manage_attendance' label='manage attendance' icon='settings' 
+        if manage_attendance
+            .ui.header
+                i.users.icon
+                |audience
+            +number_edit key='max_attendees' label='max attendees' min='0' max='100' 
+            +boolean_edit key='friends_only' label='friends only' icon='campfire' 
+            // div
+        +multi_user_edit key='going' label='going users' icon='checkmark'
+        +multi_user_edit key='maybe' label='maybe users' icon='question'
+        +multi_user_edit key='not_going' label='not going users' icon='cancel'
+        +boolean_edit key='is_repeating' label='is repeating' icon='refresh' 
+        if is_repeating
+            .ui.inline.header repeating day
+            +key_value_edit key='repeating_day' value='monday'
+            +key_value_edit key='repeating_day' value='tuesday'
+            +key_value_edit key='repeating_day' value='wednesday'
+            +key_value_edit key='repeating_day' value='thursday'
+            +key_value_edit key='repeating_day' value='friday'
+            +key_value_edit key='repeating_day' value='saturday'
+            +key_value_edit key='repeating_day' value='sunday'
+            div
+            +time_edit key='start_time' label='start time' 
+            +time_edit key='end_time' label='end time' 
+        unless is_repeating 
+            div
+            +datetime_edit key='start_datetime' label='start datetime' icon='calendar'
+            div
+            +datetime_edit key='end_datetime' label='end datetime' icon='calendar'
+        
+        +boolean_edit key='has_host' label='has host' icon='king' 
+        if has_host
+            +single_user_edit key='host_id' label='host' icon='shield' 
+        +boolean_edit key='has_support' label='has support' icon='king' 
+        if has_support
+            +single_user_edit key='support_id' label='support' icon='chess queen' 
+        div 
+        .ui.segment
+            +boolean_edit key='has_tickets' label='has tickets' icon='ticket' 
+            if has_tickets
+                +boolean_edit key='external_ticket_management' label='externally handled' 
+                if external_ticket_management
+                    +link_edit key='link' label='link'
+                    // +link_edit key='link' label='link'
+                else
+                    +boolean_edit key='free' label='free' 
+                    unless free
+                        +number_edit key='price_points' label='point price' min='0' max='100' 
+                    +number_edit key='price_usd' label='dollar price' min='0' max='100' 
+
+
+                    
+
+
+
+               
+                    
+                
+                    
+               
+
+               
+
+               
+                   
+template(name='event_card')
+    .content
+        if is_in_past
+            i.big.undo.icon 
+            |in past
+        if start_datetime
+            .ui.small.inline.grey.header 
+                |{{medium_date start_datetime}} 
+                if time 
+                    |{{time}}
+            .ui.small.inline.header {{from_now start_datetime}}
+        else if is_repeating
+            +i name='refresh' title='repeating'
+            |every #{repeating_day}
+        // .ui.inline.small.header {{long_date start_datetime}}
+        // div
+        // .ui.small.grey.inline.header {{from_now start_datetime}}
+        if location
+            i.marker.icon 
+            |#{location}
+        div 
+        // small led by
+        img.ui.avatar.image(src="{{c.url host.image_id height=200 width=200 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+        // strong #{host.name}
+        if views 
+            span(title='views')
+                |#{views} 
+                i.eye.grey.icon
+    .content
+        |#{event_tickets.count}
+        a(href="/doc/#{_id}" title='ticket purchase required')
+            i.checkmark.green.link.icon
+        | #{going_ids.count}
+        each going_ids
+            +user_info
+        i.question.orange.link.icon.mark_maybe(title='mark yourself maybe')
+        | #{maybe_ids.length}
+        each maybe_ids
+            +user_info
+        | #{not_going_ids.length}
+        i.ban.red.link.icon.mark_not(title='mark yourself not')
+        each not_going_ids
+            +user_info
+        if doc_comments.count
+            .meta
+                each doc_comments 
+                    i.grey.chat.outline.icon
+                    img.ui.avatar.image(src="{{c.url _author.image_id height=200 width=200 gravity='face' crop='fill'}}" class=user_class)
+                    |#{body}
+
+                    
+template(name='event_card_big')
+    .ui.horizontal.card.alpha
+        // if background_image_id
+        //     img.ui.image.item_background(src="{{c.url background_image_id height=1000 crop='crop'}}")
+        // else if image_id
+        //     img.ui.image.item_background(src="{{c.url image_id height=400 crop='crop'}}")
+        if youtube_id
+            +youtube_view key='youtube_id'
+        else if image_id
+            a.ui.image.fly_right.zoomer(href="/event/#{_id}")
+                img(src="{{c.url image_id }}" class=currentUser.invert_class)
+        .content
+            // +model_label
+            if published 
+                i.green.eye.icon.invert(title='published')
+            else 
+                i.yellow.save.icon.invert(title='draft')
+            a.ui.inline.header.fly_right(href="/event/#{_id}" class=emotion_color) #{title}
+            // .smallcut
+            //     | !{content}
+        
+            .right.floated.meta
+                |#{_when}
+                // +when_label
+            span(title='author')
+                img.ui.avatar.image(src="{{c.url _author.image_id height=300 width=300 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+                |#{_author.username}
+            // +author_info
+            |#{member_ids.length} members
+            // .smallscroll
+            //     |!{description}
+            //+ismall name='tags' cl='ui inline image'
+            if location 
+                i.red.marker.icon 
+                |#{location}
+            // a.zoomer(href="/event/#{_id}")
+            //     i.chevron.right.large.circular.icon
+            // if is_admin
+            //     .ui.small.header slug: #{slug}
+            // if can_edit
+            //     a.ui.circular.icon.button(href="/event/#{_id}/edit")
+            //         i.pencil.blue.icon
+            if is_dev
+                +print_this
+            +voting
+            +favorite_icon_toggle
+            if price
+                .ui.big.label 
+                    |#{price}pts
+            // i.big.link.cart.plus.green.icon.add_to_cart
+            .ui.large.label
+                i.eye.icon
+                |#{views}
+            .ui.label   
+                i.line.chart.icon
+                |#{points} 
+            if event_id     
+                +event_info
+            each five_tags 
+                .ui.label #{this}
+            // if watson 
+            //     +doc_sentiment
+            //     +doc_emotion
+
+            a.ui.circular.icon.button.zoomer.fly_right(href="/event/#{_id}")
+                +i name='chevron-right'
+
+                    
+
+
+    
+    
+template(name='event_members_small')
+    a.ui.header.zoomer(href="/events")
+        +i name='events'
+        |members
+    +join_button
+    each event_members
+        a.ui.big.image.label.zoomer.fly_down(href="/user/#{username}")
+            img.ui.image.invert(src="{{c.url image_id width=300 height=300}}")
+            |#{username}
+                
+template(name='events_small')
+    a.ui.header.zoomer(href="/events")
+        +i name='events'
+        |events
+    .ui.selection.animated.list.smallscroll
+        each event_docs
+            a.item(href="/event/#{_id}")
+                img.ui.avatar.image(src="{{c.url image_id width=200 height=200}}")
+                |#{title}
+                
+                
+               
+template(name='event_widget')
+    if event_id
+        .ui.header 
+            +i name='campfire'
+            |related event
+        with event_doc
+            a.ui.card.fly_right.zoomer(href="/event/#{_id}")
+                img.ui.image(src="{{c.url image_id width=500 height=500}}")
+                .content
+                    .ui.header 
+                        |#{title}
+                    |!{description}
+                    +view_info
+                    +member_info
+               
+                
+template(name='event_picker')
+    .title
+        .ui.inline.header
+            +i name='campfire'
+            |event
+        with event_doc
+            .ui.inline.header 
+                |#{event_id}
+            a.ui.big.label(href="/event/#{_id}")
+                img.ui.avatar.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+                |#{title}
+    .content
+        with event_doc
+            .ui.inline.header 
+                |#{event_id}
+            a.ui.big.label(href="/event/#{_id}")
+                img.ui.avatar.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+                |#{title}
+            .ui.compact.button.remove_event.zoomer(title='clear selection')
+                i.remove.large.icon
+                |remove
+        else 
+            .ui.icon.large.input 
+                if event_search_value
+                    i.large.red.remove.link.icon.zoomer.clear_search
+                else 
+                    i.search.icon
+                input.event_search(type='text' placeholder='search' value=event_search_value)
+            if event_results
+                .ui.selection.link.animated.list
+                    each event_results
+                        .ui.item.pick_event.zoomer
+                            img.ui.avatar.image(src="{{c.url image_id width=300 height=300 gravity='face' crop='fill'}}")
+                            |#{title}
+                            if private 
+                                i.lock.icon(title='private event')
+            // else if event_search_value
+            .ui.button.create_event
+                |add #{event_search_value}
+        
+                
+
+
+template(name='user_events')   
+    .ui.inline.header 
+        +i name='events'
+        |#{current_user.username}'s
+        |events
+    a.ui.button.fly_right(href="/events")
+        i.chevron.left.icon
+        i.users.icon
+        |events
+    if user_event_memberships.count
+        .ui.two.column.stackable.grid
+            .column
+                .ui.header 
+                    i.users.icon
+                    |#{user_event_memberships.count}
+                    |memberships
+                .ui.selection.link.animated.large.divided.list    
+                    each user_event_memberships
+                        // +doc_item
+                        a.item.zoomers.fly_left(href="/event/#{_id}")
+                            img.ui.tiny.inline.rounded.image(src="{{c.url image_id height=200 width=200 background='white' crop='pad'}}")
+                            .ui.inline.header
+                                strong #{title}
+                            each three_tags 
+                                .ui.small.label #{this}
+            .column
+                .ui.header 
+                    i.pencil.icon
+                    |#{authored_event_docs.count}
+                    |authored events
+                .ui.selection.link.animated.large.list    
+                    each authored_event_docs
+                        // +doc_item
+                        a.item.zoomers.fly_left(href="/event/#{_id}")
+                            img.ui.tiny.inline.image(src="{{c.url image_id height=200 width=200 background='white' crop='pad'}}")
+                            .ui.inline.header
+                                strong #{title}
+                            each three_tags 
+                                .ui.small.label #{this}
+                                
+    .ui.inline.header 
+        +i name='calendar'
+        | events
+    .ui.two.column.grid 
+        .column
+            .ui.header 
+                +i name='king'
+                |hosted
+            each hosted_docs
+                +event_item_small
+        .column
+            +i name='queen'
+            .ui.header supported
+            each hosted_docs
+                +event_item_small
+        .column
+            .ui.header 
+                +i name='checkmark'
+                |attended
+            each hosted_docs
+                +event_item_small
+        .column
+            .ui.header 
+                +i name='question'
+                | maybe
+            each maybe_docs
+                +event_item_small
+        .column
+            .ui.header 
+                +i name='cancel'
+                | no
+            each no_docs
+                +event_item_small
+    .ui.selection.animated.link.divided.list
+        each user_favorite_docs
+            .item
+                .content
+                    .header
+                        a.inline.fly_up(href="/doc/#{_id}")
+                            img.ui.avatar.image(src="{{c.url image_id height=300 width=300 crop='crop'}}")
+                            .ui.inline.header #{title}
+                    .description
+                        +favorite_icon_toggle
+                        +when
+                        +model_label
+                        each three_tags
+                            .ui.small.label #{this}
+
+template(name='event_item_small')
+    .item #{title}
+                                

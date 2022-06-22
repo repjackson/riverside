@@ -5,21 +5,21 @@ template(name='users')
                 i.large.users.icon
                 |#{redditor_count}
                 |users
-            // if currentUser.admin
-            //     .ui.icon.button.add_user
-            //         i.plus.large.icon
-            // if currentUser
-            //     +session_boolean_toggle key='view_friends' label='friends' icon='friends'
-            // +i name='campfire'
-            // if picked_user_groups
-            //     #clear_groups.ui.primary.icon.compact.button
-            //         i.remove.icon
-            //     each picked_user_groups
-            //         .unselect_group.ui.primary.compact.button
-            //             strong #{this}
-            // each all_groups
-            //     .ui.compact.button.select_group(class=cloud_tag_class) 
-            //         strong #{name}
+            if currentUser.admin
+                .ui.icon.button.add_user
+                    i.plus.large.icon
+            if currentUser
+                +session_boolean_toggle key='view_friends' label='friends' icon='friends'
+            +i name='campfire'
+            if picked_user_groups
+                #clear_groups.ui.primary.icon.compact.button
+                    i.remove.icon
+                each picked_user_groups
+                    .unselect_group.ui.primary.compact.button
+                        strong #{this}
+            each all_groups
+                .ui.compact.button.select_group(class=cloud_tag_class) 
+                    strong #{name}
             if picked_user_tags
                 // #clear_tags.ui.primary.icon.compact.button
                 //     i.remove.icon
@@ -40,18 +40,6 @@ template(name='users')
             each location_tags 
                 .ui.large.label #{name}
             div
-            i.large.exclamation.icon
-            each picked_porn_tags
-                .unpick_porn_tag.ui.primary.compact.button
-                    strong #{this}
-            each porn_tag_results
-                .ui.compact.button.pick_porn_tag(class=cloud_tag_class title=name) 
-                    if name
-                        |adult 
-                        small #{count}
-                    else 
-                        |safe
-                        small #{count}
             +session_icon_button key='view_mode' value='grid' icon='th' 
             +session_icon_button key='view_mode' value='list' icon='list'
             +sort_direction_toggle
@@ -93,34 +81,20 @@ template(name='users')
             .scrollin.alpha
                 if subs_ready
                     if session_is 'view_mode' 'grid'
-                        // if one_result
-                        //     .ui.stackable.centered.one.cards
-                        //         each redditor_docs
-                        //             +redditor_card
-                        // else
-                        .ui.stackable.centered.centered.cards
-                            each redditor_docs
-                                +redditor_card
+                        if one_result
+                            .ui.stackable.centered.one.cards
+                                each user_docs
+                                    +user_card
+                        else
+                            .ui.stackable.centered.centered.cards
+                                each user_docs
+                                    +user_card
                     else if session_is 'view_mode' 'list'
                         .ui.divided.selection.animated.list
-                            each redditor_docs
-                                +redditor_item
-                // if subs_ready
-                //     if session_is 'view_mode' 'grid'
-                //         if one_result
-                //             .ui.stackable.centered.one.cards
-                //                 each user_docs
-                //                     +user_card
-                //         else
-                //             .ui.stackable.centered.centered.cards
-                //                 each user_docs
-                //                     +user_card
-                //     else if session_is 'view_mode' 'list'
-                //         .ui.divided.selection.animated.list
-                //             each user_docs
-                //                 +user_item
-                // else 
-                //     +loading_segment
+                            each user_docs
+                                +user_item
+                else 
+                    +loading_segment
 
 template(name='user_view')
 template(name='user_card')

@@ -301,57 +301,6 @@ template(name='online_label')
             |online
                       
                             
-template(name='user_events')
-    .ui.inline.header 
-        +i name='calendar'
-        | events
-    .ui.two.column.grid 
-        .column
-            .ui.header 
-                +i name='king'
-                |hosted
-            each hosted_docs
-                +event_item_small
-        .column
-            +i name='queen'
-            .ui.header supported
-            each hosted_docs
-                +event_item_small
-        .column
-            .ui.header 
-                +i name='checkmark'
-                |attended
-            each hosted_docs
-                +event_item_small
-        .column
-            .ui.header 
-                +i name='question'
-                | maybe
-            each maybe_docs
-                +event_item_small
-        .column
-            .ui.header 
-                +i name='cancel'
-                | no
-            each no_docs
-                +event_item_small
-    .ui.selection.animated.link.divided.list
-        each user_favorite_docs
-            .item
-                .content
-                    .header
-                        a.inline.fly_up(href="/doc/#{_id}")
-                            img.ui.avatar.image(src="{{c.url image_id height=300 width=300 crop='crop'}}")
-                            .ui.inline.header #{title}
-                    .description
-                        +favorite_icon_toggle
-                        +when
-                        +model_label
-                        each three_tags
-                            .ui.small.label #{this}
-
-template(name='event_item_small')
-    .item #{title}
 
 
 template(name='user_tasks')
