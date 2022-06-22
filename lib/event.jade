@@ -440,54 +440,55 @@ template(name='event_edit')
                
                    
 template(name='event_card')
-    .content
-        if is_in_past
-            i.big.undo.icon 
-            |in past
-        if start_datetime
-            .ui.small.inline.grey.header 
-                |{{medium_date start_datetime}} 
-                if time 
-                    |{{time}}
-            .ui.small.inline.header {{from_now start_datetime}}
-        else if is_repeating
-            +i name='refresh' title='repeating'
-            |every #{repeating_day}
-        // .ui.inline.small.header {{long_date start_datetime}}
-        // div
-        // .ui.small.grey.inline.header {{from_now start_datetime}}
-        if location
-            i.marker.icon 
-            |#{location}
-        div 
-        // small led by
-        img.ui.avatar.image(src="{{c.url host.image_id height=200 width=200 gravity='face' crop='fill'}}" class=currentUser.invert_class)
-        // strong #{host.name}
-        if views 
-            span(title='views')
-                |#{views} 
-                i.eye.grey.icon
-    .content
-        |#{event_tickets.count}
-        a(href="/doc/#{_id}" title='ticket purchase required')
-            i.checkmark.green.link.icon
-        | #{going_ids.count}
-        each going_ids
-            +user_info
-        i.question.orange.link.icon.mark_maybe(title='mark yourself maybe')
-        | #{maybe_ids.length}
-        each maybe_ids
-            +user_info
-        | #{not_going_ids.length}
-        i.ban.red.link.icon.mark_not(title='mark yourself not')
-        each not_going_ids
-            +user_info
-        if doc_comments.count
-            .meta
-                each doc_comments 
-                    i.grey.chat.outline.icon
-                    img.ui.avatar.image(src="{{c.url _author.image_id height=200 width=200 gravity='face' crop='fill'}}" class=user_class)
-                    |#{body}
+    .card
+        .content
+            if is_in_past
+                i.big.undo.icon 
+                |in past
+            if start_datetime
+                .ui.small.inline.grey.header 
+                    |{{medium_date start_datetime}} 
+                    if time 
+                        |{{time}}
+                .ui.small.inline.header {{from_now start_datetime}}
+            else if is_repeating
+                +i name='refresh' title='repeating'
+                |every #{repeating_day}
+            // .ui.inline.small.header {{long_date start_datetime}}
+            // div
+            // .ui.small.grey.inline.header {{from_now start_datetime}}
+            if location
+                i.marker.icon 
+                |#{location}
+            div 
+            // small led by
+            img.ui.avatar.image(src="{{c.url host.image_id height=200 width=200 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+            // strong #{host.name}
+            if views 
+                span(title='views')
+                    |#{views} 
+                    i.eye.grey.icon
+        .content
+            |#{event_tickets.count}
+            a(href="/doc/#{_id}" title='ticket purchase required')
+                i.checkmark.green.link.icon
+            | #{going_ids.count}
+            each going_ids
+                +user_info
+            i.question.orange.link.icon.mark_maybe(title='mark yourself maybe')
+            | #{maybe_ids.length}
+            each maybe_ids
+                +user_info
+            | #{not_going_ids.length}
+            i.ban.red.link.icon.mark_not(title='mark yourself not')
+            each not_going_ids
+                +user_info
+            if doc_comments.count
+                .meta
+                    each doc_comments 
+                        i.grey.chat.outline.icon
+                        img.ui.avatar.image(src="{{c.url _author.image_id height=200 width=200 gravity='face' crop='fill'}}" class=user_class)
+                        |#{body}
 
                     
 template(name='event_card_big')

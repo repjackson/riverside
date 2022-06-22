@@ -2,13 +2,13 @@ template(name='nav')
     // #topnav.topnav.ui.attached.borderless.big.four.item.menu.hscroll(class=darkmode_class)
         https://fomantic-ui.com/elements/icon.html#/icon
     // #topnav.topnav.ui.attached.borderless.big.menu.hscroll(style="background-color:#{currentUser.theme_color_main}")
-    #topnav.topnav.ui.attached.borderless.menu.hscroll
+    #topnav.topnav.ui.attached.menu.hscroll
         if is_connected
             a.icon.item.toggle_leftbar
                 i.large.bars.grey.icon
-            // a.item(href="/" title='the riverside')
-            //     i.home.icon
-            //     // |the riverside
+            a.item(href="/" title='the riverside')
+                +i name='creek'
+                |the riverside
             if currentUser
                 if unread_count
                     a.item(href="/user/#{currentUser.username}/inbox" title='unread messages')
@@ -20,13 +20,13 @@ template(name='nav')
                         i.remove.icon
         unless subs_ready
             .icon.item
-                +i name='one-ring' cl='spinning'
-                i.yin.yang.large.loading.icon
+                +i name='river' cl='spinning'
+                // i.yin.yang.large.loading.icon
         if subs_ready
             a.item.mobile.only(href="/search" title='global search')
                 i.search.large.icon
             .item.mobile.hidden
-                .ui.icon.input
+                .ui.icon.transparent.input
                     i.search.icon
                     input.global_search(type='text' placeholder='search...')
             a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/products" class="{{isActiveRoute 'products'}}" title=products)
