@@ -301,18 +301,6 @@ template(name='online_label')
                       
                             
 
-
-template(name='user_tasks')
-    .ui.inline.header 
-        +i name='tasks'
-        |#{user_task_docs.count} tasks
-    .ui.button.assign_task
-        i.plus.icon
-        |assign task
-    .ui.header authored
-    .ui.header assigned
-    .ui.header completed
-        
         
 template(name='user_checkins')
     .ui.inline.header 

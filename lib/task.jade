@@ -88,8 +88,9 @@ template(name='task_view')
                 .sixteen.wide.column
                     .ui.inline.small.header viewing task
                     |#{title}
-                    a.ui.icon.button(href="/task/#{_id}/edit")
+                    a.ui.icon.button.fly_down(href="/task/#{_id}/edit")
                         i.pencil.icon
+                        |edit
                     |#{_when}
                     if complete 
                         i.big.green.checkmark.icon
@@ -103,8 +104,13 @@ template(name='task_view')
                         img.ui.inline.small.pointer.zoomer.image(src="{{c.url _author.image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
                         .ui.inline.header.pointer.zoomer
                             |#{_author.name}
-                    .ui.huge.center.aligned.header
-                        |#{amount}pts
+                    if has_bounty
+                        .ui.header bounty amount: #{bounty}
+                    if requires_confirmation 
+                        .ui.header 
+                            +i name='reviewer-female'
+                            |requires confirmation:
+                        +single_user_view key='assignee'
                     if currentUser.admin_mode
                         +remove_button
                         +print_this
@@ -114,7 +120,7 @@ template(name='task_view')
                     
                     div 
                     if tags
-                        i.tags.icon
+                        +i name='tags'
                         each tags 
                             .ui.big.basic.circular.label #{this}
                     .ui.small.header
@@ -122,7 +128,8 @@ template(name='task_view')
                         | #{_when}
                     .spacer
                     .spacer
-                    //- +array_view key='location_tags' label='location_tags' 
+                    if location_tags
+                        +array_view key='location_tags' label='location_tags' 
                 .eleven.wide.column
                     unless complete
                         .ui.button.mark_complete
@@ -169,7 +176,7 @@ template(name='task_edit')
                         +datetime_edit key='due_date' label='due date/time'    
                     div
                     +array_edit key='location_tags' label='location tags' icon='marker' 
-                    +boolean_edit key='has_bounty' label='has bounty' icon='coins'
+                    +boolean_edit key='has_bounty' label='has bounty (pts)' icon='coins'
                     if has_bounty
                         +key_value_edit key='bounty' value=10
                         +key_value_edit key='bounty' value=20
@@ -179,7 +186,9 @@ template(name='task_edit')
                 .eight.wide.column
                     +html_edit key='description' label='description'
                     +group_picker
-                    // +boolean_edit key='complete' label='complete' icon='checkmark' 
+                    +boolean_edit key='requires_confirmation' label='requires confirmation' icon='reviewer-female'
+                    if requires_confirmation
+                        +single_user_edit key='verifier' label='verifier' icon='reviewer-female' 
                     .ui.header
                         +i name='eye'
                         |visibility
@@ -190,3 +199,30 @@ template(name='task_edit')
                     // if has_content
                     div
                                         
+                                        
+
+template(name='user_tasks')
+    .ui.inline.header 
+        +i name='tasks'
+        |#{user_task_docs.count} tasks
+    .ui.button.assign_task
+        i.plus.icon
+        |assign task
+    .ui.header 
+        +i name='pencil'
+        |authored
+    .ui.list 
+        each user_authored_tasks
+            a.item.zoomer.fly_right(href="/task/#{_id}") #{title}, !{description}
+    .ui.header 
+        +i name='assignment-turned-in'
+        |assigned
+    .ui.list 
+        each user_assigned_tasks
+            a.item.zoomer.fly_right(href="/task/#{_id}") #{title}, !{description}
+    .ui.header 
+        |completed
+    .ui.list 
+        each user_assigned_tasks
+            a.item.zoomer.fly_right(href="/task/#{_id}") #{title}, !{description}
+        

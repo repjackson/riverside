@@ -640,7 +640,7 @@ if Meteor.isClient
                 Docs.insert 
                     model:'group'
                     title:Session.get('group_search')
-            Router.go "/doc/#{new_id}/edit"
+            Router.go "/group/#{new_id}/edit"
 
 
 if Meteor.isServer 

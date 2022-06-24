@@ -2,7 +2,7 @@ template(name='nav')
     // #topnav.topnav.ui.attached.borderless.big.four.item.menu.hscroll(class=darkmode_class)
         https://fomantic-ui.com/elements/icon.html#/icon
     // #topnav.topnav.ui.attached.borderless.big.menu.hscroll(style="background-color:#{currentUser.theme_color_main}")
-    #topnav.topnav.ui.attached.menu.hscroll
+    #topnav.topnav.ui.attached.inverted.menu.hscroll
         if is_connected
             a.icon.item.toggle_leftbar
                 i.large.bars.grey.icon
@@ -89,17 +89,12 @@ template(name='nav')
                 //         i.user.big.icon
                 // strong.mobilehidden #{currentUser.name}
                 i.bars.large.grey.icon
-    .ui.attached.small.menu.hscroll          
+    .ui.attached.small.inverted.menu.hscroll          
         a.item.zoomer.fly_right.clear_search.mobilehidden(href="/food" class="{{isActiveRoute regex='food'}}" title='food')
             // i.large.food.icon
             +i name='food'
             unless currentUser.hide_labels
                 span.mobile.hidden recipes
-        a.item.zoomer.fly_right.clear_search.mobilehidden(href="/music" class="{{isActiveRoute regex='music'}}" title='music')
-            // i.large.music.icon
-            +i name='music'
-            unless currentUser.hide_labels
-                span.mobile.hidden music
         a.item.zoomer.fly_right.clear_search.mobilehidden(href="/transfers" class="{{isActiveRoute regex='transfers'}}" title='transfers')
             // i.large.music.icon
             +i name='exchange'
@@ -121,6 +116,12 @@ template(name='nav')
         // +nav_item key='log' icon='code'
 
 
+template(name='nav_item')
+    a.item.zoomer.fly_right.clear_search.go_route.tada.mobile.hidden(href="/m/#{key}" class="{{nav_item_class key}}" title=key)
+        +i name=icon
+        // i.large.icon(class=icon)
+        unless currentUser.hide_labels
+            |#{key}s
 
        
 template(name='footer')
@@ -171,19 +172,6 @@ template(name='footer')
                                 
                             +print_this
             
-            
-
-
-
-template(name='nav_item')
-    a.item.zoomer.fly_right.clear_search.go_route.tada.mobile.hidden(href="/m/#{key}" class="{{nav_item_class key}}" title=key)
-        +i name=icon
-        // i.large.icon(class=icon)
-        unless currentUser.hide_labels
-            |#{key}s
-
-
-
 template(name='my_latest_activity')
     .ui.grey.header 
         i.grey.rss.icon
@@ -219,7 +207,7 @@ template(name='recent_alert')
             
             
 template(name='rightbar')
-    .ui.right.sidebar.vertical.menu.rightbar
+    .ui.right.sidebar.vertical.small.inverted.menu.rightbar
         with currentUser
             a.item.toggle_rightbar.no_blink(href="/user/#{currentUser.username}" class="{{isActiveRoute 'user_layout'}}")
                 img.ui.avatar.compact.image(src="{{c.url currentUser.image_id height=200 width=200 gravity='face' crop='fill'}}")
@@ -241,6 +229,25 @@ template(name='rightbar')
             // a.item.toggle_rightbar(href="/user/#{username}/pantry" class="{{isActiveRoute 'user_pantry'}}")
             //     +i name='cupboard' cl='ui avatar image'
             //     |pantry
+            +right_nav_item route='dashboard' label='dashboard' icon='dashboard'
+            +right_nav_item route='posts' label='posts' icon='news'
+            +right_nav_item route='inbox' label='inbox' icon='inbox'
+            +right_nav_item route='events' label='events' icon='calendar'
+            +right_nav_item route='points' label='points' icon='coins'
+            +right_nav_item route='groups' label='groups' icon='groups'
+            // +right_nav_item route='reviews' label='reviews' icon='megaphone'
+            +right_nav_item route='checkins' label='checkins' icon='checkmark'
+            +right_nav_item route='products' label='products' icon='shopping-cart'
+            +right_nav_item route='services' label='services' icon='wrench'
+            +right_nav_item route='tasks' label='tasks' icon='tasks'
+            if is_current_user
+                +right_nav_item route='drafts' label='drafts' icon='save'
+            +right_nav_item route='favorites' label='favorites' icon='heart'
+            +right_nav_item route='social' label='social' icon='friends'
+            +right_nav_item route='music' label='music' icon='music'
+            +right_nav_item route='food' label='food' icon='food'
+            +right_nav_item route='voting' label='voting' icon='facebook-like'
+            
             +right_nav_item route='cart' label='cart' icon='shopping-cart'
             // a.item.toggle_rightbar(href="/work" class="{{isActiveRoute 'work'}}")
             //     +i name='trust' cl='ui avatar image'

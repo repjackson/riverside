@@ -909,7 +909,7 @@ if Meteor.isClient
                         "#{field.key}_username":@username
                 
             $('.single_user_select_input').val ''
-            location.reload()
+            # location.reload()
             # Docs.update page_doc._id,
             #     $set: assignment_timestamp:Date.now()
     

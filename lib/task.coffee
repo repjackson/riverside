@@ -53,6 +53,27 @@ if Meteor.isClient
                     complete:false
             Router.go "/task/#{new_id}/edit"
 
+    Template.user_tasks.onCreated ->
+        @autorun => Meteor.subscribe 'model_docs', 'task', ->
+    Template.user_tasks.helpers
+        user_authored_tasks: ->
+            user = Meteor.users.findOne username:Router.current().params.username
+            Docs.find 
+                model:'task'
+                _author_id:user._id
+        user_assigned_tasks: ->
+            user = Meteor.users.findOne username:Router.current().params.username
+            Docs.find 
+                model:'task'
+                assigned_user_id:user._id
+                complete:$ne:true
+        user_completed_tasks: ->
+            user = Meteor.users.findOne username:Router.current().params.username
+            Docs.find 
+                model:'task'
+                assigned_user_id:user._id
+                complete:true
+            
     Template.user_tasks.events 
         'click .assign_task': ->
             user = Meteor.users.findOne username:Router.current().params.username
