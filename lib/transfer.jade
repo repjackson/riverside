@@ -96,7 +96,6 @@ template(name='transfer_view')
                         +remove_button
                         a.ui.icon.button(href="/transfer/#{_id}/edit")
                             i.pencil.icon
-                        +edit_button
                         +print_this
                     .f14
                         |!{content}
@@ -124,7 +123,7 @@ template(name='transfer_edit')
     with current_doc
         .ui.stackable.padded.grid
             .row 
-                .sixteen.wide.column
+                .eight.wide.column
                     .ui.segment
                         .ui.inline.grey.header sender
                         .ui.inline.header
@@ -139,10 +138,15 @@ template(name='transfer_edit')
                     // if has_time
                     +time_edit key='time' label='time'    
                     +array_edit key='location_tags' label='location tags' icon='marker' 
+                    button.ui.red.button.cancel_transfer
+                        i.large.remove.icon
+                        |cancel
+                .eight.wide.column
+                    +html_edit key='description' label='description'
+                    +image_edit key='image_id' label='image' icon='image'
                     .ui.big.header #{amount}pts
                     .ui.big.input
                         input.point_amount(type='number' value=amount min='1' max=point_max)
-                    div
                     +key_value_edit key='amount' value=1
                     +key_value_edit key='amount' value=5
                     +key_value_edit key='amount' value=10

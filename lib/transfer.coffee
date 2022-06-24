@@ -94,8 +94,6 @@ if Meteor.isClient
     
     
     Template.transfers.events
-        'click .toggle_porn': ->
-            Session.set('porn',!Session.get('porn'))
         'click .select_search': ->
             picked_tags.push @name
             Session.set('full_doc_id', null)
@@ -185,6 +183,10 @@ if Meteor.isClient
             transfer = Docs.findOne Router.current().params.doc_id
             transfer.amount and transfer.target_id
     Template.transfer_edit.events
+        'click .cancel': ->
+            if confirm 'cancel?'
+                Docs.remove @_id
+                Router.go "/transfers"
         'click .submit': ->
             Meteor.call 'send_transfer', @_id, =>
                 $('body').toast({

@@ -138,6 +138,7 @@ template(name='task_view')
                     .spacer
                     if location_tags
                         +array_view key='location_tags' label='location_tags' 
+                    +viewing_info
                 .eleven.wide.column
                     unless complete
                         .ui.button.mark_complete

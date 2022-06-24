@@ -224,6 +224,8 @@ if Meteor.isClient
         Meteor.setTimeout ->
             $('.accordion').accordion()
         , 1000
+    Template.viewing_info.onRendered ->
+        Meteor.call 'log_view', @data._id, ->
     Template.comments.onRendered ->
         Meteor.setTimeout ->
             $('.accordion').accordion()
