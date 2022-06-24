@@ -306,6 +306,8 @@ template(name='user_tasks')
     .ui.inline.header 
         +i name='tasks'
         |#{user_task_docs.count} tasks
+    .ui.button.assign_task
+        |assignt task
     .ui.header authored
     .ui.header assigned
     .ui.header completed

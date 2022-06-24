@@ -423,25 +423,12 @@ template(name='event_edit')
                     unless free
                         +number_edit key='price_points' label='point price' min='0' max='100' 
                     +number_edit key='price_usd' label='dollar price' min='0' max='100' 
-
-
-                    
-
-
-
-               
-                    
-                
-                    
-               
-
-               
-
-               
                    
 template(name='event_card')
     .card
-        .content
+        img.ui.image(src="{{c.url image_id height=300 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+        a.content(href="/event/#{_id}")
+            .ui.inline.header #{title}
             if is_in_past
                 i.big.undo.icon 
                 |in past
@@ -462,7 +449,6 @@ template(name='event_card')
                 |#{location}
             div 
             // small led by
-            img.ui.avatar.image(src="{{c.url host.image_id height=200 width=200 gravity='face' crop='fill'}}" class=currentUser.invert_class)
             // strong #{host.name}
             if views 
                 span(title='views')

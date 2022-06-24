@@ -32,6 +32,13 @@ if Meteor.isClient
         ), name:'tasks'
     Template.tasks.onCreated ->
         @autorun => Meteor.subscribe 'model_counter',('task'), ->
+            
+    Template.task_edit.onCreated ->
+        @autorun => @subscribe 'doc_by_id', Router.current().params.doc_id, ->
+    Template.task_view.onCreated ->
+        @autorun => @subscribe 'doc_by_id', Router.current().params.doc_id, ->
+            
+            
     Template.tasks.helpers
         total_task_count: -> Counts.get('model_counter') 
         task_docs: ->
@@ -44,3 +51,16 @@ if Meteor.isClient
                     model:'task'
                     complete:false
             Router.go "/task/#{new_id}/edit"
+
+    Template.user_tasks.events 
+        'click .assign_task': ->
+            user = Meteor.users.findOne username:Router.current().params.username
+            if user 
+                new_id = 
+                    Docs.insert 
+                        model:'task'
+                        complete:false
+                        target_id:user._id
+                Router.go "/task/#{new_id}/edit"
+
+

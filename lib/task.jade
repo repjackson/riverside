@@ -85,6 +85,14 @@ template(name='task_view')
     with current_doc
         .ui.stackable.padded.grid
             .centered.row 
+                .sixteen.wide.column
+                    .ui.inline.header viewing task
+                    |#{_when}
+                    if complete 
+                        i.big.green.checkmark.icon
+                    else 
+                        i.big.yellow.clock.icon
+                    
                 .five.wide.column
                     a(href="/user/#{_author.username}") 
                         img.ui.circular.centered.pointer.zoom.image(src="{{c.url _author.image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
@@ -124,7 +132,11 @@ template(name='task_edit')
     with current_doc
         .ui.stackable.padded.grid
             .row 
-                .sixteen.wide.column
+                .eight.wide.column
+                    .ui.inline.header editing task
+                    a.ui.green.big.circular.button.save.zoomer(href="/task/#{_id}") 
+                        i.save.large.icon
+                        |save
                     .ui.segment
                         .ui.inline.grey.header sender
                         .ui.inline.header
@@ -158,18 +170,19 @@ template(name='task_edit')
                             .ui.green.huge.circular.disabled.button
                                 i.send.big.icon
                                 |send
-                +boolean_edit key='complete' label='complete' icon='checkmark' 
-                .ui.header
-                    |audience
-                +boolean_edit key='private' label='private' icon='lock'
-                +range_edit
-                +datetime_edit key='start_datetime' label='start date/time' icon='calendar'
-                +datetime_edit key='end_datetime' label='end date/time' icon='calendar'
-                if private 
-                    +multi_user_edit key='access_user_ids' label='user picker' 
-                // +boolean_edit key='has_content' icon='content' 
-                // if has_content
-                div
-                +array_edit key='location_tags' label='location tags' icon='marker' 
-                                
+                .eight.wide.column
+                    +boolean_edit key='complete' label='complete' icon='checkmark' 
+                    .ui.header
+                        |audience
+                    +boolean_edit key='private' label='private' icon='lock'
+                    +range_edit
+                    +datetime_edit key='start_datetime' label='start date/time' icon='calendar'
+                    +datetime_edit key='end_datetime' label='end date/time' icon='calendar'
+                    if private 
+                        +multi_user_edit key='access_user_ids' label='user picker' 
+                    // +boolean_edit key='has_content' icon='content' 
+                    // if has_content
+                    div
+                    +array_edit key='location_tags' label='location tags' icon='marker' 
                                     
+                                        
