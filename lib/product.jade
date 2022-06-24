@@ -39,11 +39,11 @@ template(name='products')
         
             if subs_ready
                 if session_is 'view_mode' 'list'
-                    .ui.large.selection.list 
+                    .ui.large.selection.list.scrolling
                         each product_docs
                             +product_item
                 else
-                    .ui.centered.stackable.cards 
+                    .ui.centered.stackable.cards.scrolling
                         each product_docs
                             +product_card
                 

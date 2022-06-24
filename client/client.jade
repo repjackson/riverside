@@ -63,6 +63,50 @@ template(name='not_found')
         
                    
     
+template(name='add')
+    .ui.stackable.padded.grid
+        .four.wide.column
+            a.ui.card.fly_down(href="/food")
+                .ui.icon.header
+                    // i.big.food.icon
+                    +i name='food'
+                    |food
+        .four.wide.column
+            a.ui.card.fly_down(href="/events")
+                .ui.icon.header
+                    // i.big.events.icon
+                    +i name='calendar'
+                    |events
+        .four.wide.column
+            a.ui.card.fly_down(href="/users")
+                .ui.icon.header
+                    // i.big.users.icon
+                    +i name='groups'
+                    |users
+        .four.wide.column
+            a.ui.card.fly_down(href="/products")
+                .ui.icon.header
+                    // i.big.shopping.cart.icon
+                    +i name='shopping-cart'
+                    |shop
+        .four.wide.column
+            a.ui.card.fly_down(href="/posts")
+                .ui.icon.header
+                    +i name='news'
+                    // i.big.blog.icon
+                    |posts
+        .four.wide.column
+            a.ui.card.fly_down(href="/rentals")
+                .ui.icon.header
+                    +i name='clock'
+                    // i.big.clock.icon
+                    |rentals
+        .four.wide.column
+            a.ui.card.fly_down(href="/services")
+                .ui.icon.header
+                    +i name='wrench'
+                    // i.big.wrench.icon
+                    |services
 template(name='home')
     .ui.stackable.padded.grid
         .four.wide.column

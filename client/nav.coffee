@@ -19,6 +19,9 @@ Template.nav.onRendered ->
             .popup()
     , 3000
     Meteor.setTimeout ->
+        $('.ui.dropdown').dropdown()
+    , 2000
+    Meteor.setTimeout ->
         $('.ui.left.sidebar')
             .sidebar({
                 context: $('.bottom.segment')
