@@ -121,7 +121,21 @@ template(name='task_view')
                     .spacer
                     .spacer
                     //- +array_view key='location_tags' label='location_tags' 
-                .five.wide.column
+                .eleven.wide.column
+                    unless complete
+                        .ui.button.mark_complete
+                            |mark complete 
+                    if complete 
+                        .ui.button.mark_incomplete
+                            |mark incomplete
+                    .ui.header 
+                        +i name='activity'
+                        |activity
+                    .ui.list
+                        each activity_docs 
+                            .item #{body}
+                                small #{_when}
+                    
                     a.fly_right(href="/user/#{_target.username}")
                         img.ui.circular.centered.fluid.pointer.zoom.image(src="{{c.url _target.image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
                         .ui.large.center.aligned.header.pointer.zoom

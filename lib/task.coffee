@@ -37,6 +37,7 @@ if Meteor.isClient
         @autorun => @subscribe 'doc_by_id', Router.current().params.doc_id, ->
     Template.task_view.onCreated ->
         @autorun => @subscribe 'doc_by_id', Router.current().params.doc_id, ->
+        @autorun => @subscribe 'child_docs', Router.current().params.doc_id, ->
             
             
     Template.tasks.helpers
@@ -64,3 +65,37 @@ if Meteor.isClient
                 Router.go "/task/#{new_id}/edit"
 
 
+
+    Template.task_view.helpers 
+        activity_docs: ->
+            Docs.find 
+                model:'log'
+                parent_id:Router.current().params.doc_id
+    Template.task_view.events 
+        'click .mark_complete': ->
+            Docs.update Router.current().params.doc_id, 
+                $set:
+                    complete:true 
+                    complete_timestamp: Date.now()
+            Docs.insert 
+                model:'log'
+                parent_id:Router.current().params.doc_id 
+                body:'marked complete'
+                
+        'click .mark_incomplete': ->
+            Docs.update Router.current().params.doc_id, 
+                $set:
+                    complete:false 
+                $unset:
+                    complete_timestamp:1
+            Docs.insert 
+                model:'log'
+                parent_id:Router.current().params.doc_id 
+                body:'marked incomplete'
+                
+                
+if Meteor.isServer
+    Meteor.publish 
+        child_docs: (parent_id)->
+            Docs.find 
+                parent_id:parent_id

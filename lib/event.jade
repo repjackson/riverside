@@ -425,7 +425,7 @@ template(name='event_edit')
                     +number_edit key='price_usd' label='dollar price' min='0' max='100' 
                    
 template(name='event_card')
-    .card
+    a.card.zoomer.fly_down(href="/event/#{_id}")
         img.ui.image(src="{{c.url image_id height=300 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
         a.content(href="/event/#{_id}")
             .ui.inline.header #{title}

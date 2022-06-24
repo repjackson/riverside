@@ -307,7 +307,8 @@ template(name='user_tasks')
         +i name='tasks'
         |#{user_task_docs.count} tasks
     .ui.button.assign_task
-        |assignt task
+        i.plus.icon
+        |assign task
     .ui.header authored
     .ui.header assigned
     .ui.header completed
