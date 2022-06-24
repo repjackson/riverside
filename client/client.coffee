@@ -20,7 +20,14 @@ Meteor.startup ->
         sameElse: 'DD/MM/YYYY'
     });
 
-    
+
+Template.home.onCreated ->
+    @autorun => Meteor.subscribe 'model_docs', 'log', ->
+Template.home.helpers
+    activity_docs: ->
+        Docs.find 
+            model:'log'
+
 # Meteor.users.find(_id:Meteor.userId()).observe({
 #     changed: (new_doc, old_doc)->
 #         # console.log 'changed', new_doc.points, old_doc.points

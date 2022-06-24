@@ -101,4 +101,8 @@ template(name='home')
                     i.big.wrench.icon
                     |services
                     
-                    
+        .ui.header latest activty 
+        .ui.large.list 
+            each activity_docs 
+                a.ui.item(href="/#{_parent.model}/#{parent_id}") #{body} 
+                    small #{_when}
