@@ -86,7 +86,10 @@ template(name='task_view')
         .ui.stackable.padded.grid
             .centered.row 
                 .sixteen.wide.column
-                    .ui.inline.header viewing task
+                    .ui.inline.small.header viewing task
+                    |#{title}
+                    a.ui.icon.button(href="/task/#{_id}/edit")
+                        i.pencil.icon
                     |#{_when}
                     if complete 
                         i.big.green.checkmark.icon
@@ -94,17 +97,16 @@ template(name='task_view')
                         i.big.yellow.clock.icon
                     
                 .five.wide.column
+                    |!{description}
+                    |by
                     a(href="/user/#{_author.username}") 
-                        img.ui.circular.centered.pointer.zoom.image(src="{{c.url _author.image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
-                        .ui.large.center.aligned.header.pointer.zoom
+                        img.ui.inline.small.pointer.zoomer.image(src="{{c.url _author.image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+                        .ui.inline.header.pointer.zoomer
                             |#{_author.name}
                     .ui.huge.center.aligned.header
                         |#{amount}pts
                     if currentUser.admin_mode
                         +remove_button
-                        a.ui.icon.button(href="/task/#{_id}/edit")
-                            i.pencil.icon
-                        +edit_button
                         +print_this
                     .f14
                         |!{content}
@@ -151,52 +153,40 @@ template(name='task_edit')
                     a.ui.green.big.circular.button.save.zoomer(href="/task/#{_id}") 
                         i.save.large.icon
                         |save
+                    +text_edit key='title' label='title'
                     .ui.segment
-                        .ui.inline.grey.header sender
+                        .ui.inline.grey.header author
                         .ui.inline.header
                             img.ui.small.image(src="{{c.url _author.image_id height=200 width=200 gravity='face' crop='fill'}}" class=currentUser.invert_class)
                             |#{_author.name}
-                    .ui.segment.alpha
-                        +single_user_edit key='target' label='recipient' icon='donate' 
-                    // +boolean_edit key='has_date' label='has date' icon='calendar' 
-                    // if has_date
-                    +date_edit key='date' label='date'    
-                    // +boolean_edit key='has_time' label='has time' icon='clock' 
-                    // if has_time
-                    +time_edit key='time' label='time'    
-                    +array_edit key='location_tags' label='location tags' icon='marker' 
-                    .ui.big.header #{amount}pts
-                    .ui.big.input
-                        input.point_amount(type='number' value=amount min='1' max=point_max)
+                    
+                    +boolean_edit key='has_assignee' label='has assignee' icon='user' 
+                    if has_assignee
+                        +single_user_edit key='assignee' label='recipient' icon='donate' 
                     div
-                    +key_value_edit key='amount' value=1
-                    +key_value_edit key='amount' value=5
-                    +key_value_edit key='amount' value=10
-                    +key_value_edit key='amount' value=20
-                    +key_value_edit key='amount' value=50
+                    +boolean_edit key='has_due_date' label='has date' icon='calendar' 
+                    if has_due_date
+                        +datetime_edit key='due_date' label='due date/time'    
+                    div
+                    +array_edit key='location_tags' label='location tags' icon='marker' 
+                    +boolean_edit key='has_bounty' label='has bounty' icon='coins'
+                    if has_bounty
+                        +key_value_edit key='bounty' value=10
+                        +key_value_edit key='bounty' value=20
+                        +key_value_edit key='bounty' value=50
+                        +number_edit key='bounty' label='custom bounty'
                     .spacer
-                    .ui.center.aligned.basic.segment
-                        if can_submit
-                            .ui.green.huge.circular.button.submit
-                                i.big.send.icon
-                                |send
-                        else 
-                            .ui.green.huge.circular.disabled.button
-                                i.send.big.icon
-                                |send
                 .eight.wide.column
-                    +boolean_edit key='complete' label='complete' icon='checkmark' 
+                    +html_edit key='description' label='description'
+                    +group_picker
+                    // +boolean_edit key='complete' label='complete' icon='checkmark' 
                     .ui.header
-                        |audience
+                        +i name='eye'
+                        |visibility
                     +boolean_edit key='private' label='private' icon='lock'
-                    +range_edit
-                    +datetime_edit key='start_datetime' label='start date/time' icon='calendar'
-                    +datetime_edit key='end_datetime' label='end date/time' icon='calendar'
                     if private 
                         +multi_user_edit key='access_user_ids' label='user picker' 
                     // +boolean_edit key='has_content' icon='content' 
                     // if has_content
                     div
-                    +array_edit key='location_tags' label='location tags' icon='marker' 
-                                    
                                         

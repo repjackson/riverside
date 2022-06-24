@@ -68,41 +68,51 @@ template(name='home')
         .four.wide.column
             a.ui.card.fly_down(href="/food")
                 .ui.icon.header
-                    i.big.food.icon
+                    // i.big.food.icon
+                    +i name='food'
                     |food
         .four.wide.column
             a.ui.card.fly_down(href="/music")
                 .ui.icon.header
-                    i.big.music.icon
+                    // i.big.music.icon
+                    +i name='music'
                     |music
         .four.wide.column
             a.ui.card.fly_down(href="/users")
                 .ui.icon.header
-                    i.big.users.icon
+                    // i.big.users.icon
+                    +i name='groups'
                     |users
         .four.wide.column
             a.ui.card.fly_down(href="/products")
                 .ui.icon.header
-                    i.big.shopping.cart.icon
+                    // i.big.shopping.cart.icon
+                    +i name='shopping-cart'
                     |shop
         .four.wide.column
             a.ui.card.fly_down(href="/posts")
                 .ui.icon.header
-                    i.big.blog.icon
+                    +i name='news'
+                    // i.big.blog.icon
                     |posts
         .four.wide.column
             a.ui.card.fly_down(href="/rentals")
                 .ui.icon.header
-                    i.big.clock.icon
+                    +i name='clock'
+                    // i.big.clock.icon
                     |rentals
         .four.wide.column
             a.ui.card.fly_down(href="/services")
                 .ui.icon.header
-                    i.big.wrench.icon
+                    +i name='wrench'
+                    // i.big.wrench.icon
                     |services
                     
-        .ui.header latest activty 
-        .ui.large.list 
-            each activity_docs 
-                a.ui.item(href="/#{_parent.model}/#{parent_id}") #{body} 
-                    small #{_when}
+        .five.wide.column
+            .ui.header 
+                +i name='clock'
+                |latest activty 
+            .ui.large.list 
+                each activity_docs 
+                    a.ui.item(href="/#{_parent_doc.model}/#{parent_id}") #{body} 
+                        small #{_when} by #{_author_username}
