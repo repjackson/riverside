@@ -31,27 +31,6 @@ template(name='nav')
                     .ui.icon.transparent.input
                         i.search.icon
                         input.global_search(type='text' placeholder='search...')
-                a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/products" class="{{isActiveRoute 'products'}}" title=products)
-                    +i name='shopping-cart'
-                    // i.large.shopping.cart.icon
-                    unless currentUser.hide_labels
-                        |products
-                // +nav_item key='product' icon='shopping-cart'
-                a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/posts" class="{{isActiveRoute regex='post'}}" title='posts')
-                    +i name='news'
-                    // i.large.newspaper.icon
-                    unless currentUser.hide_labels
-                        |posts
-                a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/users" class="{{isActiveRoute 'users'}}" title=users)
-                    +i name='groups'
-                    // i.large.users.icon
-                    unless currentUser.hide_labels
-                        |users
-                a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/groups" class="{{isActiveRoute regex='group'}}" title='groups')
-                    +i name='campfire'
-                    // i.large.fire.icon
-                    unless currentUser.hide_labels
-                        |groups
         unless currentUser
             // a.item(href="/register" title='register')
             //     +i name='plus'
@@ -89,31 +68,51 @@ template(name='nav')
                 //         i.user.big.icon
                 // strong.mobilehidden #{currentUser.name}
                 i.bars.large.grey.icon
-    .ui.attached.small.inverted.menu.hscroll          
-        a.item.zoomer.fly_right.clear_search.mobilehidden(href="/food" class="{{isActiveRoute regex='food'}}" title='food')
-            // i.large.food.icon
-            +i name='food'
-            unless currentUser.hide_labels
-                span.mobile.hidden recipes
-        a.item.zoomer.fly_right.clear_search.mobilehidden(href="/transfers" class="{{isActiveRoute regex='transfers'}}" title='transfers')
-            // i.large.music.icon
-            +i name='exchange'
-            unless currentUser.hide_labels
-                span.mobile.hidden transfers
-        a.item.zoomer.fly_right.clear_search.mobilehidden(href="/events" class="{{isActiveRoute regex='events'}}" title='events')
-            // i.large.music.icon
-            +i name='calendar'
-            unless currentUser.hide_labels
-                span.mobile.hidden events
-        a.item.zoomer.fly_right.clear_search.mobilehidden(href="/tasks" class="{{isActiveRoute regex='tasks'}}" title='tasks')
-            // i.large.music.icon
-            +i name='tasks'
-            unless currentUser.hide_labels
-                span.mobile.hidden tasks
-        +nav_item key='service' icon='wrench'
-        +nav_item key='rental' icon='clock'
-        // +nav_item key='checkin' icon='checkmark'
-        // +nav_item key='log' icon='code'
+    if is_connected
+        .ui.attached.small.inverted.menu.hscroll          
+            a.item.zoomer.fly_right.clear_search.mobilehidden(href="/food" class="{{isActiveRoute regex='food'}}" title='food')
+                // i.large.food.icon
+                +i name='food'
+                unless currentUser.hide_labels
+                    span.mobile.hidden recipes
+            a.item.zoomer.fly_right.clear_search.mobilehidden(href="/transfers" class="{{isActiveRoute regex='transfers'}}" title='transfers')
+                +i name='exchange'
+                unless currentUser.hide_labels
+                    span.mobile.hidden transfers
+            a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/products" class="{{isActiveRoute 'products'}}" title=products)
+                +i name='shopping-cart'
+                // i.large.shopping.cart.icon
+                unless currentUser.hide_labels
+                    span.mobile.hidden products
+            // +nav_item key='product' icon='shopping-cart'
+            a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/groups" class="{{isActiveRoute regex='group'}}" title='groups')
+                +i name='campfire'
+                // i.large.fire.icon
+                unless currentUser.hide_labels
+                    span.mobile.hidden groups
+                    
+            a.item.zoomer.fly_right.clear_search.mobilehidden(href="/events" class="{{isActiveRoute regex='events'}}" title='events')
+                +i name='calendar'
+                unless currentUser.hide_labels
+                    span.mobile.hidden events
+            a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/posts" class="{{isActiveRoute regex='post'}}" title='posts')
+                +i name='news'
+                // i.large.newspaper.icon
+                unless currentUser.hide_labels
+                    span.mobile.hidden posts
+            a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/users" class="{{isActiveRoute 'users'}}" title=users)
+                +i name='groups'
+                // i.large.users.icon
+                unless currentUser.hide_labels
+                    span.mobile.hidden users
+            a.item.zoomer.fly_right.clear_search.mobilehidden(href="/tasks" class="{{isActiveRoute regex='tasks'}}" title='tasks')
+                +i name='tasks'
+                unless currentUser.hide_labels
+                    span.mobile.hidden tasks
+            +nav_item key='service' icon='wrench'
+            +nav_item key='rental' icon='clock'
+            // +nav_item key='checkin' icon='checkmark'
+            // +nav_item key='log' icon='code'
 
 
 template(name='nav_item')
@@ -121,7 +120,7 @@ template(name='nav_item')
         +i name=icon
         // i.large.icon(class=icon)
         unless currentUser.hide_labels
-            |#{key}s
+            span.mobile.hidden #{key}s
 
        
 template(name='footer')
@@ -224,12 +223,11 @@ template(name='rightbar')
                 |dark mode
             +right_nav_item route='credit' label='credit' icon='money'
             +right_nav_item route='orders' label='orders' icon='check'
-            +right_nav_item route='subscriptions' label='subscriptions' icon='check'
+            // +right_nav_item route='subscriptions' label='subscriptions' icon='check'
             +right_nav_item route='friends' label='friends' icon='friends'
             // a.item.toggle_rightbar(href="/user/#{username}/pantry" class="{{isActiveRoute 'user_pantry'}}")
             //     +i name='cupboard' cl='ui avatar image'
             //     |pantry
-            +right_nav_item route='dashboard' label='dashboard' icon='dashboard'
             +right_nav_item route='posts' label='posts' icon='news'
             +right_nav_item route='inbox' label='inbox' icon='inbox'
             +right_nav_item route='events' label='events' icon='calendar'
@@ -240,11 +238,9 @@ template(name='rightbar')
             +right_nav_item route='products' label='products' icon='shopping-cart'
             +right_nav_item route='services' label='services' icon='wrench'
             +right_nav_item route='tasks' label='tasks' icon='tasks'
-            if is_current_user
-                +right_nav_item route='drafts' label='drafts' icon='save'
+            +right_nav_item route='drafts' label='drafts' icon='save'
             +right_nav_item route='favorites' label='favorites' icon='heart'
             +right_nav_item route='social' label='social' icon='friends'
-            +right_nav_item route='music' label='music' icon='music'
             +right_nav_item route='food' label='food' icon='food'
             +right_nav_item route='voting' label='voting' icon='facebook-like'
             

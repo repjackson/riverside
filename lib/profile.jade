@@ -46,7 +46,6 @@ template(name='profile_layout')
                                         +profile_nav_item section='drafts' icon='save'
                                     +profile_nav_item section='favorites' icon='heart'
                                     +profile_nav_item section='social' icon='friends'
-                                    +profile_nav_item section='music' icon='music'
                                     +profile_nav_item section='food' icon='food'
                                     +profile_nav_item section='voting' icon='facebook-like'
                                     div
@@ -166,10 +165,6 @@ template(name='user_inbox')
                 |#{body}
 
 
-template(name='profile_music')
-    .ui.header 
-        +i name='music'
-        |music
 template(name='profile_stats')
     .ui.list 
         .item 
