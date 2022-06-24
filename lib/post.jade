@@ -3,14 +3,11 @@ template(name='posts')
     .ui.stackable.padded.grid
         .row
             .sixteen.wide.column
-                .ui.inline.header(title='i know right?')
+                .ui.inline.header
                     +i name='news'
                     |{{comma total_post_count}}
                     |posts
                 // unless full_doc_id
-                if currentUser
-                    .ui.circular.icon.button.toggle_porn(title='toggle adult' class=porn_class)
-                        i.skull.crossbones.large.icon
                 each picked_tags
                     +unpick_tag
                     //- button.ui.active.large.button.unpick_tag(tabindex='0' style=background_style class=emotion_color)
@@ -130,33 +127,14 @@ template(name='unpick_tag')
 
                             
 template(name='post_card')
-    .card.autotag(title="#{ups} ups, created #{_when}")
-        if watson.metadata.image.length
-            // |watson image
+    .card
+        if image_id
             a.fly_right(href="/post/#{_id}")
-                img.ui.fluid.image.zoomer(src=watson.metadata.image title='view article')
-        
-        else if is_image
-            a.fly_right(href="/post/#{_id}")
-                img.ui.image.zoomer(src=url title='view article')
-        else if has_thumbnail
-            a.fly_right(href="/post/#{_id}")
-                img.ui.fluid.image.zoomer(src=thumbnail title='view article')
-        if rd.media_embed.content
-            // 
-            |!{unescaped_content}
-        else if rd.selftext_html
-            |!{unescaped}
-
+                img.ui.image(src="{{c.url image_id width=600 height=600 crop='crop'}}")
         .content
             a.ui.grey.header.zoomer.fly_right(href="/post/#{_id}")
                 |!{title}
-            .ui.label
-                i.globe.grey.icon 
-                |#{domain}
-            .ui.label
-                i.thumbs.up.grey.icon 
-                |#{ups}
+            |!{content}
             .ui.label
                 i.comment.grey.icon 
                 |#{num_comments}
@@ -165,20 +143,12 @@ template(name='post_card')
             .ui.label(title="added {{long_date _timestamp}}")
                 i.grey.clock.icon
                 |#{_when}
-            if watson.analyzed_text
-                .smallcut
-                    |!{watson.analyzed_text}
             each five_cleaned_tags
                 a.ui.label.pick_flat_tag.zoomer(title='add tag') 
                     |#{this}
             if points
                 .ui.inline.header
                     |#{points}pts
-            
-            // if over_18
-            //     .ui.red.label
-            //         i.alert.icon
-            //         // +i name='nsfw'
         .ui.attached.basic.buttons
             .ui.icon.circular.button.vote_up
                 i.thumbs.up.green.icon(class=upvote_class)
@@ -188,12 +158,9 @@ template(name='post_card')
             
 template(name='post_item')
     .item 
-        if is_image
+        if image_id
             a.fly_right(href="/post/#{_id}")
-                img.ui.inline.small.image.rounded.superzoomer(src=url)
-        else if has_thumbnail
-            a.fly_right(href="/post/#{_id}")
-                img.ui.small.inline.image.superzoomer(src=thumbnail title='view article')
+                img.ui.image(src="{{c.url image_id width=600 height=600 crop='crop'}}")
         a.ui.inline.header.zoomer.fly_left(href="/post/#{_id}") !{title}
         .ui.label
             i.globe.grey.icon 
@@ -209,8 +176,6 @@ template(name='post_item')
         .ui.label 
             i.plus.icon
             |#{_when}
-        if over_18
-            .ui.red.label over 18
         +voting
             
             
@@ -219,42 +184,27 @@ template(name='post_card_big')
     .ui.fluid.card.autotag.pointer(title="#{ups} ups, created #{_when}")
         .ui.stackable.two.column.grid
             .column
-                if watson.metadata.image.length
-                    // |watson image
-                    img.ui.fluid.image.minimize(src=watson.metadata.image title='view article')
-                
-                else if is_image
-                    img.ui.image.minimize(src=url title='view article')
-                else if has_thumbnail
-                    img.ui.fluid.image.minimize(src=thumbnail title='view article')
+                if image_id 
+                    img.ui.image(src="{{c.url image_id width=600 height=600 crop='crop'}}")
             .column
-                if rd.media_embed.content
-                    .minimize
-                        |!{unescaped_content}
-                else if rd.selftext_html
-                    .minimize
-                        |!{unescaped}
-                else if watson.analyzed_text
-                    .minimize
-                        |!{watson.analyzed_text}
-        .content
-            .ui.grey.header !{title}
-            .ui.label
-                i.globe.grey.icon 
-                |#{domain}
-            .ui.label
-                i.thumbs.up.grey.icon 
-                |#{ups}
-            .ui.label
-                i.comment.grey.icon 
-                |#{num_comments}
-            // .ui.label.zoomer.pick_subpost
-            //     |subpost: #{subpost}
-            .ui.label(title="added {{long_date _timestamp}}")
-                i.grey.clock.icon
-                |#{_when}
-            each tags
-                +flat_tag_picker
+                |!{content}
+                .ui.grey.header !{title}
+                .ui.label
+                    i.globe.grey.icon 
+                    |#{domain}
+                .ui.label
+                    i.thumbs.up.grey.icon 
+                    |#{ups}
+                .ui.label
+                    i.comment.grey.icon 
+                    |#{num_comments}
+                // .ui.label.zoomer.pick_subpost
+                //     |subpost: #{subpost}
+                .ui.label(title="added {{long_date _timestamp}}")
+                    i.grey.clock.icon
+                    |#{_when}
+                each tags
+                    +flat_tag_picker
         
 // template(name='session_toggle')
 //     .ui.button.toggle
@@ -348,55 +298,35 @@ template(name='post_view')
                 a.ui.compact.button.fly_left.zoomer(href="/posts" title='back to browse')
                     i.chevron.left.icon
                     +i name='news'
-                    |post
+                    |posts
                 .ui.segment.alpha.scrollin
-                    .ui.inline.header !{title}
-                    // blockquote(class="imgur-embed-pub" lang="en" data-id="UsxLSe0")
-                    //     a(href=rd.url) Lauren, supergirl, batgirl [Super best friends &amp; lauren faust])
-                    // script(async src="//s.imgur.com/min/embed.js" charset="utf-8")
-                    a.ui.header(href=rd.url target='_window') #{rd.url}
+                    .ui.inline.header #{title}
+                    if can_edit 
+                        a.ui.button.fly_down(href="/post/#{_id}/edit")
+                            i.large.pencil.icon
+                            |edit
                     if in_dev
                         +print_this
-                    if is_image
-                        img.ui.image.invert(src=url)
-                    .ui.button.get_comments     
-                        |get comments
+                    if image_id 
+                        +image_view key='image_id'
                     if comments 
                         .ui.header comments
                     +comments
             .five.wide.column
                 if thumbnail
                     img.ui.centered.rounded.image.invert(src=thumbnail)
-                .ui.list 
-                    .item domain #{domain}
-                    .item.goto_subreddit subreddit #{subreddit}
-                    // .item model #{model}
-                    .item permalink #{permalink}
-                    // .item post_id #{post_id}
-                    .item 
-                        small mined by
+                    .ui.segment 
+                        small by
                         strong #{_author_username}
-                .ui.button.pull_post
-                    i.download.icon
-                    |get post
+                        small #{_when}
                 +voting_full
                 .ui.large.label.zoomer
                     +i name='chat'
                     |#{comment_count} comments
-                if over_18
-                    .ui.large.red.label.zoomer(title='adult content')
-                        +i name='18-plus'
-                a.ui.large.button.zoomer(href=url target='_window')
-                    i.external.icon
-                    | #{url}
                 each tags 
                     a.ui.large.label.zoomer.pick_flat_tag(title='search tag') #{this}
-                a.ui.big.label.zoomer.picker.goto_subreddit(title='browse subpost')
-                    +i name='post'
-                    |tribe #{subreddit}
-                .ui.big.label 
-                    +i name='facebook-like'
-                    | #{ups} upvotes
+                if group_id
+                    +group_widget
                 .ui.big.label 
                     +i name='chat'
                     | #{num_comments} comments
@@ -417,3 +347,96 @@ template(name='post_view')
                 //     |#{target.username}
 
             
+            
+            
+template(name='post_edit')
+    with current_doc
+        .ui.stackable.padded.grid 
+            .eight.wide.column
+                if in_dev 
+                    +print_this
+                .ui.inline.header 
+                    +i name='pencil'
+                    |editing #{model}: #{title}
+                if published
+                    a.ui.big.icon.fluid.green.button.zoom.zoomer(href="/post/#{_id}" title='save')
+                        i.checkmark.big.icon
+                else 
+                    a.ui.large.green.button.zoom.zoomer.publish(href="/post/#{_id}" title='save & publish')
+                        i.checkmark.big.icon
+                        i.eye.big.icon
+                        |save and publish -10p
+                    a.ui.large.icon.yellow.button.zoom.zoomer(href="/post/#{_id}" title='save')
+                        i.save.big.icon
+                        |save draft                       
+                // +boolean_edit key='published' label='published (-10)' 
+                div
+                +text_edit key='title' label='title' 
+                .ui.one.column.stackable.grid
+                    .column
+                        +image_edit key='image_id' label='image' 
+                        .ui.horizontal.divider or
+                        +image_link_edit key='image_link' label='image link'
+                        +image_edit key='background_image_id' label='background image' 
+                        .ui.horizontal.divider or
+                        +image_link_edit key='background_image_link' label='background image link'
+                    .column
+                        if watson 
+                            +i name='dna-helix' title='analyzed'
+                        if tone 
+                            +i name='happy' title='has tone'
+                        +html_edit key='content' label='content'
+                    .column
+                        +array_edit key='tags' label='tags' icon='tags'
+                        div
+                        +array_edit key='location_tags' label='location tags' icon='marker' direct=true
+                    .column
+                        +group_picker
+            .eight.wide.column
+                .ui.inline.header
+                    +i name='link'
+                    |links
+                if link 
+                    +i name='link'
+                if facebook_link
+                    +i name='facebook'
+                if instagram_link
+                    +i name='instagram'
+                if twitter_link
+                    +i name='twitter'
+                if youtube_link
+                    +i name='youtube'
+                +link_edit key='link' label='link'
+                +link_edit key='facebook_link' label='facebook link' icon='facebook'
+                +link_edit key='instagram_link' label='instagram link' icon='instagram'
+                +link_edit key='twitter_link' label='twitter link' icon='twitter'
+                +link_edit key='youtube_link' label='youtube link' icon='youtube'
+                +visibility_settings
+                +boolean_edit key='nsfw' label='nsfw' icon='18-plus'
+                .ui.inline.header
+                    +i name='youtube'
+                    |youtube
+                +youtube_edit key='youtube_id' label='youtube id'
+                
+                +remove_button
+            .eight.wide.column
+                .ui.inline.header 
+                    +i name='cube'
+                    |sections
+                +boolean_edit key='has_subtitle' label='subtitle (-1p)' icon='header'
+                if has_subtitle
+                    +text_edit key='subtitle' label='subtitle'  icon='header'
+                +boolean_edit key='has_price' label='price' icon='coins'
+                if has_price
+                    .ui.segment 
+                        .ui.header 
+                            |premium settings 
+                        +number_edit key='price' label='price (points)' icon='money'
+            .eight.wide.column
+                .ui.inline.header 
+                    +i name='happy'
+                    |sentiment
+                +key_value_edit key='sentiment' value='positive' label='positive' icon='happy'
+                +key_value_edit key='sentiment' value='negative' label='negative' icon='sad'
+                // +boolean_edit key='published' icon='visible' 
+        

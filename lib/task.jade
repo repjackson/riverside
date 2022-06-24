@@ -1,6 +1,6 @@
 template(name='tasks')
     .ui.stackable.padded.grid 
-        .sixteen.wide.column
+        .four.wide.column.scrolling
             .ui.inline.header 
                 +i name='exchange'
                 |#{artist_docs.count} tasks
@@ -8,7 +8,6 @@ template(name='tasks')
                 i.large.red.circular.link.remove.icon.clear
             .ui.large.input 
                 input.task_search(type='text' placeholder='search...' value=current_search)
-        .four.wide.column.scrolling
             .ui.header your points #{currentUser.points}
             a.ui.big.icon.button.new_task
                 i.big.green.plus.icon
@@ -60,7 +59,10 @@ template(name='tasks')
 
 template(name='task_card')
     .card
+        if image_id 
+            img.ui.image.zoomer(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
         .content
+            .ui.header #{title}
             span(title='recipient')
                 +i name='lend'
                 with _target
@@ -71,7 +73,10 @@ template(name='task_card')
                 i.right.large.chevron.icon
 template(name='task_item')
     .item
+        if image_id 
+            img.ui.image.zoomer(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
         .content
+            .ui.header #{title}
             span(title='recipient')
                 +i name='lend'
                 with _target
@@ -98,6 +103,9 @@ template(name='task_view')
                         i.big.yellow.clock.icon
                     
                 .five.wide.column
+                    if image_id
+                        img.ui.image(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+
                     |!{description}
                     |by
                     a(href="/user/#{_author.username}") 
@@ -157,7 +165,7 @@ template(name='task_edit')
             .row 
                 .eight.wide.column
                     .ui.inline.header editing task
-                    a.ui.green.big.circular.button.save.zoomer(href="/task/#{_id}") 
+                    a.ui.green.big.circular.button.save.zoomer.fly_up(href="/task/#{_id}") 
                         i.save.large.icon
                         |save
                     +text_edit key='title' label='title'
@@ -167,6 +175,7 @@ template(name='task_edit')
                             img.ui.small.image(src="{{c.url _author.image_id height=200 width=200 gravity='face' crop='fill'}}" class=currentUser.invert_class)
                             |#{_author.name}
                     
+                    +image_edit key='image_id' label='image' icon='image' 
                     +boolean_edit key='has_assignee' label='has assignee' icon='user' 
                     if has_assignee
                         +single_user_edit key='assignee' label='recipient' icon='donate' 

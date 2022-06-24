@@ -23,19 +23,24 @@ if Meteor.isClient
         @layout 'layout'
         @render 'post_view'
         ), name:'post_view'
+    Router.route '/post/:doc_id/edit', (->
+        @layout 'layout'
+        @render 'post_edit'
+        ), name:'post_edit'
     Router.route '/posts', (->
         @layout 'layout'
         @render 'posts'
         ), name:'posts'
     Template.posts.onCreated ->
         @autorun => Meteor.subscribe 'model_counter','post', ->
-    Template.posts.onCreated ->
         @autorun => Meteor.subscribe 'model_docs','post', ->
     Template.posts.helpers
         total_post_count: -> Counts.get('model_counter') 
 
 
     Template.post_view.onCreated ->
+        @autorun => @subscribe 'doc_by_id', Router.current().params.doc_id, ->
+    Template.post_edit.onCreated ->
         @autorun => @subscribe 'doc_by_id', Router.current().params.doc_id, ->
     Template.post_view.onRendered ->
         # console.log @

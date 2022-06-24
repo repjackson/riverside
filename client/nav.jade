@@ -2,7 +2,7 @@ template(name='nav')
     // #topnav.topnav.ui.attached.borderless.big.four.item.menu.hscroll(class=darkmode_class)
         https://fomantic-ui.com/elements/icon.html#/icon
     // #topnav.topnav.ui.attached.borderless.big.menu.hscroll(style="background-color:#{currentUser.theme_color_main}")
-    #topnav.topnav.ui.attached.inverted.menu.hscroll
+    #topnav.topnav.ui.attached.menu.hscroll
         if is_connected
             a.icon.item.toggle_leftbar
                 i.large.bars.grey.icon
@@ -41,7 +41,7 @@ template(name='nav')
                 // span.mobilehidden login
         unless is_connected
             a.item.zoomer.reconnect
-                i.yin.yang.big.loading.icon
+                i.spinner.big.loading.icon
                 +i name='disconnected'
                 |relink
                 i.large.circular.refresh.link.icon.zoomer.reconnect(title='reconnect now')
@@ -68,7 +68,7 @@ template(name='nav')
                 // strong.mobilehidden #{currentUser.name}
                 i.bars.large.grey.icon
     if is_connected
-        .ui.attached.small.inverted.menu.hscroll          
+        .ui.attached.small.menu.hscroll.mobile.hidden          
             a.item.zoomer.fly_right.clear_search.mobilehidden(href="/food" class="{{isActiveRoute regex='food'}}" title='food')
                 // i.large.food.icon
                 +i name='food'
@@ -205,7 +205,7 @@ template(name='recent_alert')
             
             
 template(name='rightbar')
-    .ui.right.sidebar.vertical.small.inverted.menu.rightbar
+    .ui.right.sidebar.vertical.small.menu.rightbar
         with currentUser
             a.item.toggle_rightbar.no_blink(href="/user/#{currentUser.username}" class="{{isActiveRoute 'user_layout'}}")
                 img.ui.avatar.compact.image(src="{{c.url currentUser.image_id height=200 width=200 gravity='face' crop='fill'}}")
@@ -279,16 +279,15 @@ template(name='right_nav_item')
 
 
 template(name='leftbar')
-    .ui.left.sidebar.ui.vertical.menu
+    .ui.left.sidebar.ui.vertical.small.menu
         +leftbar_item key='posts' icon='news'
         +leftbar_item key='products' icon='shopping-cart'
         +leftbar_item key='events' icon='calendar'
         +leftbar_item key='food' icon='food'
-        +leftbar_item key='music' icon='music'
         +leftbar_item key='transfers' icon='exchange'
-        +leftbar_item key='orders' icon='history'
+        +leftbar_item key='orders' icon='order-history'
         +leftbar_item key='groups' icon='campfire'
-        +leftbar_item key='requests' icon='hand holding heart'
+        +leftbar_item key='tasks' icon='tasks'
         +leftbar_item key='services' icon='wrench'
         +leftbar_item key='rentals' icon='clock'
         +leftbar_item key='users' icon='users'

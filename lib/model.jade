@@ -14,31 +14,6 @@ template(name='key_value_icon')
     if parent_is key value 
         +i name=icon
 
-template(name='post_edit')
-    .ui.stackable.padded.grid
-        .row 
-            .eight.wide.column
-                .ui.inline.header 
-                    +i name='cube'
-                    |sections
-                +boolean_edit key='has_subtitle' label='subtitle (-1p)' icon='header'
-                if has_subtitle
-                    +text_edit key='subtitle' label='subtitle'  icon='header'
-                +boolean_edit key='has_price' label='price' icon='coins'
-                if has_price
-                    .ui.segment 
-                        .ui.header 
-                            |premium settings 
-                        +number_edit key='price' label='price (points)' icon='money'
-            .eight.wide.column
-                .ui.inline.header 
-                    +i name='happy'
-                    |sentiment
-                +key_value_edit key='sentiment' value='positive' label='positive' icon='happy'
-                +key_value_edit key='sentiment' value='negative' label='negative' icon='sad'
-                // +boolean_edit key='published' icon='visible' 
-                    
-                    
                 
         
             
