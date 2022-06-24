@@ -71,34 +71,6 @@ if Meteor.isClient
             Docs.find   
                 model:'room'
 
-
-    Template.event_edit.events
-        'click .delete_item': ->
-            if confirm 'delete event?'
-                Docs.remove @_id
-            Router.go "/events"
-
-        'click .select_room': ->
-            reservation_exists = 
-                Docs.findOne
-                    model:'room_reservation'
-                    room_id:event.room_id 
-                    date:event.date
-            console.log reservation_exists
-            unless reservation_exists            
-                Docs.update Router.current().params.doc_id,
-                    $set:
-                        room_id:@_id
-                        room_title:@title
-
-        'click .submit': ->
-            Docs.update Router.current().params.doc_id,
-                $set:published:true
-            if confirm 'confirm?'
-                Meteor.call 'send_event', @_id, =>
-                    Router.go "/event/#{@_id}/view"
-
-
     Template.event_edit.helpers
         reservation_exists: ->
             event = Docs.findOne Router.current().params.doc_id
@@ -133,6 +105,35 @@ if Meteor.isClient
                 model:'room_reservation'
                 room_id:event.room_id 
                 date:event.date
+
+
+    Template.event_edit.events
+        'click .delete_item': ->
+            if confirm 'delete event?'
+                Docs.remove @_id
+            Router.go "/events"
+
+        'click .select_room': ->
+            reservation_exists = 
+                Docs.findOne
+                    model:'room_reservation'
+                    room_id:event.room_id 
+                    date:event.date
+            console.log reservation_exists
+            unless reservation_exists            
+                Docs.update Router.current().params.doc_id,
+                    $set:
+                        room_id:@_id
+                        room_title:@title
+
+        'click .submit': ->
+            Docs.update Router.current().params.doc_id,
+                $set:published:true
+            if confirm 'confirm?'
+                Meteor.call 'send_event', @_id, =>
+                    Router.go "/event/#{@_id}/view"
+
+
                 
     Template.reserve_button.helpers
         event_room: ->

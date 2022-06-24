@@ -36,8 +36,6 @@ template(name='events')
                 .ui.basic.center.aligned.segment
                     +ibig name='event' cl='spinning'
                     
-                    
-                    
 template(name='event_layout')
     div(class=darkmode_class)
         // unless currentUser.darkmode
@@ -57,10 +55,15 @@ template(name='event_layout')
                         .sixteen.wide.column
                             a.ui.circular.icon.button.fly_left(href="/events" title="back to events")
                                 i.chevron.left.icon
-                                +model_label
+                                +i name='calendar'
+                                |events
                             .ui.large.inline.header 
                                 //- small viewing
                                 | #{title}
+                            if can_edit
+                                a.ui.button(href="/event/#{_id}/edit")
+                                    i.pencil.icon
+                                    |edit
                             +event_nav_item section='dashboard' icon='dashboard'
                             if has_posts
                                 +event_nav_item section='posts' icon='news'
@@ -68,6 +71,8 @@ template(name='event_layout')
                                 +event_nav_item section='events' icon='calendar'
                             if has_membership
                                 +event_nav_item section='membership' icon='events'
+                            if has_tasks
+                                +event_nav_item section='tasks' icon='tasks'
                             +event_nav_item section='related' icon='fork'
                             if has_products
                                 +event_nav_item section='products' icon='shopping-cart'
@@ -82,18 +87,12 @@ template(name='event_layout')
     +footer
     
     
-    
-    
 template(name='event_sidebar')
     if image_id 
         img.ui.rounded.centered.large.image(src="{{c.url image_id width=800 crop='scale'}}")
     if image_id2
         img.ui.rounded.image.zoomer(src="{{c.url image_id2}}")
 
-    if can_edit
-        a.ui.button(href="/event/#{_id}/edit")
-            i.pencil.icon
-            |edit
     if youtube_id 
         span(title='has youtube video')
             +i name='youtube'
@@ -182,8 +181,8 @@ template(name='event_nav_item')
         +i name=icon
         |#{section}
             
-            
 template(name='event_dashboard')
+    +event_tasks
     +event_members_small
     +event_posts
     .ui.one.column.grid 
@@ -233,8 +232,13 @@ template(name='event_dashboard')
         if has_shop
             +event_products
                 
-               
-               
+template(name='event_tasks')
+    .ui.header 
+        +i name='task'
+        |event tasks
+    each event_task_docs
+        a.item.fly_right(href="/task/#{_id}") #{title}
+            |#{when}
 template(name='event_related')
     .content
         .ui.header 
@@ -358,71 +362,144 @@ template(name='event_events')
 
 template(name='event_edit')
     with current_doc
-        // if reservation_exists
-        //     .ui.header date: #{date}
-        //     .ui.header time: #{time}
-        // else
-        // +time_edit key='time' label='time' 
-        +float_edit key='hour_duration' label='hours' 
-        div
-        .ui.inline.small.header 
-            |event type
-        +key_value_edit key='event_type' value='online' label='online' icon='globe'
-        +key_value_edit key='event_type' value='physical' label='physical' icon='marker'
-        if is event_type 'physical'
-            div
-            +text_edit key='location' label='location' icon='marker' 
-        // +range_edit label='time range' 
-        // +single_user_edit key='facilitator_id' label='facilitator' icon='chess king' 
-        +boolean_edit key='manage_attendance' label='manage attendance' icon='settings' 
-        if manage_attendance
-            .ui.header
-                i.users.icon
-                |audience
-            +number_edit key='max_attendees' label='max attendees' min='0' max='100' 
-            +boolean_edit key='friends_only' label='friends only' icon='campfire' 
-            // div
-        +multi_user_edit key='going' label='going users' icon='checkmark'
-        +multi_user_edit key='maybe' label='maybe users' icon='question'
-        +multi_user_edit key='not_going' label='not going users' icon='cancel'
-        +boolean_edit key='is_repeating' label='is repeating' icon='refresh' 
-        if is_repeating
-            .ui.inline.header repeating day
-            +key_value_edit key='repeating_day' value='monday'
-            +key_value_edit key='repeating_day' value='tuesday'
-            +key_value_edit key='repeating_day' value='wednesday'
-            +key_value_edit key='repeating_day' value='thursday'
-            +key_value_edit key='repeating_day' value='friday'
-            +key_value_edit key='repeating_day' value='saturday'
-            +key_value_edit key='repeating_day' value='sunday'
-            div
-            +time_edit key='start_time' label='start time' 
-            +time_edit key='end_time' label='end time' 
-        unless is_repeating 
-            div
-            +datetime_edit key='start_datetime' label='start datetime' icon='calendar'
-            div
-            +datetime_edit key='end_datetime' label='end datetime' icon='calendar'
-        
-        +boolean_edit key='has_host' label='has host' icon='king' 
-        if has_host
-            +single_user_edit key='host_id' label='host' icon='shield' 
-        +boolean_edit key='has_support' label='has support' icon='king' 
-        if has_support
-            +single_user_edit key='support_id' label='support' icon='chess queen' 
-        div 
-        .ui.segment
-            +boolean_edit key='has_tickets' label='has tickets' icon='ticket' 
-            if has_tickets
-                +boolean_edit key='external_ticket_management' label='externally handled' 
-                if external_ticket_management
-                    +link_edit key='link' label='link'
-                    // +link_edit key='link' label='link'
-                else
-                    +boolean_edit key='free' label='free' 
-                    unless free
-                        +number_edit key='price_points' label='point price' min='0' max='100' 
-                    +number_edit key='price_usd' label='dollar price' min='0' max='100' 
+        .ui.stackable.padded.grid 
+            .eight.wide.column.scrolling
+                if in_dev 
+                    +print_this
+                +model_label
+            
+                .ui.inline.header 
+                    +i name='pencil'
+                    |editing #{model}: #{title}
+                if published
+                    a.ui.big.icon.fluid.green.button.zoom.zoomer(href="/doc/#{_id}" title='save')
+                        i.checkmark.big.icon
+                else 
+                    a.ui.large.green.button.zoom.zoomer.publish(href="/doc/#{_id}" title='save & publish')
+                        i.checkmark.big.icon
+                        i.eye.big.icon
+                        |save and publish -10p
+                    a.ui.large.icon.yellow.button.zoom.zoomer(href="/doc/#{_id}" title='save')
+                        i.save.big.icon
+                        |save draft                       
+                // +boolean_edit key='published' label='published (-10)' 
+                div
+                +text_edit key='title' label='title' 
+                .ui.one.column.stackable.grid
+                    .column
+                        +image_edit key='image_id' label='image' 
+                        .ui.horizontal.divider or
+                        +image_link_edit key='image_link' label='image link'
+                        +image_edit key='background_image_id' label='background image' 
+                        .ui.horizontal.divider or
+                        +image_link_edit key='background_image_link' label='background image link'
+                    .column
+                        if watson 
+                            +i name='dna-helix' title='analyzed'
+                        if tone 
+                            +i name='happy' title='has tone'
+                        +html_edit key='content' label='content'
+                    .column
+                        +array_edit key='tags' label='tags' icon='tags'
+                        div
+                        +array_edit key='location_tags' label='location tags' icon='marker' direct=true
+                    .column
+                        +group_picker
+                    .column
+                        .ui.inline.header
+                            +i name='link'
+                            |links
+                        if link 
+                            +i name='link'
+                        if facebook_link
+                            +i name='facebook'
+                        if instagram_link
+                            +i name='instagram'
+                        if twitter_link
+                            +i name='twitter'
+                        if youtube_link
+                            +i name='youtube'
+                        +link_edit key='link' label='link'
+                        +link_edit key='facebook_link' label='facebook link' icon='facebook'
+                        +link_edit key='instagram_link' label='instagram link' icon='instagram'
+                        +link_edit key='twitter_link' label='twitter link' icon='twitter'
+                        +link_edit key='youtube_link' label='youtube link' icon='youtube'
+                        +visibility_settings
+                        +boolean_edit key='nsfw' label='nsfw' icon='18-plus'
+                    .column
+                        .ui.inline.header
+                            +i name='youtube'
+                            |youtube
+                        +youtube_edit key='youtube_id' label='youtube id'
+                
+                +remove_button            
+                // if reservation_exists
+                //     .ui.header date: #{date}
+                //     .ui.header time: #{time}
+                // else
+                // +time_edit key='time' label='time' 
+                +float_edit key='hour_duration' label='hours' 
+                div
+                .ui.inline.small.header 
+                    |event type
+                +key_value_edit key='event_type' value='online' label='online' icon='globe'
+                +key_value_edit key='event_type' value='physical' label='physical' icon='marker'
+                if is event_type 'physical'
+                    div
+                    +text_edit key='location' label='location' icon='marker' 
+                // +range_edit label='time range' 
+                // +single_user_edit key='facilitator_id' label='facilitator' icon='chess king' 
+                +boolean_edit key='manage_attendance' label='manage attendance' icon='settings' 
+                if manage_attendance
+                    .ui.header
+                        i.users.icon
+                        |audience
+                    +number_edit key='max_attendees' label='max attendees' min='0' max='100' 
+                    +boolean_edit key='friends_only' label='friends only' icon='campfire' 
+                    // div
+            .eight.wide.column.scrolling
+                +boolean_edit key='has_tasks' label='has tasks' icon='tasks' 
+                +multi_user_edit key='going' label='going users' icon='checkmark'
+                +multi_user_edit key='maybe' label='maybe users' icon='question'
+                +multi_user_edit key='not_going' label='not going users' icon='cancel'
+                +boolean_edit key='is_repeating' label='is repeating' icon='refresh' 
+                if is_repeating
+                    .ui.inline.header repeating day
+                    +key_value_edit key='repeating_day' value='monday'
+                    +key_value_edit key='repeating_day' value='tuesday'
+                    +key_value_edit key='repeating_day' value='wednesday'
+                    +key_value_edit key='repeating_day' value='thursday'
+                    +key_value_edit key='repeating_day' value='friday'
+                    +key_value_edit key='repeating_day' value='saturday'
+                    +key_value_edit key='repeating_day' value='sunday'
+                    div
+                    +time_edit key='start_time' label='start time' 
+                    +time_edit key='end_time' label='end time' 
+                unless is_repeating 
+                    div
+                    +datetime_edit key='start_datetime' label='start datetime' icon='calendar'
+                    div
+                    +datetime_edit key='end_datetime' label='end datetime' icon='calendar'
+                
+                +boolean_edit key='has_host' label='has host' icon='king' 
+                if has_host
+                    +single_user_edit key='host_id' label='host' icon='shield' 
+                +boolean_edit key='has_support' label='has support' icon='king' 
+                if has_support
+                    +single_user_edit key='support_id' label='support' icon='chess queen' 
+                div 
+                .ui.segment
+                    +boolean_edit key='has_tickets' label='has tickets' icon='ticket' 
+                    if has_tickets
+                        +boolean_edit key='external_ticket_management' label='externally handled' 
+                        if external_ticket_management
+                            +link_edit key='link' label='link'
+                            // +link_edit key='link' label='link'
+                        else
+                            +boolean_edit key='free' label='free' 
+                            unless free
+                                +number_edit key='price_points' label='point price' min='0' max='100' 
+                            +number_edit key='price_usd' label='dollar price' min='0' max='100' 
                    
 template(name='event_card')
     a.card.zoomer.fly_down(href="/event/#{_id}")

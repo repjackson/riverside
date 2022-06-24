@@ -92,7 +92,8 @@ template(name='task_view')
             .centered.row 
                 .sixteen.wide.column
                     .ui.inline.small.header viewing task
-                    |#{title}
+                    .ui.big.header #{title}
+                    
                     a.ui.icon.button.fly_down(href="/task/#{_id}/edit")
                         i.pencil.icon
                         |edit
