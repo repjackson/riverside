@@ -15,7 +15,7 @@ if Meteor.isClient
         @autorun => Meteor.subscribe 'food_counter', ->
     Template.food.helpers
         food_count: -> Counts.get('food_counter') 
-    
+        diet_tag_results:-> Results.find model:'diet_tag'
 if Meteor.isServer
     Meteor.publish 'food_counter', (model)->
         # if model 
@@ -133,6 +133,29 @@ if Meteor.isClient
                   hideMethod   : 'fade',
                   hideDuration : 250
                 })
+    Template.recipe_card_big.events
+        'click .pick_ingredient': ->
+            console.log @
+            picked_food_tags.clear()
+            picked_food_tags.push @nameClean
+            $('body').toast({
+                title: "browsing #{@nameClean}"
+                # message: 'Please see desk staff for key.'
+                class : 'success'
+                showIcon:'hashtag'
+                # showProgress:'bottom'
+                position:'bottom right'
+                # className:
+                #     toast: 'ui massive message'
+                # displayTime: 5000
+                transition:
+                  showMethod   : 'zoom',
+                  showDuration : 250,
+                  hideMethod   : 'fade',
+                  hideDuration : 250
+                })
+
+            Meteor.call 'call_food', @nameClean, ->
     Template.food_page.events
         'click .pick_ingredient': ->
             console.log @
@@ -253,7 +276,7 @@ if Meteor.isClient
             
         picked_food_tags: -> picked_food_tags.array()
         tag_results: ->
-            Results.find()
+            Results.find(model:'tag')
         
             
             
@@ -355,6 +378,26 @@ if Meteor.isServer
                     name: tag.name
                     count: tag.count
                     model:'tag'
+                    index: i
+                    
+            diet_cloud = Docs.aggregate [
+                { $match: match }
+                { $project: "details.diets": 1 }
+                { $unwind: "$details.diets" }
+                { $group: _id: '$details.diets', count: $sum: 1 }
+                { $match: _id: $nin: picked_food_tags }
+                { $sort: count: -1, _id: 1 }
+                { $match: count: $lt: total_count }
+                { $limit: 15}
+                { $project: _id: 0, name: '$_id', count: 1 }
+                ]
+            # console.log 'theme diet_cloud, ', diet_cloud
+            diet_cloud.forEach (tag, i) ->
+                # console.log tag
+                self.added 'results', Random.id(),
+                    name: tag.name
+                    count: tag.count
+                    model:'diet_tag'
                     index: i
                     
             self.ready()

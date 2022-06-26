@@ -224,6 +224,10 @@ body {
 }
 
 
+.padding {
+    padding: 2px !important;
+}
+
 
 
 /* @keyframes shadow-pulse

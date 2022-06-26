@@ -233,12 +233,17 @@ template(name='event_dashboard')
             +event_products
                 
 template(name='event_tasks')
-    .ui.header 
+    .ui.inline.header 
         +i name='task'
         |event tasks
+    .ui.button.add_event_task
+        i.large.plus.icon
+        |add task
     each event_task_docs
         a.item.fly_right(href="/task/#{_id}") #{title}
             |#{when}
+            
+            
 template(name='event_related')
     .content
         .ui.header 

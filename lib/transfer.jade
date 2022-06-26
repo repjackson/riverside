@@ -40,7 +40,7 @@ template(name='transfers')
             .ui.hidden.divider
             if subs_ready
                 if session_is 'view_mode' 'grid'
-                    .ui.stackable.cards.scrolling
+                    .ui.stackable.cards.scrolling.padding
                         if one_result
                             .ui.one.cards
                                 each transfer_docs 
@@ -50,7 +50,7 @@ template(name='transfers')
                                 each transfer_docs 
                                     +transfer_card
                 else
-                    .ui.large.list 
+                    .ui.large.divided.list 
                         each transfer_docs 
                             +transfer_item
             else 
@@ -65,8 +65,15 @@ template(name='transfer_card')
                 +i name='lend'
                 with _target
                     +user_info
+            .ui.header #{amount}pts
+            .ui.label 
+                i.user.icon
+                |#{_author_username}
+            each tags 
+                .ui.label #{this}
             span.smallscroll
                 |!{description}
+            .ui.label #{_when}
             a.ui.icon.button.zoomer(href="/transfer/#{_id}")
                 i.right.large.chevron.icon
 template(name='transfer_item')
@@ -76,6 +83,12 @@ template(name='transfer_item')
                 +i name='lend'
                 with _target
                     +user_info
+            .ui.label 
+                i.clock.icon
+                |#{_when}
+            .ui.label 
+                i.user.icon
+                |#{_author_username}
             span.smallscroll
                 |!{description}
             a.ui.icon.button.zoomer(href="/transfer/#{_id}")

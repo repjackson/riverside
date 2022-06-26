@@ -502,7 +502,7 @@ template(name='group_card')
                 i.green.eye.icon.invert(title='published')
             else 
                 i.yellow.save.icon.invert(title='draft')
-            a.ui.inline.header.fly_right #{title}
+            a.ui.inline.header.fly_right(href="/group/#{title}") #{title}
         .content
             .right.floated.meta
                 |#{_when}

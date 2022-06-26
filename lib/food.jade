@@ -24,8 +24,14 @@ template(name='food')
                 // button.ui.large.label.button.pick_tag(tabindex="0" class=result_class title=count)
                     // |#{name}
                     // small #{count}
+        .four.wide.column.scrolling
+            .ui.header diets
+            each diet_tag_results
+                button.ui.large.label.button.pick_tag(tabindex="0" class=result_class title=count)
+                    |#{name}
+                    small #{count}
 
-        .sixteen.wide.column.scrolling
+        .twelve.wide.column.scrolling
             if subs_ready
                 if one_recipe
                     each recipe_docs
@@ -234,7 +240,7 @@ template(name='recipe_card_big')
                     |ingredients
                 .ui.doubling.cards
                     each details.extendedIngredients
-                        .card.pick_ingredient
+                        a.card.zoomer.pick_ingredient
                             img.ui.image(src="https://spoonacular.com/cdn/ingredients_250x250/#{image}")
                             .content
                                 .header #{originalName}
@@ -328,6 +334,7 @@ template(name='food_page')
                 each tags 
                     .ui.compact.button.pick_food_tag
                         |#{this}
+            .eleven.wide.column 
                 .f7 !{content}
             .five.wide.column
                 .ui.header 
@@ -361,9 +368,6 @@ template(name='food_page')
                             small price per serving: 
                             strong #{pricePerServing}
                         .item
-                            small analyzed instructions: 
-                            strong #{analyzedInstructions}
-                        .item
                             small cheap: 
                             strong #{cheap}
                         .item
@@ -378,7 +382,7 @@ template(name='food_page')
                         .item
                             small gaps: 
                             strong #{gaps}
-            .eight.wide.column
+            .sixteen.wide.column
                 .ui.header 
                     +i name='list'
                     |instructions
@@ -391,9 +395,9 @@ template(name='food_page')
                 .ui.header 
                     +i name='ingredients'
                     |ingredients
-                .ui.doubling.four.cards
+                .ui.doubling.cards
                     each details.extendedIngredients
-                        .card.pick_ingredient
+                        a.card.zoomer.fly_left.pick_ingredient(title='browse ingredient')
                             img.ui.image(src="https://spoonacular.com/cdn/ingredients_250x250/#{image}")
                             .content
                                 .header #{originalName}

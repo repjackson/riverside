@@ -71,6 +71,20 @@ if Meteor.isClient
             Docs.find   
                 model:'room'
 
+    Template.event_tasks.helpers 
+        event_task_docs: ->
+            Docs.find 
+                model:'task'
+                parent_id:Router.current().params.doc_id
+    Template.event_tasks.events
+        'click .add_event_task': ->
+            new_id = 
+                Docs.insert 
+                    model:'task'
+                    parent_id:Router.current().params.doc_id
+                    event_id:Router.current().params.doc_id
+            Router.go "/task/#{new_id}/edit"
+            
     Template.event_edit.helpers
         reservation_exists: ->
             event = Docs.findOne Router.current().params.doc_id
