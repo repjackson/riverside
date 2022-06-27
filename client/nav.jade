@@ -2,10 +2,10 @@ template(name='nav')
     // #topnav.topnav.ui.attached.borderless.big.four.item.menu.hscroll(class=darkmode_class)
         https://fomantic-ui.com/elements/icon.html#/icon
     // #topnav.topnav.ui.attached.borderless.big.menu.hscroll(style="background-color:#{currentUser.theme_color_main}")
-    #topnav.topnav.ui.attached.menu.hscroll
+    #topnav.topnav.ui.attached.borderless.menu.hscroll
         if is_connected
-            a.icon.item.toggle_leftbar
-                i.large.bars.grey.icon
+            a.icon.item.toggle_leftbar.zoomer
+                i.large.bars.grey.icon.zoomer
             a.item(href="/" title='the riverside')
                 +i name='creek'
                 span.mobile.hidden
@@ -59,16 +59,16 @@ template(name='nav')
                 a.icon.item.zoomer.fly_down.add(href='/add' title='add doc')
                     +i name='plus'
                 // a.icon.item(href="/mail/inbox")
-            a.icon.item.toggle_rightbar.no_blink
+            a.icon.item.toggle_rightbar.no_blink.zoomer
                 // .ui.avatar.image
                 //     if currentUser.image_id
                 //         img.ui.mini.inline.image(src="{{c.url currentUser.image_id width=200 height=200 gravity='face' crop='fill'}}")
                 //     else
                 //         i.user.big.icon
                 // strong.mobilehidden #{currentUser.name}
-                i.bars.large.grey.icon
+                i.bars.large.grey.icon.zoomer
     if is_connected
-        .ui.attached.small.menu.hscroll.mobile.hidden          
+        .ui.attached.small.borderless.menu.hscroll.mobile.hidden          
             a.item.zoomer.fly_right.clear_search.mobilehidden(href="/food" class="{{isActiveRoute regex='food'}}" title='food')
                 // i.large.food.icon
                 +i name='food'
@@ -272,7 +272,7 @@ template(name='rightbar')
 
 
 template(name='right_nav_item')
-    a.item.toggle_rightbar(href="/user/#{currentUser.username}/#{route}" class="{{isActiveRoute regex='user_dashboard'}}")
+    a.item.toggle_rightbar.zoomer(href="/user/#{currentUser.username}/#{route}" class="{{isActiveRoute regex='user_dashboard'}}")
         +i name=icon cl='ui avatar image'
         // i.dashboard.icon
         |#{label}

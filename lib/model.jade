@@ -164,52 +164,6 @@ template(name='order_button')
 
 
 
-template(name='product_edit')
-    .ui.stackable.padded.one.column.grid
-        .row
-            .column
-                +image_edit key='image_id2' label='alt image' 
-                +link_edit key='link' label='external link' 
-                // div
-            .column
-                +float_edit key='price_usd' label='price' icon='us-dollar-circled'
-                +number_edit key='price_points' label='point price' icon='coins'
-                // +text_edit key='size_content' label='size description' icon='content'
-                .ui.inline.header 
-                    +i name='product'
-                    |product
-                +boolean_edit key='is_product' label='is product' icon='product'
-                if is_product
-                    +boolean_edit key='gluten_free' label='gluten free' icon='no-gluten'
-                    +boolean_edit key='paleo' label='paleo' icon='caveman'
-                    +boolean_edit key='vegetarian' label='vegetarian' icon='vegetarian-mark'
-                    +boolean_edit key='no_sugar_added' label='no sugar added' icon='no-sugar2'
-                    +boolean_edit key='vegan' label='vegan' icon='vegan-symbol'
-                    +boolean_edit key='no_gmo' label='no gmo' icon='no-gmo'
-                    +boolean_edit key='local' label='local' icon='marker'
-                    +boolean_edit key='nut_free' label='nut free' icon='no-peanut'
-                    +boolean_edit key='rescued' label='rescued' icon='nothing-found'
-                    +boolean_edit key='kosher' label='kosher' icon='judaism'
-                    +boolean_edit key='organic' label='organic' icon='organic-product'
-                    // +boolean_edit key='jar' label='jar container (requires deposit & return)' icon='mason-jar'
-                    div
-                    +number_edit key='calories' label='calories' icon='product'
-                div
-                +boolean_edit key='is_managing_inventory' label='manage inventory' icon='inventory'
-                if is_managing_inventory
-                    .ui.segment 
-                        .ui.header 
-                            +i name='inventory'
-                            |inventory
-                        +number_edit key='inventory_amount' label='inventory amount' icon='hashtag'
-                +boolean_edit key='can_subscribe' label='can subscribe' icon='calendar'
-                if can_subscribe
-                    .ui.segment 
-                        .ui.header 
-                            +i name='inventory'
-                            |subscription settings
-                        +key_value_edit key='subscription_frequency' value='weekly' label='weekly'
-                        +key_value_edit key='subscription_frequency' value='monthly' label='monthly'
                             
 template(name='message_author_button')
     .ui.circular.large.button.message_author

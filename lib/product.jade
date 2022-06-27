@@ -8,6 +8,9 @@ template(name='products')
             .ui.large.icon.input
                 +i name='shopping-cart'
                 input.product_search(type='text' placeholder='search products...' value=current_search)
+            .ui.button.add_product
+                i.plus.icon
+                |add product
             // .ui.large.icon.input
             //     +i name='menu'
             //     input.menu_search(type='text' placeholder='search menu...' value=current_search)
@@ -46,12 +49,9 @@ template(name='products')
                     .ui.centered.stackable.cards.scrolling
                         each product_docs
                             +product_card
-                
             else 
                 .ui.basic.center.aligned.segment
                     +ibig name='product' cl='spinning'
-
-
 template(name='product_card')
     .card
         a.fly_right(href="/product/#{_id}")
@@ -90,7 +90,6 @@ template(name='product_card')
                     i.hashtag.icon
                     strong #{servings}
                     |servings
-
 template(name='product_item')
     .item
         a.fly_right(href="/product/#{_id}")
@@ -131,7 +130,6 @@ template(name='product_item')
                         |servings
             else 
                 i.shopping.cart.loading.big.icon
-
 template(name='product_view')
     with current_doc 
         img.ui.fluid.image.checkin_banner(src=image)
@@ -313,4 +311,57 @@ template(name='product_view')
                     |related products
                 each related_products
                     a.ui.header(href="/doc/#{_id}") #{title}
-                        
+template(name='product_edit')
+    with current_doc 
+        .ui.stackable.padded.grid
+            .row
+                .sixteen.wide.column
+                    .ui.header 
+                        i.pencil.icon
+                        |editing product
+                    a.ui.green.button(href="/product/#{_id}")
+                        i.save.icon 
+                        |save
+                .eight.wide.column
+                    +image_edit key='image_id2' label='alt image' 
+                    +link_edit key='link' label='external link' 
+                    // div
+                    +float_edit key='price_usd' label='price' icon='us-dollar-circled'
+                    +number_edit key='price_points' label='point price' icon='coins'
+                    // +text_edit key='size_content' label='size description' icon='content'
+                    .ui.inline.header 
+                        +i name='product'
+                        |product
+                    +boolean_edit key='is_product' label='is product' icon='product'
+                    if is_product
+                        +boolean_edit key='gluten_free' label='gluten free' icon='no-gluten'
+                        +boolean_edit key='paleo' label='paleo' icon='caveman'
+                        +boolean_edit key='vegetarian' label='vegetarian' icon='vegetarian-mark'
+                        +boolean_edit key='no_sugar_added' label='no sugar added' icon='no-sugar2'
+                        +boolean_edit key='vegan' label='vegan' icon='vegan-symbol'
+                        +boolean_edit key='no_gmo' label='no gmo' icon='no-gmo'
+                        +boolean_edit key='local' label='local' icon='marker'
+                        +boolean_edit key='nut_free' label='nut free' icon='no-peanut'
+                        +boolean_edit key='rescued' label='rescued' icon='nothing-found'
+                        +boolean_edit key='kosher' label='kosher' icon='judaism'
+                        +boolean_edit key='organic' label='organic' icon='organic-product'
+                        // +boolean_edit key='jar' label='jar container (requires deposit & return)' icon='mason-jar'
+                        div
+                        +number_edit key='calories' label='calories' icon='product'
+                    div
+                .eight.wide.column
+                    +boolean_edit key='is_managing_inventory' label='manage inventory' icon='inventory'
+                    if is_managing_inventory
+                        .ui.segment 
+                            .ui.header 
+                                +i name='inventory'
+                                |inventory
+                            +number_edit key='inventory_amount' label='inventory amount' icon='hashtag'
+                    +boolean_edit key='can_subscribe' label='can subscribe' icon='calendar'
+                    if can_subscribe
+                        .ui.segment 
+                            .ui.header 
+                                +i name='inventory'
+                                |subscription settings
+                            +key_value_edit key='subscription_frequency' value='weekly' label='weekly'
+                            +key_value_edit key='subscription_frequency' value='monthly' label='monthly'

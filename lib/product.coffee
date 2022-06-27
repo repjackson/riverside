@@ -7,9 +7,20 @@ if Meteor.isClient
         @layout 'layout'
         @render 'product_view'
         ), name:'product_view'
+    Router.route '/product/:doc_id/edit', (->
+        @layout 'layout'
+        @render 'product_edit'
+        ), name:'product_edit'
     
     Template.products.onCreated ->
         @autorun => Meteor.subscribe 'product_counter', ->
+    Template.products.events 
+        'click .add_product': ->
+            new_id = 
+                Docs.insert 
+                    model:'product'
+                    source:'local'
+            Router.go "/product/#{new_id}/edit"
     Template.products.helpers
         product_count: -> Counts.get('product_counter') 
 
@@ -24,6 +35,8 @@ if Meteor.isServer
             return undefined    # otherwise coffeescript returns a Counts.publish
 
 if Meteor.isClient 
+    Template.product_edit.onCreated ->
+        @autorun => @subscribe 'doc_by_id', Router.current().params.doc_id, ->
     Template.product_view.onCreated ->
         @autorun => @subscribe 'doc_by_id', Router.current().params.doc_id, ->
     Template.products.onCreated ->
