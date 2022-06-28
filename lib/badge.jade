@@ -1,0 +1,274 @@
+template(name='badges')
+    .ui.stackable.padded.grid 
+        .four.wide.column.scrolling
+            .ui.inline.header 
+                +i name='exchange'
+                |#{artist_docs.count} badges
+            if current_search 
+                i.large.red.circular.link.remove.icon.clear
+            .ui.large.input 
+                input.badge_search(type='text' placeholder='search...' value=current_search)
+            .ui.header your points #{currentUser.points}
+            a.ui.big.icon.button.new_badge
+                i.big.green.plus.icon
+            +i name='tags'
+            each picked_badges_tags
+                button.ui.blue.compact.circular.button.unpick_tag(tabindex='0')
+                    //- i.remove.icon
+                    | #{this}
+            each badges_tag_results
+                button.ui.circular.compact.black.button.pick_tag(tabindex="0" class=result_class title=count)
+                    |#{name}
+                    // small #{count}
+        .twelve.wide.column
+            unless one_result
+                .ui.inline.header(title='result count') #{result_docs.count}
+                // +search_input key='title'
+                +session_icon_button key='view_mode' value='grid' icon='grid' 
+                +session_icon_button key='view_mode' value='list' icon='list'
+                
+                +sort_direction_toggle
+                // +sort_key_toggle
+                +session_set key='sort_key' value='_timestamp' label='added' icon='clock'
+                +session_set key='sort_key' value='points' label='points' icon='hashtag'
+                +session_set key='sort_key' value='views' label='views' icon='eye'
+                +session_set key='sort_key' value='intFormedYear' label='year started' icon='calendar'
+                // +session_set key='limit' value=10
+                // +session_set key='limit' value=25
+                // +session_set key='limit' value=100
+            .ui.hidden.divider
+            if subs_ready
+                if session_is 'view_mode' 'grid'
+                    .ui.stackable.cards.scrolling
+                        if one_result
+                            .ui.one.cards
+                                each badge_docs 
+                                    +badge_card
+                        else
+                            .ui.cards
+                                each badge_docs 
+                                    +badge_card
+                else
+                    .ui.large.divided.list 
+                        each badge_docs 
+                            +badge_item
+            else 
+                .ui.center.aligned.basic.segment
+                    i.massive.yin.yang.loading.grey.icon
+
+
+template(name='badge_card')
+    .card
+        if image_id 
+            img.ui.image.zoomer(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+        .content
+            .ui.header #{title}
+            span(title='recipient')
+                +i name='lend'
+                with _target
+                    +user_info
+            span.smallscroll
+                |!{description}
+            a.ui.icon.button.zoomer(href="/badge/#{_id}")
+                i.right.large.chevron.icon
+template(name='badge_item')
+    .item.mark_viewed
+        .content
+            if complete
+                span(title='completed')
+                    i.big.green.checkmark.icon 
+                    small {{long_date completion_timestamp}} {{from_now _completion_timestamp}}
+            else 
+                i.big.circle.outline.icon
+            a.ui.inline.header.fly_right(href="/badge/#{_id}") #{title}
+            if image_id 
+                img.ui.small.inline.image.zoomer(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+            span(title='recipient')
+                +i name='lend'
+                with _target
+                    +user_info
+            span.smallscroll
+                |!{description}
+            .ui.label 
+                small created by 
+                |#{_author_username}
+                |#{_when}
+            if due_date 
+                |due #{due_date}
+            i.eye.icon 
+            |#{views} views
+            each viewer_usernames 
+                .ui.label #{this}
+            
+            a.ui.icon.button.zoomer(href="/badge/#{_id}")
+                i.right.large.chevron.icon
+
+template(name='badge_view')
+    with current_doc
+        .ui.stackable.padded.grid
+            .centered.row 
+                .sixteen.wide.column
+                    a.ui.large.compact.button.fly_left(href="/badges")
+                        i.chevron.left.icon
+                        +i name='badges'
+                        |badges
+                    .ui.inline.small.header viewing badge
+                    .ui.big.inline.header #{title}
+                    
+                    a.ui.large.compact.button.fly_down(href="/badge/#{_id}/edit")
+                        i.pencil.icon
+                        |edit
+                    |#{_when}
+                    if complete 
+                        i.big.green.checkmark.icon
+                    else 
+                        i.big.yellow.clock.icon
+                    
+                .five.wide.column
+                    if image_id
+                        img.ui.image(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+
+                    |!{description}
+                    |by
+                    a(href="/user/#{_author.username}") 
+                        img.ui.inline.small.pointer.zoomer.image(src="{{c.url _author.image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+                        .ui.inline.header.pointer.zoomer
+                            |#{_author.name}
+                    if has_bounty
+                        .ui.header bounty amount: #{bounty}
+                    if requires_confirmation 
+                        .ui.header 
+                            +i name='reviewer-female'
+                            |requires confirmation:
+                        +single_user_view key='assignee'
+                    if currentUser.admin_mode
+                        +remove_button
+                        +print_this
+                    .f14
+                        |!{content}
+                    .spacer
+                    
+                    div 
+                    if tags
+                        +i name='tags'
+                        each tags 
+                            .ui.big.basic.circular.label #{this}
+                    .ui.small.header
+                        i.clock.icon
+                        | #{_when}
+                    .spacer
+                    .spacer
+                    if location_tags
+                        +array_view key='location_tags' label='location_tags' 
+                    +viewing_info
+                .eleven.wide.column
+                    unless complete
+                        .ui.button.mark_complete
+                            |mark complete 
+                    if complete 
+                        .ui.button.mark_incomplete
+                            |mark incomplete
+                    .ui.header 
+                        +i name='activity'
+                        |activity
+                    .ui.list
+                        each activity_docs 
+                            .item #{body}
+                                small #{_when}
+                    if group_id 
+                        +group_segment 
+                    if event_id 
+                        +event_segment
+                    +voting_full
+                    .ui.button.clone_badge 
+                        +i name='clone'
+                        |clone
+                    a.fly_right(href="/user/#{_target.username}")
+                        img.ui.circular.centered.fluid.pointer.zoom.image(src="{{c.url _target.image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+                        .ui.large.center.aligned.header.pointer.zoom
+                            |#{_target.name}
+                    +comments
+                                
+
+template(name='badge_edit')
+    with current_doc
+        .ui.stackable.padded.grid
+            .row 
+                .eight.wide.column
+                    .ui.inline.header editing badge
+                    if published
+                        a.ui.green.big.circular.button.save.zoomer.fly_up(href="/badge/#{_id}") 
+                            i.save.large.icon
+                            |save
+                        |published {{long_date published_timestamp}} {{from_now published_timestamp}}
+                        a.ui.yellow.big.circular.button.save.zoomer.fly_up(href="/badge/#{_id}") 
+                            i.undo.large.icon
+                            |unpublish
+                    else 
+                        +save_and_publish_button
+                    +text_edit key='title' label='title'
+                    .ui.segment
+                        .ui.inline.grey.header author
+                        .ui.inline.header
+                            img.ui.small.image(src="{{c.url _author.image_id height=200 width=200 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+                            |#{_author.name}
+                    
+                    +image_edit key='image_id' label='image' icon='image' 
+                    +boolean_edit key='has_assignee' label='has assignee' icon='user' 
+                    if has_assignee
+                        +single_user_edit key='assignee' label='recipient' icon='donate' 
+                    div
+                    +boolean_edit key='has_due_date' label='has date' icon='calendar' 
+                    if has_due_date
+                        +datetime_edit key='due_date' label='due date/time'    
+                    div
+                    +array_edit key='location_tags' label='location tags' icon='marker' 
+                    +boolean_edit key='has_bounty' label='has bounty (pts)' icon='coins'
+                    if has_bounty
+                        +key_value_edit key='bounty' value=10
+                        +key_value_edit key='bounty' value=20
+                        +key_value_edit key='bounty' value=50
+                        +number_edit key='bounty' label='custom bounty'
+                    .spacer
+                .eight.wide.column
+                    +html_edit key='description' label='description'
+                    +group_picker
+                    +boolean_edit key='requires_confirmation' label='requires confirmation' icon='reviewer-female'
+                    if requires_confirmation
+                        +single_user_edit key='verifier' label='verifier' icon='reviewer-female' 
+                    .ui.header
+                        +i name='eye'
+                        |visibility
+                    +boolean_edit key='private' label='private' icon='lock'
+                    if private 
+                        +multi_user_edit key='access_user_ids' label='user picker' 
+                    // +boolean_edit key='has_content' icon='content' 
+                    // if has_content
+                    div
+                                        
+                     
+template(name='user_badges')
+    .ui.inline.header 
+        +i name='badges'
+        |#{user_badge_docs.count} badges
+    .ui.button.assign_badge
+        i.plus.icon
+        |assign badge
+    .ui.header 
+        +i name='pencil'
+        |authored
+    .ui.list 
+        each user_authored_badges
+            a.item.zoomer.fly_right(href="/badge/#{_id}") #{title}, !{description}
+    .ui.header 
+        +i name='assignment-turned-in'
+        |assigned
+    .ui.list 
+        each user_assigned_badges
+            a.item.zoomer.fly_right(href="/badge/#{_id}") #{title}, !{description}
+    .ui.header 
+        |completed
+    .ui.list 
+        each user_assigned_badges
+            a.item.zoomer.fly_right(href="/badge/#{_id}") #{title}, !{description}
+        

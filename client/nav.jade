@@ -89,6 +89,11 @@ template(name='nav')
                 // i.large.fire.icon
                 unless currentUser.hide_labels
                     span.mobile.hidden groups
+            a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/badges" class="{{isActiveRoute regex='group'}}" title='badges')
+                +i name='badge'
+                // i.large.fire.icon
+                unless currentUser.hide_labels
+                    span.mobile.hidden badges
                     
             a.item.zoomer.fly_right.clear_search.mobilehidden(href="/events" class="{{isActiveRoute regex='events'}}" title='events')
                 +i name='calendar'
