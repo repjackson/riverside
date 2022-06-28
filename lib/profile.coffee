@@ -162,6 +162,16 @@ if Meteor.isClient
                 sort:sort_key:-1
             
             
+    Template.user_services.events 
+        'click .add_user_service': ->
+            user = Meteor.users.findOne username:Router.current().params.username
+            new_id = 
+                Docs.insert 
+                    model:'service'
+                    _author_id:user._id
+                    _author_username:user.username
+            Router.go "/service/#{new_id}/edit"
+                    
     Template.user_services.helpers
         user_service_docs: ->
             user = Meteor.users.findOne username:Router.current().params.username

@@ -80,8 +80,9 @@ Docs.before.insert (userId, doc)->
         doc._timestamp_tags = date_array
     unless doc._author_id
         if Meteor.user()
-            doc._author_id = Meteor.userId()
-            doc._author_username = Meteor.user().username
+            unless doc._author_id
+                doc._author_id = Meteor.userId()
+                doc._author_username = Meteor.user().username
     doc.app = 'riverside'
     doc.points = 0
     doc.downvoters = []

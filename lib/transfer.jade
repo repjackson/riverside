@@ -99,7 +99,7 @@ template(name='transfer_view')
         .ui.stackable.padded.grid
             .centered.row 
                 .five.wide.column
-                    a(href="/user/#{_author.username}") 
+                    a(href="/user/#{_author.username}/points") 
                         img.ui.circular.centered.pointer.zoom.image(src="{{c.url _author.image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
                         .ui.large.center.aligned.header.pointer.zoom
                             |#{_author.name}
@@ -124,9 +124,10 @@ template(name='transfer_view')
                         | #{_when}
                     .spacer
                     .spacer
+                    +viewing_info
                     //- +array_view key='location_tags' label='location_tags' 
                 .five.wide.column
-                    a.fly_right(href="/user/#{_target.username}")
+                    a.fly_right(href="/user/#{_target.username}/points")
                         img.ui.circular.centered.fluid.pointer.zoom.image(src="{{c.url _target.image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
                         .ui.large.center.aligned.header.pointer.zoom
                             |#{_target.name}
@@ -150,6 +151,7 @@ template(name='transfer_edit')
                     // +boolean_edit key='has_time' label='has time' icon='clock' 
                     // if has_time
                     +time_edit key='time' label='time'    
+                    +array_edit key='tags' label='tags' icon='tags' 
                     +array_edit key='location_tags' label='location tags' icon='marker' 
                     button.ui.red.button.cancel_transfer
                         i.large.remove.icon
@@ -177,3 +179,57 @@ template(name='transfer_edit')
                                 |send
                                 
                                     
+
+
+template(name='user_points')        
+    .ui.inline.header 
+        +i name='coins'
+        |balance: #{current_user.points}
+    .ui.dividing.header
+        +i name='internal'
+        |points in
+    .ui.selection.animated.link.list
+        each points_in_docs
+            a.item(href="/transfer/#{_id}/")
+                .ui.inline.header #{body} 
+                |#{amount}pts
+                |#{_when}
+                .ui.label 
+                    |from 
+                    |#{_author_username}
+    .ui.dividing.header
+        +i name='donate'
+        |points out
+    .ui.selection.animated.link.list
+        each points_out_docs
+            a.item(href="/transfer/#{_id}/")
+                .ui.inline.header #{body} 
+                |#{amount}pts
+                |#{_when}
+    .ui.dividing.header
+        +i name='donate'
+        |tips
+    .ui.list
+        each tips_docs
+            a.item.fly_left(href="/#{_parent.model}/#{parent_id}")
+                strong #{_parent.title} 
+                small {amount}pts
+    .ui.dividing.header 
+        +i name='news'
+        |posts
+    .ui.small.header publish costs
+    .ui.small.header earned points
+    
+
+    .ui.dividing.header 
+        +i name='chat'
+        |comments
+    .ui.small.header 
+        small comment amount:
+        strong #{comment_count}
+    .ui.small.header 
+        small spent points:
+        strong #{comment_total}
+    // if venmo_image
+    //     img.ui.image(src="{{c.url venmo_image }}")
+            

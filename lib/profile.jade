@@ -359,51 +359,6 @@ template(name='when')
                     
                     
                  
-template(name='user_points')        
-    .ui.inline.header 
-        +i name='coins'
-        |balance: #{current_user.points}
-    .ui.dividing.header
-        +i name='internal'
-        |points in
-    .ui.list
-        each points_in_docs
-            .ui.inline.header #{body} 
-            |{amount}pts
-    .ui.dividing.header
-        +i name='donate'
-        |points out
-    .ui.list
-        each points_out_docs
-            .ui.inline.header #{body} 
-            |{amount}pts
-    .ui.dividing.header
-        +i name='donate'
-        |tips
-    .ui.list
-        each tips_docs
-            a.item.fly_left(href="/#{_parent.model}/#{parent_id}")
-                strong #{_parent.title} 
-                small {amount}pts
-    .ui.dividing.header 
-        +i name='news'
-        |posts
-    .ui.small.header publish costs
-    .ui.small.header earned points
-    
-
-    .ui.dividing.header 
-        +i name='chat'
-        |comments
-    .ui.small.header 
-        small comment amount:
-        strong #{comment_count}
-    .ui.small.header 
-        small spent points:
-        strong #{comment_total}
-    // if venmo_image
-    //     img.ui.image(src="{{c.url venmo_image }}")
-            
     
                  
 template(name='user_products')  
@@ -440,6 +395,8 @@ template(name='user_services')
     .ui.inline.header 
         +i name='wrench'
         |services
+    .ui.button.add_user_service
+        |add service
     .ui.selection.animated.link.list
         each user_service_docs 
             a.item.zoomer.fly_right(href="/doc/#{_id}")

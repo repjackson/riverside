@@ -47,6 +47,24 @@ if Meteor.isClient
                     complete:false
             Router.go "/transfer/#{new_id}/edit"
 
+
+    Template.user_points.onCreated ->
+        @autorun => Meteor.subscribe 'model_docs','transfer', ->
+    Template.user_points.helpers
+        points_in_docs: ->
+            user = Meteor.users.findOne(username:Router.current().params.username)
+            
+            Docs.find 
+                model:'transfer'
+                target_id:user._id
+
+        points_out_docs: ->
+            user = Meteor.users.findOne(username:Router.current().params.username)
+            Docs.find 
+                model:'transfer'
+                _author_id:user._id
+
+
     Template.transfer_view.onCreated ->
         @autorun => @subscribe 'doc_by_id', Router.current().params.doc_id, ->
     Template.transfer_view.onRendered ->

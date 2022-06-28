@@ -1,0 +1,136 @@
+template(name='services')
+    .ui.stackable.padded.grid 
+        .sixteen.wide.column
+            .ui.inline.header 
+                +i name='exchange'
+                |#{artist_docs.count} services
+            if current_search 
+                i.large.red.circular.link.remove.icon.clear
+            .ui.large.input 
+                input.service_search(type='text' placeholder='search...' value=current_search)
+        .four.wide.column.scrolling
+            .ui.header your points #{currentUser.points}
+            a.ui.big.icon.button.new_service
+                i.big.green.plus.icon
+            +i name='tags'
+            each picked_services_tags
+                button.ui.blue.compact.circular.button.unpick_tag(tabindex='0')
+                    //- i.remove.icon
+                    | #{this}
+            each services_tag_results
+                button.ui.circular.compact.black.button.pick_tag(tabindex="0" class=result_class title=count)
+                    |#{name}
+                    // small #{count}
+        .twelve.wide.column
+            unless one_result
+                .ui.inline.header(title='result count') #{result_docs.count}
+                // +search_input key='title'
+                +session_icon_button key='view_mode' value='grid' icon='grid' 
+                +session_icon_button key='view_mode' value='list' icon='list'
+                
+                +sort_direction_toggle
+                // +sort_key_toggle
+                +session_set key='sort_key' value='_timestamp' label='added' icon='clock'
+                +session_set key='sort_key' value='points' label='points' icon='hashtag'
+                +session_set key='sort_key' value='views' label='views' icon='eye'
+                +session_set key='sort_key' value='intFormedYear' label='year started' icon='calendar'
+                // +session_set key='limit' value=10
+                // +session_set key='limit' value=25
+                // +session_set key='limit' value=100
+            .ui.hidden.divider
+            if subs_ready
+                if session_is 'view_mode' 'grid'
+                    .ui.stackable.cards.scrolling.padding
+                        if one_result
+                            .ui.one.cards
+                                each service_docs 
+                                    +service_card
+                        else
+                            .ui.cards
+                                each service_docs 
+                                    +service_card
+                else
+                    .ui.large.divided.list 
+                        each service_docs 
+                            +service_item
+            else 
+                .ui.center.aligned.basic.segment
+                    i.massive.yin.yang.loading.grey.icon
+
+        
+template(name='service_card')
+    .card
+        .content
+            span(title='recipient')
+                +i name='lend'
+                with _target
+                    +user_info
+            .ui.header #{amount}pts
+            .ui.label 
+                i.user.icon
+                |#{_author_username}
+            each tags 
+                .ui.label #{this}
+            span.smallscroll
+                |!{description}
+            .ui.label #{_when}
+            a.ui.icon.button.zoomer(href="/service/#{_id}")
+                i.right.large.chevron.icon
+template(name='service_item')
+    .item
+        .content
+            span(title='recipient')
+                +i name='lend'
+                with _target
+                    +user_info
+            .ui.label 
+                i.clock.icon
+                |#{_when}
+            .ui.label 
+                i.user.icon
+                |#{_author_username}
+            span.smallscroll
+                |!{description}
+            a.ui.icon.button.zoomer(href="/service/#{_id}")
+                i.right.large.chevron.icon
+        
+
+template(name='service_view')
+    .ui.stackable.padded.grid
+        .row 
+            .four.wide.column.scrolling
+                .ui.inline.grey.header {{from_now start_datetime}}
+                .ui.list
+                    .item #{views} views
+                each viewers
+                    .ui.label #{username
+                +array_view key='location_tags' label='location_tags' 
+            .twelve.wide.column.scrolling   
+                .ui.green.button 
+                    |purchase
+
+template(name='service_edit')
+    with current_doc 
+        .ui.stackable.padded.grid
+            .row
+                .sixteen.wide.column
+                    .ui.inline.header 
+                        i.pencil.icon
+                        |editing service
+                    a.ui.green.button(href="/service/#{_id}")
+                        i.save.icon 
+                        |save
+                .eight.wide.column
+                    +text_edit key='title' label='title' 
+                    +image_edit key='image_id' label='image' 
+                    +link_edit key='link' label='external link' 
+                    // div
+                    +float_edit key='price_usd' label='price' icon='us-dollar-circled'
+                    +number_edit key='price_points' label='point price' icon='coins'
+                    // +text_edit key='size_content' label='size description' icon='content'
+                +number_edit key='price' label='price (pts)' icon='coins'
+                +array_edit key='location_tags' label='location tags' icon='marker' 
+                +audience_settings
+                
+                
+                

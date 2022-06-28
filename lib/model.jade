@@ -172,36 +172,6 @@ template(name='message_author_button')
 
 
 
-
-        
-template(name='service_item')
-    .ui.fluid.segment.view_service.pointer
-        
-
-template(name='service_view')
-    .ui.stackable.padded.grid
-        .row 
-            .four.wide.column.scrolling
-                .ui.inline.grey.header {{from_now start_datetime}}
-                .ui.list
-                    .item #{views} views
-                each viewers
-                    .ui.label #{username
-                +array_view key='location_tags' label='location_tags' 
-            .twelve.wide.column.scrolling   
-                .ui.green.button 
-                    |purchase
-
-template(name='service_edit')
-    .ui.stackable.padded.grid
-        .one.column.row 
-            .column.scrollin
-                +number_edit key='price' label='price (pts)' icon='coins'
-                +array_edit key='location_tags' label='location tags' icon='marker' 
-                +audience_settings
-                
-                
-                
                 
 
 
