@@ -42,8 +42,6 @@ template(name='profile_layout')
                                     +profile_nav_item section='products' icon='shopping-cart'
                                     +profile_nav_item section='services' icon='wrench'
                                     +profile_nav_item section='tasks' icon='tasks'
-                                    if is_current_user
-                                        +profile_nav_item section='drafts' icon='save'
                                     +profile_nav_item section='favorites' icon='heart'
                                     +profile_nav_item section='social' icon='friends'
                                     +profile_nav_item section='food' icon='food'
@@ -53,6 +51,9 @@ template(name='profile_layout')
         +footer     
                             
 template(name='user_dashboard')    
+    if is_current_user
+        .ui.segment
+            +user_drafts
     +user_posts
     .ui.one.column.grid
         .column
@@ -323,7 +324,7 @@ template(name='user_drafts')
                 .item
                     .content
                         .inline.header
-                            a.inline.fly_up(href="/doc/#{_id}")
+                            a.inline.fly_up(href="/#{model}/#{_id}")
                                 img.ui.avatar.image(src="{{c.url image_id height=300 width=300 crop='crop'}}")
                                 .ui.inline.header #{title}
                             +when

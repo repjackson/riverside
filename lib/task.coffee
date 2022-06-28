@@ -53,6 +53,33 @@ if Meteor.isClient
                     complete:false
             Router.go "/task/#{new_id}/edit"
 
+    Template.task_item.events
+        'click .mark_viewed': ->
+            unless @viewer_ids and Meteor.userId() in @viewer_ids
+                Docs.update @_id, 
+                    $addToSet:
+                        viewer_ids:Meteor.userId()
+                        viewer_usernames:Meteor.user().username
+                    $set:
+                        last_viewed:Date.now()
+                    $inc:
+                        views:1
+                $('body').toast({
+                    title: "mark viewed"
+                    # message: 'Please see desk staff for key.'
+                    class : 'black'
+                    showIcon: 'eye'
+                    position:'bottom right'
+                    # className:
+                    #     toast: 'ui massive message'
+                    # displayTime: 5000
+                    transition:
+                      showMethod   : 'zoom',
+                      showDuration : 250,
+                      hideMethod   : 'fade',
+                      hideDuration : 250
+                    })
+            
     Template.user_tasks.onCreated ->
         @autorun => Meteor.subscribe 'model_docs', 'task', ->
     Template.user_tasks.helpers
