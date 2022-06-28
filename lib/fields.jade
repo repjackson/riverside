@@ -983,12 +983,9 @@ template(name='single_user_edit')
         if user_results
             .ui.attached.segment
                 each user_results
-                    a.select_user.ui.button(href='#')
-                        .ui.small.inline.header
-                            img.ui.avatar.image(src="{{c.url image_id width=100 height=100 gravity='face' crop='fill'}}" class=currentUser.invert_class)
-                            |#{first_name} #{last_name}
-                        .ui.mini.grey.inline.header 
-                            |#{username}
+                    a.select_user.ui.image.big.label(href='#')
+                        img.ui.image(src="{{c.url image_id width=100 height=100 gravity='face' crop='fill'}}" class=currentUser.invert_class)
+                        |#{first_name} #{last_name} @#{username}
         .ui.button.add_user 
             |add user: #{current_user_search}
     if picked_user

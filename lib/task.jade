@@ -105,6 +105,11 @@ template(name='task_item')
 
 template(name='task_view')
     with current_doc
+        if background_image_id
+            img.ui.image.checkin_banner(src="{{c.url background_image_id height=1000 crop='crop'}}")
+        else 
+            img.ui.image.checkin_banner(src="{{c.url image_id height=1000 crop='crop'}}")
+    
         .ui.stackable.padded.grid
             .centered.row 
                 .sixteen.wide.column
@@ -192,6 +197,10 @@ template(name='task_view')
 
 template(name='task_edit')
     with current_doc
+        if background_image_id
+            img.ui.image.checkin_banner(src="{{c.url background_image_id height=1000 crop='crop'}}")
+        else 
+            img.ui.image.checkin_banner(src="{{c.url image_id height=1000 crop='crop'}}")
         .ui.stackable.padded.grid
             .row 
                 .eight.wide.column

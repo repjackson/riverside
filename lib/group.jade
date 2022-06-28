@@ -59,9 +59,9 @@ template(name='groups')
                     //         each group_results 
                     //             +group_card_big
                     // else
-                    .ui.centered.cards
+                    .ui.divided.items
                         each group_results 
-                            +group_card
+                            +group_item
                 // else 
                 //     .ui.basic.center.aligned.segment 
                 //         i.massive.loading.fire.icon
@@ -198,9 +198,6 @@ template(name='group_membership')
     //     |#{member_ids.length} members
     // each member_ids
     //     +user_info
-
-
-    
     
 template(name='group_section')
     +Template.dynamic template=section_template
@@ -269,9 +266,9 @@ template(name='group_related')
         .ui.header 
             +i name='connect'
             |related groups 
-        .ui.cards
+        .ui.items
             each related_group_docs
-                +group_card
+                +group_item
 
           
           
@@ -387,13 +384,16 @@ template(name='group_events')
 
 template(name='group_edit')
     with current_doc
+        if background_image_id
+            img.ui.image.checkin_banner(src="{{c.url background_image_id height=1000 crop='crop'}}")
+        else 
+            img.ui.image.checkin_banner(src="{{c.url image_id height=1000 crop='crop'}}")
         .ui.stackable.padded.grid
             .row
                 .eight.wide.column
                     if in_dev 
                         +print_this
-                    +model_label
-                
+                    +i name='campfire'
                     .ui.inline.header 
                         +i name='pencil'
                         |editing #{model}: #{title}
@@ -486,8 +486,8 @@ template(name='group_edit')
                     +text_edit key='source' label='source' icon='info' 
                     +boolean_edit key='private' label='private' 
                    
-template(name='group_card')
-    .ui.card.alpha
+template(name='group_item')
+    .ui.item.alpha
         // if background_image_id
         //     img.ui.image.item_background(src="{{c.url background_image_id height=1000 crop='crop'}}")
         // else if image_id
@@ -496,14 +496,13 @@ template(name='group_card')
             +youtube_view key='youtube_id'
         else if image_id
             a.ui.image.fly_right.zoomer(href="/group/#{_id}")
-                img(src="{{c.url image_id height=300 width=500 crop='fit'}}" class=currentUser.invert_class)
-        .content
-            // +model_label
-            if published 
-                i.green.eye.icon.invert(title='published')
-            else 
-                i.yellow.save.icon.invert(title='draft')
-            a.ui.inline.header.fly_right(href="/group/#{_id}") #{title}
+                img.ui.small.inline.image(src="{{c.url image_id height=300 width=500 crop='fit'}}" class=currentUser.invert_class)
+        // +model_label
+        if published 
+            i.green.eye.icon.invert(title='published')
+        else 
+            i.yellow.save.icon.invert(title='draft')
+        a.ui.inline.header.fly_right(href="/group/#{_id}") #{title}
         .content
             .right.floated.meta
                 |#{_when}

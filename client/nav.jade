@@ -54,7 +54,7 @@ template(name='nav')
                         i.user.icon
                     strong #{currentUser.username}
                     |&nbsp;
-                a.fly_up.zoomer.item.tada(href="/user/#{currentUser.username}" title='bank' class="{{isActiveRoute 'user_points'}}" )
+                a.fly_up.zoomer.item.tada(href="/user/#{currentUser.username}/points" title='bank' class="{{isActiveRoute 'user_points'}}" )
                     |{{points_to_coins currentUser.points}}c
                 a.icon.item.zoomer.fly_down.add(href='/add' title='add doc')
                     +i name='plus'
@@ -89,7 +89,7 @@ template(name='nav')
                 // i.large.fire.icon
                 unless currentUser.hide_labels
                     span.mobile.hidden groups
-            a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/badges" class="{{isActiveRoute regex='group'}}" title='badges')
+            a.item.mobile.hidden.zoomer.fly_right.clear_search.mobilehidden(href="/badges" class="{{isActiveRoute regex='badge'}}" title='badges')
                 +i name='badge'
                 // i.large.fire.icon
                 unless currentUser.hide_labels

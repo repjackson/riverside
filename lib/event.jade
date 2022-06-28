@@ -42,7 +42,7 @@ template(name='event_layout')
         +nav
         .ui.bottom.attached.pushable.segment.scrollin.fullheight(class=darkmode_class)
             // img.ui.fluid.image.checkin_banner(src="{{c.url 'frontrange' width=1000 height=1000 crop='crop'}}")
-            +topbar
+            // +topbar
             +leftbar
             +rightbar
             .scrolling
@@ -81,11 +81,14 @@ template(name='event_layout')
                         .five.wide.column
                             +event_sidebar
                             
-                        .eleven.wide.column
-                            div
-                            +yield
+                        .eleven.wide.column.scrolling
+                            div.scrolling
+                                +yield
     +footer
     
+    
+template(name='event_segment')
+    .ui.header event id: #{event_id}
     
 template(name='event_sidebar')
     if image_id 
@@ -377,14 +380,14 @@ template(name='event_edit')
                     +i name='pencil'
                     |editing #{model}: #{title}
                 if published
-                    a.ui.big.icon.fluid.green.button.zoom.zoomer(href="/doc/#{_id}" title='save')
+                    a.ui.big.icon.fluid.green.button.zoom.zoomer(href="/event/#{_id}" title='save')
                         i.checkmark.big.icon
                 else 
-                    a.ui.large.green.button.zoom.zoomer.publish(href="/doc/#{_id}" title='save & publish')
+                    a.ui.large.green.button.zoom.zoomer.publish(href="/event/#{_id}" title='save & publish')
                         i.checkmark.big.icon
                         i.eye.big.icon
                         |save and publish -10p
-                    a.ui.large.icon.yellow.button.zoom.zoomer(href="/doc/#{_id}" title='save')
+                    a.ui.large.icon.yellow.button.zoom.zoomer(href="/event/#{_id}" title='save')
                         i.save.big.icon
                         |save draft                       
                 // +boolean_edit key='published' label='published (-10)' 
@@ -538,7 +541,7 @@ template(name='event_card')
                     i.eye.grey.icon
         .content
             |#{event_tickets.count}
-            a(href="/doc/#{_id}" title='ticket purchase required')
+            a(href="/event/#{_id}" title='ticket purchase required')
                 i.checkmark.green.link.icon
             | #{going_ids.count}
             each going_ids
@@ -790,7 +793,7 @@ template(name='user_events')
             .item
                 .content
                     .header
-                        a.inline.fly_up(href="/doc/#{_id}")
+                        a.inline.fly_up(href="/event/#{_id}")
                             img.ui.avatar.image(src="{{c.url image_id height=300 width=300 crop='crop'}}")
                             .ui.inline.header #{title}
                     .description

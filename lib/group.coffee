@@ -29,7 +29,7 @@ if Meteor.isClient
 
     Template.group_members_small.onCreated ->
         @autorun => Meteor.subscribe 'group_memberships', Router.current().params.doc_id, ->
-    Template.group_card.events
+    Template.group_item.events
         'click .flat_group_tag_pick': -> 
             picked_tags.push @valueOf()
     Template.group_members_small.helpers

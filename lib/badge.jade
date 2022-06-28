@@ -38,46 +38,14 @@ template(name='badges')
                 // +session_set key='limit' value=100
             .ui.hidden.divider
             if subs_ready
-                if session_is 'view_mode' 'grid'
-                    .ui.stackable.cards.scrolling
-                        if one_result
-                            .ui.one.cards
-                                each badge_docs 
-                                    +badge_card
-                        else
-                            .ui.cards
-                                each badge_docs 
-                                    +badge_card
-                else
-                    .ui.large.divided.list 
-                        each badge_docs 
-                            +badge_item
+                .ui.large.divided.list 
+                    each badge_docs 
+                        +badge_item
             else 
                 .ui.center.aligned.basic.segment
                     i.massive.yin.yang.loading.grey.icon
 
 
-template(name='badge_card')
-    .card
-        if image_id 
-            img.ui.image.zoomer(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
-        .content
-            .ui.header #{title}
-            each owner_docs 
-                .ui.label #{username}
-            if bounty 
-                .ui.inline.header bounty: #{bounty}
-            span.smallscroll
-                |!{description}
-            i.eye.icon 
-            |#{views} views
-            each viewer_usernames 
-                .ui.label #{this}
-
-            a.ui.icon.button.zoomer(href="/badge/#{_id}")
-                i.right.large.chevron.icon
-            
-            
 template(name='badge_item')
     .item.mark_viewed
         .content
@@ -90,7 +58,6 @@ template(name='badge_item')
             a.ui.inline.header.fly_right(href="/badge/#{_id}") #{title}
             if image_id 
                 img.ui.small.inline.image.zoomer(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
-            .ui.header #{title}
             each owner_docs 
                 .ui.label #{username}
             if bounty 
@@ -118,7 +85,7 @@ template(name='badge_view')
                 .sixteen.wide.column
                     a.ui.large.compact.button.fly_left(href="/badges")
                         i.chevron.left.icon
-                        +i name='badges'
+                        +i name='badge'
                         |badges
                     .ui.inline.small.header viewing badge
                     .ui.big.inline.header #{title}
