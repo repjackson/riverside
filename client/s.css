@@ -440,18 +440,11 @@ body {
     /*color: black !important;*/
     /*background-color: darkgrey !important; */
     /*box-shadow: inset 5px 5px 10px #333 !important; */
-    /*transition: all 5s ease !important;*/
+    transition: all .5s ease !important;
     transform: translate(0, 4px) !important; 
     
     /*border-radius: 15px !important;*/
     /*box-shadow: 5px 5px 5px 5px grey !important; */
-}
-.
-{
-    /*border-radius: 15px !important;*/
-    /*color: black !important;*/
-    /*background-color: darkgrey !important; */
-    /*box-shadow: inset 5px 5px 10px #333 !important; */
 }
 
 .home_segment{

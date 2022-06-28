@@ -221,6 +221,12 @@ template(name='profile_sidebar')
         |#{points} pts
     +link_view key='link' icon='globe'
     +online_label
+    if roles 
+        .ui.small.inline.header 
+            +i name='shield'
+            |roles
+        each roles 
+            .ui.label #{this}
     if linkedin_link
         a.ui.circular.icon.large.compact.button.zoomers.pointer(href=linkedin_link target='_window' title='view linkedin profile')
             +i name='linkedin'

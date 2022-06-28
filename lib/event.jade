@@ -251,9 +251,11 @@ template(name='event_tasks')
             .ui.header task quick add 
             with adding_doc 
                 +text_edit key='title'
-    each event_task_docs
-        a.item.fly_right(href="/task/#{_id}") #{title}
-            |#{when}
+    .ui.selection.animated.list
+        each event_task_docs
+            a.item.fly_right(href="/task/#{_id}")
+                .header #{title}
+                    |#{when} by #{_author_username}
             
             
 template(name='event_related')
@@ -380,7 +382,7 @@ template(name='event_events')
 template(name='event_edit')
     with current_doc
         .ui.stackable.padded.grid 
-            .eight.wide.column.scrolling
+            .six.wide.column.scrolling
                 if in_dev 
                     +print_this
                 +model_label
@@ -474,7 +476,7 @@ template(name='event_edit')
                     +number_edit key='max_attendees' label='max attendees' min='0' max='100' 
                     +boolean_edit key='friends_only' label='friends only' icon='campfire' 
                     // div
-            .eight.wide.column.scrolling
+            .six.wide.column.scrolling
                 +boolean_edit key='has_tasks' label='has tasks' icon='tasks' 
                 +multi_user_edit key='going' label='going users' icon='checkmark'
                 +multi_user_edit key='maybe' label='maybe users' icon='question'
@@ -505,6 +507,7 @@ template(name='event_edit')
                 if has_support
                     +single_user_edit key='support_id' label='support' icon='chess queen' 
                 div 
+            .four.wide.column
                 .ui.segment
                     +boolean_edit key='has_tickets' label='has tickets' icon='ticket' 
                     if has_tickets
