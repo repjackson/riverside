@@ -102,6 +102,11 @@ if Meteor.isClient
             Session.get('sort_direction')
             Session.get('limit')
     Template.groups.events
+        'click .add_group': ->
+            new_id = 
+                Docs.insert 
+                    model:'group'
+            Router.go "/group/#{new_id}/edit"
         'click .pick_group_tag': -> 
             picked_tags.push @name
         'click .unpick_group_tag': -> picked_tags.remove @valueOf()

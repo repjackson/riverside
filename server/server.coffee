@@ -54,6 +54,17 @@ Meteor.publish 'author_by_id', (doc_id)->
     if doc and doc._author_id
         Meteor.users.find(doc._author_id)
     
+Meteor.publish 'all_users_min', ()->
+    Meteor.users.find({},
+        fields:
+            username:1
+            image_id:1
+            first_name:1
+            last_name:1
+            points:1
+            tags:1
+    )
+
 Meteor.publish 'group_by_doc_id', (doc_id)->
     doc = Docs.findOne doc_id
     if doc and doc.group_id

@@ -5,10 +5,13 @@ template(name='groups')
             //     +i name='cube'
             //     |#{post_docs.count} docs
             // +facet key='doc_sentiment_label' icon='happy'
-        .sixteen.wide.column
+        .four.wide.column
             .ui.inline.header
-                +i name='fire'
+                +i name='campfire'
                 |groups
+            .ui.button.add_group
+                i.plus.icon
+                |add
             // +facet key='tag'
             each picked_group_tags
                 .ui.active.button.unpick_group_tag
@@ -37,7 +40,7 @@ template(name='groups')
             // +facet key='timestamp_tag' icon='clock' label='added'
             // +session_boolean_toggle key='view_mine' label='mine' icon='user'
             // +session_boolean_toggle key='view_private' label='private' icon='lock'
-        .sixteen.wide.column
+        .twelve.wide.column
             unless one_result
                 .ui.inline.header(title='result count') #{result_docs.count}
                 +sort_direction_toggle
@@ -82,7 +85,8 @@ template(name='group_layout')
                         .sixteen.wide.column
                             a.ui.circular.icon.button.fly_left(href="/groups" title="back to groups")
                                 i.chevron.left.icon
-                                +model_label
+                                +i name='campfire'
+                                |groups
                             .ui.large.inline.header 
                                 //- small viewing
                                 | #{title}
@@ -101,7 +105,7 @@ template(name='group_layout')
                         .five.wide.column
                             +group_sidebar
                             
-                        .eleven.wide.column
+                        .eleven.wide.column.scrolling
                             div
                             +yield
     +footer
@@ -397,10 +401,7 @@ template(name='group_edit')
                         a.ui.big.icon.fluid.green.button.zoom.zoomer(href="/group/#{_id}" title='save')
                             i.checkmark.big.icon
                     else 
-                        a.ui.large.green.button.zoom.zoomer.publish(href="/group/#{_id}" title='save & publish')
-                            i.checkmark.big.icon
-                            i.eye.big.icon
-                            |save and publish -10p
+                        +save_and_publish_button
                         a.ui.large.icon.yellow.button.zoom.zoomer(href="/group/#{_id}" title='save')
                             i.save.big.icon
                             |save draft                       
@@ -502,7 +503,7 @@ template(name='group_card')
                 i.green.eye.icon.invert(title='published')
             else 
                 i.yellow.save.icon.invert(title='draft')
-            a.ui.inline.header.fly_right(href="/group/#{title}") #{title}
+            a.ui.inline.header.fly_right(href="/group/#{_id}") #{title}
         .content
             .right.floated.meta
                 |#{_when}

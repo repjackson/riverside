@@ -35,6 +35,30 @@ if Meteor.isClient
             
     Template.task_edit.onCreated ->
         @autorun => @subscribe 'doc_by_id', Router.current().params.doc_id, ->
+    Template.save_and_publish_button.events
+        'click .save_and_publish': ->
+            Docs.update @_id, 
+                $set:
+                    published:true
+                    published_timestamp:Date.now()
+                    published_user_id:Meteor.userId()
+                    published_username:Meteor.user().username
+            $('body').toast({
+                title: "published"
+                # message: 'Please see desk staff for key.'
+                class : 'green'
+                showIcon: 'eye'
+                position:'bottom right'
+                # className:
+                #     toast: 'ui massive message'
+                # displayTime: 5000
+                transition:
+                  showMethod   : 'zoom',
+                  showDuration : 250,
+                  hideMethod   : 'fade',
+                  hideDuration : 250
+                })
+
     Template.task_view.onCreated ->
         @autorun => @subscribe 'doc_by_id', Router.current().params.doc_id, ->
         @autorun => @subscribe 'child_docs', Router.current().params.doc_id, ->
@@ -120,6 +144,16 @@ if Meteor.isClient
                 model:'log'
                 parent_id:Router.current().params.doc_id
     Template.task_view.events 
+        'click .clone_task': ->
+            new_id = 
+                Docs.insert 
+                    model:'task'
+                    title:@title
+                    image_id:@image_id
+                    tags:@tags
+                    parent_id:@_id
+                    group_id:@group_id
+            Router.go "/task/#{new_id}/edit"
         'click .mark_complete': ->
             Docs.update Router.current().params.doc_id, 
                 $set:

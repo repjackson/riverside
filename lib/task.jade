@@ -196,9 +196,16 @@ template(name='task_edit')
             .row 
                 .eight.wide.column
                     .ui.inline.header editing task
-                    a.ui.green.big.circular.button.save.zoomer.fly_up(href="/task/#{_id}") 
-                        i.save.large.icon
-                        |save
+                    if published
+                        a.ui.green.big.circular.button.save.zoomer.fly_up(href="/task/#{_id}") 
+                            i.save.large.icon
+                            |save
+                        |published {{long_date published_timestamp}} {{from_now published_timestamp}}
+                        a.ui.yellow.big.circular.button.save.zoomer.fly_up(href="/task/#{_id}") 
+                            i.undo.large.icon
+                            |unpublish
+                    else 
+                        +save_and_publish_button
                     +text_edit key='title' label='title'
                     .ui.segment
                         .ui.inline.grey.header author
@@ -239,7 +246,13 @@ template(name='task_edit')
                     // if has_content
                     div
                                         
-                                        
+                     
+                     
+template(name='save_and_publish_button')
+    a.ui.green.big.circular.button.save_and_publish.zoomer.fly_up(href="/#{model}/#{_id}") 
+        i.save.large.icon
+        |save and publish
+
 
 template(name='user_tasks')
     .ui.inline.header 
