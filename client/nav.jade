@@ -219,13 +219,13 @@ template(name='rightbar')
                 +i name='dashboard'
                 // i.dashboard.icon
                 |dashboard
-            a.item.zoomer.toggle_darkmode
-                if darkmode
-                    +i name='checkmark'
-                else
-                    +i name='light'
-                |dark mode
-            +right_nav_item route='credit' label='credit' icon='money'
+            // a.item.zoomer.toggle_darkmode
+            //     if darkmode
+            //         +i name='checkmark'
+            //     else
+            //         +i name='light'
+            //     |dark mode
+            +right_nav_item route='points' label='points' icon='coins'
             +right_nav_item route='orders' label='orders' icon='check'
             // +right_nav_item route='subscriptions' label='subscriptions' icon='check'
             +right_nav_item route='friends' label='friends' icon='friends'
