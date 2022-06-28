@@ -18,6 +18,10 @@ template(name='events')
                     // small #{count}
 
         .sixteen.wide.column.scrolling
+            +sort_direction_toggle
+            +session_set key='sort_key' value='_timestamp' label='created' icon='clock'
+            +session_set key='sort_key' value='_author_username' label='author' icon='user-male'
+            +session_set key='sort_key' value='group_title' label='group' icon='campfire'
             if subs_ready
                 if one_event
                     each event_docs
@@ -242,6 +246,11 @@ template(name='event_tasks')
     .ui.button.add_event_task
         i.large.plus.icon
         |add task
+    if session_get 'viewing_quickadd'
+        .ui.segment 
+            .ui.header task quick add 
+            with adding_doc 
+                +text_edit key='title'
     each event_task_docs
         a.item.fly_right(href="/task/#{_id}") #{title}
             |#{when}

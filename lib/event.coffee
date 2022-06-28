@@ -71,19 +71,27 @@ if Meteor.isClient
             Docs.find   
                 model:'room'
 
+    Template.event_tasks.onCreated ->
+        @autorun => Meteor.subscribe 'model_docs','task', ->
     Template.event_tasks.helpers 
         event_task_docs: ->
             Docs.find 
                 model:'task'
                 parent_id:Router.current().params.doc_id
+        adding_doc: ->
+            Docs.findOne Session.get('viewing_quickadd')
     Template.event_tasks.events
         'click .add_event_task': ->
-            new_id = 
-                Docs.insert 
-                    model:'task'
-                    parent_id:Router.current().params.doc_id
-                    event_id:Router.current().params.doc_id
-            Router.go "/task/#{new_id}/edit"
+            if Session.get('viewing_quickadd')
+                Session.set('viewing_quickadd',false)
+            else 
+                new_task_id = 
+                    Docs.insert 
+                        model:'task'
+                        event_id:Router.current().params.doc_id
+                        parent_id:Router.current().params.doc_id
+                Session.set('viewing_quickadd',new_task_id)
+                        
             
     Template.event_edit.helpers
         reservation_exists: ->
