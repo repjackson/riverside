@@ -46,9 +46,11 @@ if Meteor.isClient
         # @autorun => @subscribe 'model_docs','artist', ->
         @autorun => @subscribe 'product_facets',
             picked_tags.array()
+            Session.get('picked_source')
             Session.get('product_search')
         @autorun => @subscribe 'product_results',
             picked_tags.array()
+            Session.get('picked_source')
             Session.get('product_search')
 
     Template.product_view.onRendered ->
@@ -289,6 +291,7 @@ if Meteor.isServer
 if Meteor.isServer
     Meteor.publish 'product_facets', (
         picked_tags=[]
+        picked_source='local'
         title_search=''
         )->
     
@@ -297,6 +300,7 @@ if Meteor.isServer
     
             # match.tags = $all: picked_tags
             match.model = $in:['product']
+            match.source = picked_source
             # if parent_id then match.parent_id = parent_id
     
             # if view_private is true
@@ -308,9 +312,6 @@ if Meteor.isServer
             #     match.published = $in: [0,1]
     
             if picked_tags.length > 0 then match.tags = $all: picked_tags
-            # if picked_styles.length > 0 then match.strStyle = $all: picked_styles
-            # if picked_moods.length > 0 then match.strMood = $all: picked_moods
-            # if picked_genres.length > 0 then match.strGenre = $all: picked_genres
 
             total_count = Docs.find(match).count()
             # console.log 'total count', total_count
@@ -339,12 +340,14 @@ if Meteor.isServer
 
     Meteor.publish 'product_results', (
         picked_tags=[]
+        picked_source='local'
         title_search=''
         )->
         self = @
         match = {}
         match.model = $in:['product']
-        
+        match.source = picked_source
+
         if picked_tags.length > 0 then match.tags = $all: picked_tags
         if title_search.length > 1
             match.title = {$regex:"#{title_search}", $options: 'i'}

@@ -28,6 +28,8 @@ template(name='products')
             +session_icon_button key='view_mode' value='list' icon='list'
         
             unless one_result
+                +session_set key='picked_source' value='local' label='local' icon='clock'
+                +session_set key='picked_source' value='spoonacular' label='db' icon='globe'
                 .ui.inline.header(title='result count') #{result_docs.count}
                 +sort_direction_toggle
                 // +sort_key_toggle
@@ -140,6 +142,7 @@ template(name='product_view')
                     +i name='product'
                     |shop
                 .ui.inline.header !{title}
+                .ui.big.label source: #{source}
                 with details
                     each breadcrumbs 
                         .ui.label.pick_product_tag #{this}
@@ -147,7 +150,6 @@ template(name='product_view')
                     .item 
                         |#{servings}
                         |servings
-                        
             .eight.wide.column
                 img(src=image)
                 +comments
