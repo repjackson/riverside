@@ -2,8 +2,8 @@ template(name='badges')
     .ui.stackable.padded.grid 
         .four.wide.column.scrolling
             .ui.inline.header 
-                +i name='exchange'
-                |#{artist_docs.count} badges
+                +i name='badge'
+                |#{badge_count} badges
             if current_search 
                 i.large.red.circular.link.remove.icon.clear
             .ui.large.input 
@@ -63,19 +63,26 @@ template(name='badge_card')
             img.ui.image.zoomer(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
         .content
             .ui.header #{title}
-            span(title='recipient')
-                +i name='lend'
-                with _target
-                    +user_info
+            each owner_docs 
+                .ui.label #{username}
+            if bounty 
+                .ui.inline.header bounty: #{bounty}
             span.smallscroll
                 |!{description}
+            i.eye.icon 
+            |#{views} views
+            each viewer_usernames 
+                .ui.label #{this}
+
             a.ui.icon.button.zoomer(href="/badge/#{_id}")
                 i.right.large.chevron.icon
+            
+            
 template(name='badge_item')
     .item.mark_viewed
         .content
-            if complete
-                span(title='completed')
+            if achieved
+                span(title='achieved')
                     i.big.green.checkmark.icon 
                     small {{long_date completion_timestamp}} {{from_now _completion_timestamp}}
             else 
@@ -83,18 +90,19 @@ template(name='badge_item')
             a.ui.inline.header.fly_right(href="/badge/#{_id}") #{title}
             if image_id 
                 img.ui.small.inline.image.zoomer(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
-            span(title='recipient')
-                +i name='lend'
-                with _target
-                    +user_info
+            .ui.header #{title}
+            each owner_docs 
+                .ui.label #{username}
+            if bounty 
+                .ui.inline.header bounty: #{bounty}
+            span.smallscroll
+                |!{description}
             span.smallscroll
                 |!{description}
             .ui.label 
                 small created by 
                 |#{_author_username}
                 |#{_when}
-            if due_date 
-                |due #{due_date}
             i.eye.icon 
             |#{views} views
             each viewer_usernames 
@@ -119,7 +127,7 @@ template(name='badge_view')
                         i.pencil.icon
                         |edit
                     |#{_when}
-                    if complete 
+                    if earned 
                         i.big.green.checkmark.icon
                     else 
                         i.big.yellow.clock.icon
@@ -162,12 +170,15 @@ template(name='badge_view')
                         +array_view key='location_tags' label='location_tags' 
                     +viewing_info
                 .eleven.wide.column
-                    unless complete
-                        .ui.button.mark_complete
-                            |mark complete 
-                    if complete 
-                        .ui.button.mark_incomplete
-                            |mark incomplete
+                    unless earned
+                        .ui.button.mark_earned
+                            |mark earned 
+                    if earned 
+                        .ui.button.mark_unearned
+                            |mark unearned
+                    .ui.header earners
+                    each earner_usernames
+                        .ui.label #{this}
                     .ui.header 
                         +i name='activity'
                         |activity
@@ -249,7 +260,7 @@ template(name='badge_edit')
                      
 template(name='user_badges')
     .ui.inline.header 
-        +i name='badges'
+        +i name='badge'
         |#{user_badge_docs.count} badges
     .ui.button.assign_badge
         i.plus.icon

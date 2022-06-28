@@ -116,11 +116,24 @@ if Meteor.isClient
 
 
     Template.badge_view.helpers 
+        earned: ->
+            @earner_ids and Meteor.userId() in @earner_ids
         activity_docs: ->
             Docs.find 
                 model:'log'
                 parent_id:Router.current().params.doc_id
     Template.badge_view.events 
+        'click .mark_earned': ->
+            Docs.update @_id, 
+                $addToSet:
+                    earner_ids:Meteor.userId()
+                    earner_usernames:Meteor.user().username
+        'click .mark_unearned': ->
+            Docs.update @_id, 
+                $pull:
+                    earner_ids:Meteor.userId()
+                    earner_usernames:Meteor.user().username
+                
         'click .clone_badge': ->
             new_id = 
                 Docs.insert 
