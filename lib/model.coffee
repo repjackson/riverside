@@ -435,14 +435,14 @@ if Meteor.isClient
             Router.go "/doc/#{@_id}"
     Template.task_item.events
         'click .view_task': ->
-            Router.go "/doc/#{@_id}"
+            Router.go "/task/#{@_id}"
 
     
     
     Template.task_edit.events
         'click .delete_task': ->
             Docs.remove @_id
-            Router.go "/docs"
+            Router.go "/tasks"
 
 
 

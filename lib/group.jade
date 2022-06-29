@@ -503,10 +503,9 @@ template(name='group_item')
         else 
             i.yellow.save.icon.invert(title='draft')
         a.ui.inline.header.fly_right(href="/group/#{_id}") #{title}
-        .content
-            .right.floated.meta
-                |#{_when}
-                // +when_label
+        span.content
+            |#{_when}
+            // +when_label
             span(title='author')
                 img.ui.avatar.image(src="{{c.url _author.image_id height=300 width=300 gravity='face' crop='fill'}}" class=currentUser.invert_class)
                 |#{_author.username}
@@ -525,7 +524,6 @@ template(name='group_item')
             // if can_edit
             //     a.ui.circular.icon.button(href="/group/#{_id}/edit")
             //         i.pencil.blue.icon
-        .content
             if is_dev
                 +print_this
             +voting

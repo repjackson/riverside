@@ -26,10 +26,10 @@ if Meteor.isClient
             # console.log 'hi'
             Docs.findOne Router.current().params.doc_id
     
-    Router.route '/doc/:doc_id/', (->
-        @layout 'layout'
-        @render 'doc_view'
-        ), name:'doc_view'
+    # Router.route '/doc/:doc_id/', (->
+    #     @layout 'layout'
+    #     @render 'doc_view'
+    #     ), name:'doc_view'
         
         
     Template.doc_view.onRendered ->

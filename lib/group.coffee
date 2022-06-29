@@ -720,7 +720,7 @@ if Meteor.isClient
                 Docs.insert 
                     model:'event'
                     group_id:Router.current().params.doc_id
-            Router.go "/doc/#{new_id}/edit"
+            Router.go "/event/#{new_id}/edit"
         'click .join': ->
             if Meteor.user()
                 doc = Docs.findOne Router.current().params.doc_id

@@ -26,7 +26,7 @@ if Meteor.isClient
                 Docs.insert 
                     model:@model
                     published:false
-            Router.go "/doc/#{new_id}/edit"
+            Router.go "/#{@model}/#{new_id}/edit"
             
             
     Template.publish_button.events 

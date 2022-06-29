@@ -48,14 +48,14 @@ template(name='doc_edit_leftbar')
         +i name='pencil'
         |editing #{model}: #{title}
     if published
-        a.ui.big.icon.fluid.green.button.zoom.zoomer(href="/doc/#{_id}" title='save')
+        a.ui.big.icon.fluid.green.button.zoom.zoomer(href="/#{model}/#{_id}" title='save')
             i.checkmark.big.icon
     else 
-        a.ui.large.green.button.zoom.zoomer.publish(href="/doc/#{_id}" title='save & publish')
+        a.ui.large.green.button.zoom.zoomer.publish(href="/#{model}/#{_id}" title='save & publish')
             i.checkmark.big.icon
             i.eye.big.icon
             |save and publish -10p
-        a.ui.large.icon.yellow.button.zoom.zoomer(href="/doc/#{_id}" title='save')
+        a.ui.large.icon.yellow.button.zoom.zoomer(href="/#{model}/#{_id}" title='save')
             i.save.big.icon
             |save draft                       
     // +boolean_edit key='published' label='published (-10)' 

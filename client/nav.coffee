@@ -131,9 +131,9 @@ Template.nav.events
         Session.set('current_search',null)
         picked_tags.clear()
         Session.set('limit',10)
-    'click .add': ->
-        new_id = Docs.insert {}
-        Router.go "/doc/#{new_id}/edit"
+    # 'click .add': ->
+    #     new_id = Docs.insert {}
+    #     Router.go "/doc/#{new_id}/edit"
     'mouseenter img': (e)->
         # console.log 'hi'
         $(e.currentTarget).closest('.image').addClass('spinning')
@@ -158,10 +158,10 @@ Template.nav.events
         $('.ui.toast').toast('close')
         Meteor.call 'mark_unread_logs_read', ->
 
-    'click .add_doc': ->
-        new_id = 
-            Docs.insert {model:Session.get('model')}
-        Router.go "/doc/#{new_id}/edit"
+    # 'click .add_doc': ->
+    #     new_id = 
+    #         Docs.insert {model:Session.get('model')}
+    #     Router.go "/doc/#{new_id}/edit"
     'click .locate': ->
         navigator.geolocation.getCurrentPosition (position) =>
             console.log 'navigator position', position

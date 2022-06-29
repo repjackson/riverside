@@ -120,7 +120,7 @@ template(name='nav')
 
 
 template(name='nav_item')
-    a.item.zoomer.fly_right.clear_search.go_route.tada.mobile.hidden(href="/m/#{key}" class="{{nav_item_class key}}" title=key)
+    a.item.zoomer.fly_right.clear_search.go_route.tada.mobile.hidden(href="/#{key}s" class="{{nav_item_class key}}" title=key)
         +i name=icon
         // i.large.icon(class=icon)
         unless currentUser.hide_labels
