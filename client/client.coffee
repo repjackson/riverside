@@ -12,28 +12,15 @@ Tracker.autorun ->
         $(window).scrollTop 0
 Meteor.startup ->
     process.env.TZ='America/Denver'
-    moment().calendar(null, {
-        sameDay: '[today]',
-        nextDay: '[tomorrow]',
-        nextWeek: 'dddd',
-        lastDay: '[yesterday]',
-        lastWeek: '[last] dddd',
+    moment().calendar null,
+        sameDay: '[today]'
+        nextDay: '[tomorrow]'
+        nextWeek: 'dddd'
+        lastDay: '[yesterday]'
+        lastWeek: '[last] dddd'
         sameElse: 'DD/MM/YYYY'
-    });
+    
 
-
-Template.home.onCreated ->
-    @autorun => Meteor.subscribe 'model_docs', 'log', ->
-Template.home.helpers
-    activity_docs: ->
-        Docs.find 
-            model:'log'
-Template.home.onCreated ->
-    @autorun => Meteor.subscribe 'latest_checkin_docs', ->
-Template.home.helpers
-    latest_checkin_docs: ->
-        Docs.find 
-            model:'checkin'
 
 # Meteor.users.find(_id:Meteor.userId()).observe({
 #     changed: (new_doc, old_doc)->

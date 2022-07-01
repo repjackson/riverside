@@ -102,6 +102,10 @@ Meteor.publish 'unread_logs', ()->
     
 Meteor.publish 'all_users', (child_id)->
     Meteor.users.find()
+Meteor.publish 'latest_order_docs', ()->
+    Docs.find {
+        model:'order'
+    }, sort:_timestamp:-1
 Meteor.publish 'public_posts', (child_id)->
     Docs.find {
         model:'post'

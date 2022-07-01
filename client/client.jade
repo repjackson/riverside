@@ -6,7 +6,7 @@ head
     meta(name="msapplication-TileColor" content="#000000")
     meta(name="theme-color" content="#000000")
     link(rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.4/dist/semantic.min.css')
-    link(href="https://fonts.googleapis.com/css?family=Ubuntu:300,400&display=swap" rel="stylesheet")
+    // link(href="https://fonts.googleapis.com/css?family=Ubuntu:300,400&display=swap" rel="stylesheet")
     link(rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png")
     link(rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png")
     link(rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png")
@@ -61,8 +61,6 @@ template(name='not_found')
     
 
         
-                   
-    
 template(name='add')
     .ui.stackable.padded.grid
         .four.wide.column
@@ -107,35 +105,3 @@ template(name='add')
                     +i name='wrench'
                     // i.big.wrench.icon
                     |services
-template(name='home')
-    .ui.stackable.padded.grid
-        .three.column.row
-            .column
-                +home_button key='food' icon='food'
-                +home_button key='events' icon='calendar'
-                +home_button key='users' icon='groups'
-                +home_button key='products' icon='shopping-cart'
-                +home_button key='posts' icon='news'
-                +home_button key='transfers' icon='exchange'
-                +home_button key='rentals' icon='clock'
-                +home_button key='services' icon='wrench'
-            .column       
-                .ui.header 
-                    +i name='clock'
-                    |latest activty 
-                .ui.large.list 
-                    each activity_docs 
-                        a.ui.item(href="/#{_parent_doc.model}/#{parent_id}") #{body} 
-                            small #{_when} by #{_author_username}
-            .column
-                .ui.header 
-                    +i name='clock'
-                    |latest checkins 
-                .ui.selection.list
-                    each latest_checkin_docs 
-                        .item #{body} #{_when}
-                    
-template(name='home_button')
-    a.ui.big.circular.compact.button.fly_down(href="/#{key}")
-        +i name=icon
-        |#{key}

@@ -1125,11 +1125,11 @@ h1.ui.header{
 }
 
 .smallscroll{
-	overflow-y:scroll;
-	overflow-x:hidden;
-	max-height:250px;
+	overflow-y:scroll !important;
+	overflow-x:hidden !important;
+	max-height:250px !important;
 	/*max-height:85vh;*/
-	padding-top: 1em;
+	padding-top: 1em !important;
 	/*padding-left: 1em;*/
 }
 .smallcut{
