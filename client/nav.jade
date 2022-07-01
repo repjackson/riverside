@@ -2,7 +2,7 @@ template(name='nav')
     // #topnav.topnav.ui.attached.borderless.big.four.item.menu.hscroll(class=darkmode_class)
         https://fomantic-ui.com/elements/icon.html#/icon
     // #topnav.topnav.ui.attached.borderless.big.menu.hscroll(style="background-color:#{currentUser.theme_color_main}")
-    #topnav.topnav.ui.attached.borderless.menu.hscroll
+    #topnav.topnav.ui.attached.borderless.inverted.menu.hscroll
         if is_connected
             // a.icon.item.toggle_leftbar.zoomer
             //     i.large.bars.grey.icon.zoomer
@@ -68,7 +68,7 @@ template(name='nav')
                 // strong.mobilehidden #{currentUser.name}
                 i.bars.large.grey.icon.zoomer
     if is_connected
-        .ui.attached.small.borderless.menu.hscroll.mobile.hidden          
+        .ui.attached.small.borderless.inverted.menu.hscroll.mobile.hidden          
             a.item.zoomer.fly_right.clear_search.mobilehidden(href="/food" class="{{isActiveRoute regex='food'}}" title='food')
                 // i.large.food.icon
                 +i name='food'

@@ -41,6 +41,7 @@
     'similar recipes'
     'good option'
     'servings'
+    'users'
     'ingredients'
     'handful of other ingredients'
     'head'
