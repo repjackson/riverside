@@ -8,7 +8,11 @@ if Meteor.isClient
         @render 'profile_section'
         ), name:'profile_section'
 
-
+    Template.profile_nav_item.helpers
+        profile_item_class: ->
+            console.log @
+            if Router.current().params.section is @section then 'big active' else ''
+            
 
     Template.user_inbox.onCreated ->
         @autorun -> Meteor.subscribe 'unread_logs',->

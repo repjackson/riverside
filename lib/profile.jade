@@ -292,10 +292,10 @@ template(name='profile_sidebar')
                           
                           
 template(name='profile_nav_item')        
-    a.ui.big.image.circular.label.zoomer(href="/user/#{current_user.username}/#{section}" title=section)
+    a.ui.large.image.circular.label.zoomer(href="/user/#{current_user.username}/#{section}" title=section class=profile_item_class)
         +i name=icon cl='zoomer'
         unless currentUser.hide_labels
-            |#{section}
+            strong #{section}
 template(name='online_label')
     if online 
         .ui.large.green.label 
