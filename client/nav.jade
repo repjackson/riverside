@@ -57,7 +57,7 @@ template(name='nav')
                 a.fly_up.zoomer.item.tada(href="/user/#{currentUser.username}/points" title='bank' class="{{isActiveRoute 'user_points'}}" )
                     |{{points_to_coins currentUser.points}}c
                 a.icon.item.zoomer.fly_down.add(href='/add' title='add doc')
-                    +i name='plus'
+                    i.large.plus.icon
                 // a.icon.item(href="/mail/inbox")
             a.icon.item.toggle_rightbar.no_blink.zoomer
                 // .ui.avatar.image

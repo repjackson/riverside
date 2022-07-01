@@ -6,20 +6,20 @@ if Meteor.isClient
         @render 'groups'
         ), name:'groups'
     Router.route '/group/:doc_id/', (->
-        @layout 'group_layout'
-        @render 'group_dashboard'
+        @layout 'layout'
+        @render 'group_view'
         ), name:'group_home'
     Router.route '/group/:doc_id/edit', (->
         @layout 'layout'
         @render 'group_edit'
         ), name:'group_edit'
-    Router.route '/group/:doc_id/:section', (->
-        @layout 'group_layout'
-        @render 'group_section'
-        ), name:'group_section'
+    # Router.route '/group/:doc_id/:section', (->
+    #     @layout 'group_view'
+    #     @render 'group_section'
+    #     ), name:'group_section'
     Template.group_edit.onCreated ->
         @autorun => Meteor.subscribe 'doc_by_id', Router.current().params.doc_id, ->
-    Template.group_layout.onCreated ->
+    Template.group_view.onCreated ->
         # @autorun => Meteor.subscribe 'product_from_transfer_id', Router.current().params.doc_id, ->
         @autorun => Meteor.subscribe 'author_from_doc_id', Router.current().params.doc_id, ->
         @autorun => Meteor.subscribe 'doc_by_id', Router.current().params.doc_id, ->
@@ -656,14 +656,14 @@ if Meteor.isServer
         }, limit:10
 
 if Meteor.isClient
-    Template.group_layout.onCreated ->
+    Template.group_view.onCreated ->
         @autorun => Meteor.subscribe 'group_logs', Router.current().params.doc_id, ->
         @autorun => Meteor.subscribe 'group_members', Router.current().params.doc_id, ->
         @autorun => Meteor.subscribe 'group_leaders', Router.current().params.doc_id, ->
         @autorun => Meteor.subscribe 'group_events', Router.current().params.doc_id, ->
         @autorun => Meteor.subscribe 'group_posts', Router.current().params.doc_id, ->
         @autorun => Meteor.subscribe 'group_products', Router.current().params.doc_id, ->
-    Template.group_layout.helpers
+    Template.group_view.helpers
         group_log_docs: ->
             Docs.find {
                 model:'log'
@@ -695,7 +695,7 @@ if Meteor.isClient
     #                 group_id:Router.current().params.doc_id
     #         Router.go "/doc/#{new_id}/edit"
             
-    Template.group_layout.events
+    Template.group_view.events
         'click .add_group_member': ->
             new_username = prompt('username')
             splitted = new_username.split(' ')

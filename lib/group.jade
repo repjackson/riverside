@@ -66,48 +66,41 @@ template(name='groups')
                 //     .ui.basic.center.aligned.segment 
                 //         i.massive.loading.fire.icon
 
-template(name='group_layout')
+template(name='group_view')
     div(class=darkmode_class)
         // unless currentUser.darkmode
-        +nav
-        .ui.bottom.attached.pushable.segment.scrollin.fullheight(class=darkmode_class)
-            // img.ui.fluid.image.checkin_banner(src="{{c.url 'frontrange' width=1000 height=1000 crop='crop'}}")
-            +topbar
-            +leftbar
-            +rightbar
-            .scrolling
-                with current_doc
-                    if background_image_id
-                        img.ui.image.checkin_banner(src="{{c.url background_image_id height=1000 crop='crop'}}")
-                    else 
-                        img.ui.image.checkin_banner(src="{{c.url image_id height=1000 crop='crop'}}")
-                    .ui.stackable.padded.grid
-                        .sixteen.wide.column
-                            a.ui.circular.icon.button.fly_left(href="/groups" title="back to groups")
-                                i.chevron.left.icon
-                                +i name='campfire'
-                                |groups
-                            .ui.large.inline.header 
-                                //- small viewing
-                                | #{title}
-                            +group_nav_item section='dashboard' icon='dashboard'
-                            if has_posts
-                                +group_nav_item section='posts' icon='news'
-                            if has_events
-                                +group_nav_item section='events' icon='calendar'
-                            if has_membership
-                                +group_nav_item section='membership' icon='groups'
-                            +group_nav_item section='related' icon='fork'
-                            if has_products
-                                +group_nav_item section='products' icon='shopping-cart'
-                            
-                            +group_nav_item section='checkins' icon='checkmark'
-                        .five.wide.column
-                            +group_sidebar
-                            
-                        .eleven.wide.column.scrolling
-                            div
-                            +yield
+        with current_doc
+            if background_image_id
+                img.ui.image.checkin_banner(src="{{c.url background_image_id height=1000 crop='crop'}}")
+            else 
+                img.ui.image.checkin_banner(src="{{c.url image_id height=1000 crop='crop'}}")
+            .ui.stackable.padded.grid
+                .sixteen.wide.column
+                    a.ui.circular.icon.button.fly_left(href="/groups" title="back to groups")
+                        i.chevron.left.icon
+                        +i name='campfire'
+                        |groups
+                    .ui.large.inline.header 
+                        //- small viewing
+                        | #{title}
+                    +group_nav_item section='dashboard' icon='dashboard'
+                    if has_posts
+                        +group_nav_item section='posts' icon='news'
+                    if has_events
+                        +group_nav_item section='events' icon='calendar'
+                    if has_membership
+                        +group_nav_item section='membership' icon='groups'
+                    +group_nav_item section='related' icon='fork'
+                    if has_products
+                        +group_nav_item section='products' icon='shopping-cart'
+                    
+                    +group_nav_item section='checkins' icon='checkmark'
+                .five.wide.column
+                    +group_sidebar
+                    
+                .eleven.wide.column.scrollin
+                    div
+                    +group_dashboard
     +footer
     
     
