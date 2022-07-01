@@ -21,18 +21,18 @@ Template.nav.onRendered ->
     Meteor.setTimeout ->
         $('.ui.dropdown').dropdown()
     , 2000
-    Meteor.setTimeout ->
-        $('.ui.left.sidebar')
-            .sidebar({
-                context: $('.bottom.segment')
-                transition:'push'
-                mobileTransition:'push'
-                exclusive:true
-                duration:200
-                scrollLock:true
-            })
-            .sidebar('attach events', '.toggle_leftbar')
-    , 4000
+    # Meteor.setTimeout ->
+    #     $('.ui.left.sidebar')
+    #         .sidebar({
+    #             context: $('.bottom.segment')
+    #             transition:'push'
+    #             mobileTransition:'push'
+    #             exclusive:true
+    #             duration:200
+    #             scrollLock:true
+    #         })
+    #         .sidebar('attach events', '.toggle_leftbar')
+    # , 4000
     Meteor.setTimeout ->
         $('.ui.rightbar')
             .sidebar({
@@ -148,7 +148,7 @@ Template.nav_item.events
 Template.nav.onCreated ->
     Session.setDefault 'limit', 20
     @autorun -> Meteor.subscribe 'me', ->
-    @autorun -> Meteor.subscribe 'all_users_min', ->
+    # @autorun -> Meteor.subscribe 'all_users_min', ->
     # @autorun -> Meteor.subscribe 'model_docs','group', ->
     @autorun -> Meteor.subscribe 'unread_logs', ->
 

@@ -270,6 +270,10 @@ if Meteor.isClient
         @layout 'event_layout'
         @render 'event_section'
         ), name:'event_section'
+    Router.route '/event/:doc_id/checkins', (->
+        @layout 'event_layout'
+        @render 'doc_checkins'
+        ), name:'doc_checkins'
     Template.events.onCreated ->
         @autorun => Meteor.subscribe 'model_docs', 'event', ->
             
@@ -326,7 +330,7 @@ if Meteor.isClient
                 model:'room'
 
     Template.event_tasks.onCreated ->
-        @autorun => Meteor.subscribe 'model_docs','task', ->
+        @autorun => Meteor.subscribe 'event_tasks_by_id',Router.current().params.doc_id, ->
     Template.event_tasks.helpers 
         event_task_docs: ->
             Docs.find 
@@ -449,3 +453,8 @@ if Meteor.isClient
                 slot:@slot
                 payment:'points'
                 
+if Meteor.isServer 
+    Meteor.publish 'event_tasks_by_id', (doc_id)->
+        Docs.find 
+            model:'task'
+            event_id:doc_id

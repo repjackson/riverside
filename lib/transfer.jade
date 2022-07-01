@@ -9,9 +9,10 @@ template(name='transfers')
             .ui.large.input 
                 input.transfer_search(type='text' placeholder='search...' value=current_search)
         .four.wide.column.scrolling
-            .ui.header your points #{currentUser.points}
-            a.ui.big.icon.button.new_transfer
-                i.big.green.plus.icon
+            if currentUser
+                .ui.header your points #{currentUser.points}
+                a.ui.big.icon.button.new_transfer
+                    i.big.green.plus.icon
             +i name='tags'
             each picked_transfers_tags
                 button.ui.blue.compact.circular.button.unpick_tag(tabindex='0')

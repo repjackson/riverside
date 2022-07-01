@@ -809,11 +809,24 @@ if Meteor.isClient
                       hideDuration : 250
                     })
                     
-            
+    Template.doc_checkins.helpers
+        checkin_docs: ->
+            Docs.find {
+                model:'checkin'
+                parent_id:Router.current().params.doc_id
+            }, sort:_timestamp:-1
+        checked_in: ->
+            Docs.findOne 
+                model:'checkin'
+                _author_id:Meteor.userId()
+                active:true
+        
+        
 if Meteor.isServer
     Meteor.publish 'checkin_docs', (doc_id)->
         Docs.find 
             model:'checkin'
+            parent_id:doc_id
     Meteor.methods 
         checkin: (parent_id)->
             Docs.insert 
@@ -845,17 +858,3 @@ if Meteor.isServer
                         checkout_timestamp:Date.now()
             
      
-if Meteor.isClient               
-    Template.doc_checkins.helpers
-        checkin_docs: ->
-            Docs.find {
-                model:'checkin'
-                parent_id:Router.current().params.doc_id
-            }, sort:_timestamp:-1
-        checked_in: ->
-            Docs.findOne 
-                model:'checkin'
-                _author_id:Meteor.userId()
-                active:true
-        
-        

@@ -41,8 +41,8 @@ template(name='layout')
         +nav
         .ui.bottom.attached.pushable.segment.scrollin.fullheight(class=darkmode_class)
             // img.ui.fluid.image.checkin_banner(src="{{c.url 'frontrange' width=1000 height=1000 crop='crop'}}")
-            +topbar
-            +leftbar
+            // +topbar
+            // +leftbar
             +rightbar
             .scrolling
                 +yield
@@ -54,7 +54,7 @@ template(name='not_found')
     // +docs
     .ui.center.aligned.basic.segment
         .ui.header not found 
-        a.ui.big.button(href="/docs")
+        a.ui.big.button(href="/")
             +i name='home'
             |home
   

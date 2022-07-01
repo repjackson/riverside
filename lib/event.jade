@@ -1,7 +1,7 @@
 template(name='events')
     img.ui.fluid.image.checkin_banner.invert(src="{{c.url 'frontrange' width=1000 height=1000 crop='crop'}}")
     .ui.stackable.padded.grid 
-        .sixteen.wide.column
+        .four.wide.column
             .ui.inline.header 
                 +i name='calendar'
                 |{{comma event_count}}
@@ -16,8 +16,8 @@ template(name='events')
                 // button.ui.large.label.button.pick_tag(tabindex="0" class=result_class title=count)
                     // |#{name}
                     // small #{count}
-
-        .sixteen.wide.column.scrolling
+            +recent_checkins
+        .twelve.wide.column.scrolling
             +sort_direction_toggle
             +session_set key='sort_key' value='_timestamp' label='created' icon='clock'
             +session_set key='sort_key' value='_author_username' label='author' icon='user-male'
@@ -39,6 +39,15 @@ template(name='events')
             else 
                 .ui.basic.center.aligned.segment
                     +ibig name='event' cl='spinning'
+               
+               
+template(name='recent_checkins')
+    .ui.header  
+        +i name='clock'
+        |recent checkins
+    each recent_checkin_docs 
+        a.item(href="/event/#{_id}") #{_when} #{_author_username} #{body}
+
                     
 template(name='event_layout')
     div(class=darkmode_class)
@@ -47,7 +56,7 @@ template(name='event_layout')
         .ui.bottom.attached.pushable.segment.scrollin.fullheight(class=darkmode_class)
             // img.ui.fluid.image.checkin_banner(src="{{c.url 'frontrange' width=1000 height=1000 crop='crop'}}")
             // +topbar
-            +leftbar
+            // +leftbar
             +rightbar
             .scrolling
                 with current_doc
@@ -80,8 +89,9 @@ template(name='event_layout')
                             +event_nav_item section='related' icon='fork'
                             if has_products
                                 +event_nav_item section='products' icon='shopping-cart'
-                            
-                            +event_nav_item section='checkins' icon='checkmark'
+                            a.ui.compact.button.zoomer(href="/event/#{current_doc._id}/checkins")
+                                +i name='checkmark'
+                                |checkins
                         .five.wide.column
                             +event_sidebar
                             
