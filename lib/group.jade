@@ -210,6 +210,7 @@ template(name='group_nav_item')
             
             
 template(name='group_dashboard')
+    +doc_checkins
     +group_members_small
     +group_posts
     .ui.one.column.grid 
@@ -272,34 +273,6 @@ template(name='group_related')
 
           
           
-template(name='group_checkins')          
-    .ui.inline.header 
-        +i name='checkmark'
-        |checkins
-    if checked_in
-        .ui.big.red.button.checkout  
-            +i name='exit'
-            |checkout
-            |#{current_time}
-    else
-        .ui.big.green.button.checkin
-            +i name='internal'
-            |checkin
-            |#{current_time}
-    .ui.large.list
-        each checkin_docs 
-            .item 
-                strong 
-                    if active 
-                        i.large.green.clock.icon.invert(title='active')
-                    a.zoomer(href="/user/#{_author.username}")
-                        img.ui.avatar.image(src="{{c.url _author.image_id width=200 height=200}}")
-                        |#{_author.username}
-                small #{_when}
-                span(title="signed out {{long_date checkout_timestamp}}")
-                    i.red.sign.out.large.icon.invert
-                    |{{from_now checkout_timestamp}}
-                    small {{long_date checkout_timestamp}}
     
 template(name='group_stats')    
     .ui.dividing.header 
@@ -495,8 +468,8 @@ template(name='group_item')
         if youtube_id
             +youtube_view key='youtube_id'
         else if image_id
-            a.ui.image.fly_right.zoomer(href="/group/#{_id}")
-                img.ui.small.inline.image(src="{{c.url image_id height=300 width=500 crop='fit'}}" class=currentUser.invert_class)
+            a.fly_right.zoomer(href="/group/#{_id}")
+                img.ui.tiny.inline.image(src="{{c.url image_id height=300 width=500 crop='fit'}}" class=currentUser.invert_class)
         // +model_label
         if published 
             i.green.eye.icon.invert(title='published')

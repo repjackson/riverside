@@ -770,9 +770,9 @@ if Meteor.isServer
 
 
 if Meteor.isClient 
-    Template.group_checkins.onCreated ->
-        @autorun => @subscribe 'child_docs', 'checkin', Router.current().params.doc_id, ->
-    Template.group_checkins.events 
+    Template.doc_checkins.onCreated ->
+        @autorun => @subscribe 'checkin_docs', Router.current().params.doc_id, ->
+    Template.doc_checkins.events 
         'click .checkin': ->
             Meteor.call 'checkin', Router.current().params.doc_id, Meteor.userId(), ->
                 $('body').toast({
@@ -811,6 +811,9 @@ if Meteor.isClient
                     
             
 if Meteor.isServer
+    Meteor.publish 'checkin_docs', (doc_id)->
+        Docs.find 
+            model:'checkin'
     Meteor.methods 
         checkin: (parent_id)->
             Docs.insert 
@@ -843,7 +846,7 @@ if Meteor.isServer
             
      
 if Meteor.isClient               
-    Template.group_checkins.helpers
+    Template.doc_checkins.helpers
         checkin_docs: ->
             Docs.find {
                 model:'checkin'

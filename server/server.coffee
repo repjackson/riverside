@@ -54,6 +54,12 @@ Meteor.publish 'author_by_id', (doc_id)->
     if doc and doc._author_id
         Meteor.users.find(doc._author_id)
     
+Meteor.publish 'latest_checkin_docs', ()->
+    Docs.find {
+        model:'checkin'
+    }, 
+        sort:_timestamp:-1
+    
 Meteor.publish 'all_users_min', ()->
     Meteor.users.find({},
         fields:

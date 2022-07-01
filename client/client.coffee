@@ -28,6 +28,12 @@ Template.home.helpers
     activity_docs: ->
         Docs.find 
             model:'log'
+Template.home.onCreated ->
+    @autorun => Meteor.subscribe 'latest_checkin_docs', ->
+Template.home.helpers
+    latest_checkin_docs: ->
+        Docs.find 
+            model:'checkin'
 
 # Meteor.users.find(_id:Meteor.userId()).observe({
 #     changed: (new_doc, old_doc)->

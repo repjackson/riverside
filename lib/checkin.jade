@@ -1,0 +1,57 @@
+template(name='event_checkins')          
+    .ui.inline.header 
+        +i name='checkmark'
+        |checkins
+    if checked_in
+        .ui.big.red.button.checkout  
+            +i name='exit'
+            |checkout
+            |#{current_time}
+    else
+        .ui.big.green.button.checkin
+            +i name='internal'
+            |checkin
+            |#{current_time}
+    .ui.large.list
+        each checkin_docs 
+            .item 
+                strong 
+                    if active 
+                        i.large.green.clock.icon.invert(title='active')
+                    a.zoomer(href="/user/#{_author.username}")
+                        img.ui.avatar.image(src="{{c.url _author.image_id width=200 height=200}}")
+                        |#{_author.username}
+                small #{_when}
+                span(title="signed out {{long_date checkout_timestamp}}")
+                    i.red.sign.out.large.icon.invert
+                    |{{from_now checkout_timestamp}}
+                    small {{long_date checkout_timestamp}}
+
+template(name='doc_checkins')          
+    .ui.inline.header 
+        +i name='checkmark'
+        |checkins
+    if checked_in
+        .ui.big.red.button.checkout  
+            +i name='exit'
+            |checkout
+            |#{current_time}
+    else
+        .ui.big.green.button.checkin
+            +i name='internal'
+            |checkin
+            |#{current_time}
+    .ui.large.list
+        each checkin_docs 
+            .item 
+                strong 
+                    if active 
+                        i.large.green.clock.icon.invert(title='active')
+                    a.zoomer(href="/user/#{_author.username}")
+                        img.ui.avatar.image(src="{{c.url _author.image_id width=200 height=200}}")
+                        |#{_author.username}
+                small #{_when}
+                span(title="signed out {{long_date checkout_timestamp}}")
+                    i.red.sign.out.large.icon.invert
+                    |{{from_now checkout_timestamp}}
+                    small {{long_date checkout_timestamp}}
