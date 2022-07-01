@@ -343,7 +343,7 @@ body {
 }
 .zoomer:hover {
     transition: transform .5s !important; /* Animation */
-    border-radius: 15px !important;
+    /*border-radius: 15px !important;*/
     /*overflow:scroll !important;*/
     box-shadow: 0px 0px 10px 10px rgba(200,200,200,0.1);
     /*border-radius: 15px !important;*/
@@ -759,7 +759,6 @@ embed {
         0px 10px rgba(88,88,88,1),
         0px 8px rgba(78,78,78,1),
         0px 10px 2px 0px rgba(128,128,128,.6); /* shadow */
-} */
 
 .button:active{
     -webkit-transform: translate(0, 5px) !important; /* depth of button press */

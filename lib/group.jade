@@ -103,9 +103,6 @@ template(name='group_view')
                     +group_dashboard
     +footer
     
-    
-    
-    
 template(name='group_sidebar')
     if image_id 
         img.ui.rounded.centered.large.image(src="{{c.url image_id width=800 crop='scale'}}")
@@ -252,8 +249,6 @@ template(name='group_dashboard')
                         +author_info
         if has_shop
             +group_products
-                
-               
                
 template(name='group_related')
     .content
@@ -462,14 +457,14 @@ template(name='group_item')
             +youtube_view key='youtube_id'
         else if image_id
             a.fly_right.zoomer(href="/group/#{_id}")
-                img.ui.tiny.inline.image(src="{{c.url image_id height=300 width=500 crop='fit'}}" class=currentUser.invert_class)
+                img.ui.small.rounded.zoomer.inline.image(src="{{c.url image_id height=300 width=500 crop='fit'}}" class=currentUser.invert_class)
         // +model_label
-        if published 
-            i.green.eye.icon.invert(title='published')
-        else 
-            i.yellow.save.icon.invert(title='draft')
-        a.ui.inline.header.fly_right(href="/group/#{_id}") #{title}
         span.content
+            if published 
+                i.green.eye.icon.invert(title='published')
+            else 
+                i.yellow.save.icon.invert(title='draft')
+            a.ui.inline.header.fly_right(href="/group/#{_id}") #{title}
             |#{_when}
             // +when_label
             span(title='author')
