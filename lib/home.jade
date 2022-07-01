@@ -12,17 +12,20 @@ template(name='home')
                 +home_button key='services' icon='wrench'
         .three.column.row
             .column       
-                .ui.header 
-                    +i name='clock'
-                    |latest activty 
-                .ui.large.list.smallscroll
-                    each activity_docs 
-                        a.ui.item(href="/#{_parent_doc.model}/#{parent_id}") #{body} 
-                            small #{_when} by #{_author_username}
+                +latest_activity
             .column
                 +latest_checkins
             .column
                 +latest_orders
+                
+template(name='latest_activity')
+    .ui.header 
+        +i name='clock'
+        |latest activty 
+    .ui.large.list.smallscroll
+        each activity_docs 
+            a.ui.item(href="/#{_parent_doc.model}/#{parent_id}") #{body} 
+                small #{_when} by #{_author_username}
                 
 template(name='latest_checkins')
     .ui.header 

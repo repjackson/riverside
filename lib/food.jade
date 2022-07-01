@@ -280,6 +280,9 @@ template(name='recipe_card_big')
                                         strong #{unit}
                                 if currentUser.admin_mode
                                     +print_this
+                if watson
+                    +doc_emotion
+                    +doc_sentiment
                 if currentUser.admin_mode
                     +print_this
     
@@ -336,6 +339,9 @@ template(name='food_page')
                         |#{this}
             .eleven.wide.column 
                 .f7 !{content}
+                +call_watson key='content' mode='html'
+                if watson 
+                    +watson_view
             .five.wide.column
                 .ui.header 
                     |related recipes

@@ -367,7 +367,7 @@ if Meteor.isServer
                 { $group: _id: '$tags', count: $sum: 1 }
                 { $match: _id: $nin: picked_food_tags }
                 { $sort: count: -1, _id: 1 }
-                { $match: count: $lt: total_count }
+                # { $match: count: $lt: total_count }
                 { $limit: 15}
                 { $project: _id: 0, name: '$_id', count: 1 }
                 ]
