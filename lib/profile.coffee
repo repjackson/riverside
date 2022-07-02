@@ -307,13 +307,20 @@ if Meteor.isClient
                 username:Router.current().params.username
                 
         'click .send_points': ->
-            user = Meteor.users.findOne username:Router.current().params.username
-            new_id = 
-                Docs.insert 
-                    model:'transfer'
-                    target_user_id: user._id
-            Router.go "/doc/#{new_id}/edit"
-            
+            if Meteor.user()
+                user = Meteor.users.findOne username:Router.current().params.username
+                if user is Meteor.user()
+                    new_id = 
+                        Docs.insert 
+                            model:'transfer'
+                else
+                    new_id = 
+                        Docs.insert 
+                            model:'transfer'
+                            target_user_id:user._id
+                Router.go "/transfer/#{new_id}/edit"
+            else 
+                Router.go "/login"
             
         'click .boop': (e,t)->
             $(e.currentTarget).closest('.boop').transition('bounce', 500)

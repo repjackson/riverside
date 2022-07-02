@@ -3,8 +3,6 @@ template(name='profile_layout')
         +nav
         .ui.bottom.attached.pushable.segment.scrollin(class=darkmode_class)
             img.ui.fluid.image.checkin_banner(src="{{c.url 'frontrange' width=1000 height=1000 crop='crop'}}")
-            +topbar
-            +leftbar
             +rightbar
             // unless currentUser.darkmode
             // img.ui.fluid.image.checkin_banner(src="{{c.url 'frontrange' width=1000 height=1000 crop='crop'}}")
@@ -50,7 +48,8 @@ template(name='profile_layout')
                                     +yield
         +footer     
                             
-template(name='user_dashboard')    
+template(name='user_dashboard')  
+    +user_orders
     if is_current_user
         .ui.segment
             +user_drafts
@@ -76,12 +75,7 @@ template(name='user_dashboard')
         // .column
         //     +user_points
         // .column
-        //     +user_drafts
-        // .column
         //     +user_events
-        if instagram_code
-            .column
-                |!{instagram_code}
         .column
             +user_inbox
         .column
@@ -292,7 +286,7 @@ template(name='profile_sidebar')
                           
                           
 template(name='profile_nav_item')        
-    a.ui.large.image.circular.label.zoomer(href="/user/#{current_user.username}/#{section}" title=section class=profile_item_class)
+    a.ui.large.image.label.zoomer(href="/user/#{current_user.username}/#{section}" title=section class=profile_item_class)
         +i name=icon cl='zoomer'
         unless currentUser.hide_labels
             strong #{section}
@@ -348,12 +342,12 @@ template(name='user_favorites')
         each user_favorite_docs
             // +model_label
             img.ui.avatar.image(src="{{c.url image_id height=300 width=300 crop='crop'}}" title="#{model}:#{title}")
-        .ui.selection.animated.link.divided.list
+        .ui.selection.animated.link.divided.large.list
             each user_favorite_docs
                 .item
                     .content
                         +model_label
-                        a.inline.header.fly_up(href="/doc/#{_id}")
+                        a.inline.header.fly_right(href="/#{model}/#{_id}")
                             img.ui.avatar.image(src="{{c.url image_id height=300 width=300 crop='crop'}}")
                             | #{title}
                         +favorite_icon_toggle

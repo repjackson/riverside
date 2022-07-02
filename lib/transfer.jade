@@ -186,6 +186,12 @@ template(name='user_points')
     .ui.inline.header 
         +i name='coins'
         |balance: #{current_user.points}
+    .ui.label 
+        |point ranking: #{point_ranking}
+    .ui.label 
+        |points made this week: #{weekly_earned}
+    .ui.label 
+        |points spent this week: #{weekly_spent}
     .ui.dividing.header
         +i name='internal'
         |points in

@@ -69,6 +69,39 @@ if Meteor.isClient
             console.log @details.analyzedInstructions[0]
             @details.analyzedInstructions[0].steps
             
+    Template.buy_now_button.onCreated ->
+        @autorun => Meteor.subscribe 'orders_by_product_id', Router.current().params.doc_id, ->
+if Meteor.isServer 
+    Meteor.publish 'orders_by_product_id', (product_id)->
+        Docs.find 
+            model:'transfer'
+            parent_id:product_id
+if Meteor.isClient
+    Template.buy_now_button.helpers
+        can_buy: ->
+            Meteor.user() and Meteor.user().points > @price_points
+        product_orders: ->
+            Docs.find 
+                model:'transfer'
+    Template.buy_now_button.events
+        'click .buy_now': ->
+            new_id = 
+                Docs.insert 
+                    model:'transfer'
+                    transfer_type:'product_order'
+                    parent_id:@_id 
+                    product_id:@_id 
+            if @manage_inventory
+                Docs.update @_id, 
+                    $inc:
+                        inventory:-1
+            else
+                Docs.update @_id, 
+                    $set:
+                        available:false
+                        inventory:0
+                        purchased:true
+                    
     Template.product_view.events
         'click .pick_product_tag': ->
             picked_tags.push @valueOf()

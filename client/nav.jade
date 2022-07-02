@@ -209,7 +209,7 @@ template(name='recent_alert')
             
             
 template(name='rightbar')
-    .ui.right.sidebar.vertical.small.menu.rightbar
+    .ui.right.sidebar.vertical.small.inverted.menu.rightbar
         with currentUser
             a.item.toggle_rightbar.no_blink(href="/user/#{currentUser.username}" class="{{isActiveRoute 'user_layout'}}")
                 img.ui.avatar.compact.image(src="{{c.url currentUser.image_id height=200 width=200 gravity='face' crop='fill'}}")

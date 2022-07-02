@@ -53,8 +53,8 @@ template(name='badge_item')
                 span(title='achieved')
                     i.big.green.checkmark.icon 
                     small {{long_date completion_timestamp}} {{from_now _completion_timestamp}}
-            else 
-                i.big.circle.outline.icon
+            // else 
+            //     i.big.circle.outline.icon
             a.ui.inline.header.fly_right(href="/badge/#{_id}") #{title}
             if image_id 
                 img.ui.small.inline.image.zoomer(src="{{c.url image_id height=500 width=500 gravity='face' crop='fill'}}" class=currentUser.invert_class)
@@ -62,9 +62,7 @@ template(name='badge_item')
                 .ui.label #{username}
             if bounty 
                 .ui.inline.header bounty: #{bounty}
-            span.smallscroll
-                |!{description}
-            span.smallscroll
+            span.smallscrol
                 |!{description}
             .ui.label 
                 small created by 

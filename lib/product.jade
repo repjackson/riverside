@@ -8,9 +8,8 @@ template(name='products')
             .ui.large.icon.input
                 +i name='shopping-cart'
                 input.product_search(type='text' placeholder='search products...' value=current_search)
-            .ui.button.add_product
-                i.plus.icon
-                |add product
+            .ui.icon.button.add_product(title='add product')
+                i.plus.large.icon
             // .ui.large.icon.input
             //     +i name='menu'
             //     input.menu_search(type='text' placeholder='search menu...' value=current_search)
@@ -62,11 +61,9 @@ template(name='product_card')
             a.ui.header(href="/product/#{_id}")
                 | #{title}
             // .ui.label #{link}
-            .smallcut !{content}
+            .smallcut !{description}
             .ui.label #{points}p
             // .ui.label #{type}
-            .ui.label ##{id}
-            .ui.label #{relevance}
             if _author_username
                 a.ui.label.fly_down(href="/user/#{_author_username}/product")
                     i.user.icon
@@ -75,23 +72,8 @@ template(name='product_card')
                 .ui.label #{this}
             if currentUser.admin_mode
                 +delete_button
-            if details.glutenFree
-                .ui.big.label
-                    +i name='no-gluten'
-                    |gluten free
-            with details
-                .ui.big.label(title='aggregateLikes')
-                    i.thumbs.up.icon
-                    |#{aggregateLikes}
-                .ui.big.label(title='')
-                    i.clock.up.icon
-                    |ready in 
-                    strong #{readyInMinutes}
-                    |minutes
-                .ui.big.label(title='servings')
-                    i.hashtag.icon
-                    strong #{servings}
-                    |servings
+            a.ui.icon.button.fly_left(href="/product/#{_id}")
+                i.large.chevron.right.icon
 template(name='product_item')
     .item
         a.fly_right(href="/product/#{_id}")
@@ -117,19 +99,6 @@ template(name='product_item')
                     .ui.big.label
                         +i name='no-gluten'
                         |gluten free
-                with details
-                    .ui.label(title='aggregateLikes')
-                        i.thumbs.up.icon
-                        |#{aggregateLikes}
-                    .ui.label(title='')
-                        i.clock.up.icon
-                        |ready in 
-                        strong #{readyInMinutes}
-                        |minutes
-                    .ui.label(title='servings')
-                        i.hashtag.icon
-                        strong #{servings}
-                        |servings
             else 
                 i.shopping.cart.loading.big.icon
 template(name='product_view')
@@ -142,6 +111,9 @@ template(name='product_view')
                     +i name='product'
                     |shop
                 .ui.inline.header !{title}
+                if can_edit 
+                    a.ui.button(href="/product/#{_id}/edit")
+                        i.pencil.icon
                 .ui.big.label source: #{source}
                 with details
                     each breadcrumbs 
@@ -274,6 +246,7 @@ template(name='product_view')
             .four.wide.column
                 .ui.header #{price_points} points
                 .ui.header $#{price_usd}
+                +buy_now_button
                 .ui.big.green.button.add_to_cart
                     i.cart.plus.large.icon
                     |add to cart
@@ -312,20 +285,38 @@ template(name='product_view')
                     i.fork.icon
                     |related products
                 each related_products
-                    a.ui.header(href="/doc/#{_id}") #{title}
+                    a.ui.header(href="/product/#{_id}") #{title}
+                    
+                    
+template(name='buy_now_button')
+    .ui.header #{currentUser.points} - #{price_points}
+    if can_buy
+        .ui.button.buy_now 
+            |buy for #{price_points}pts
+    else 
+        .ui.disabled.button
+            |not enough points to buy
+    .ui.list 
+        each product_orders
+            .item #{_when} #{_author_username}
+                
+                
 template(name='product_edit')
     with current_doc 
         .ui.stackable.padded.grid
             .row
                 .sixteen.wide.column
-                    .ui.header 
+                    .ui.inline.header 
                         i.pencil.icon
                         |editing product
                     a.ui.green.button(href="/product/#{_id}")
                         i.save.icon 
                         |save
                 .eight.wide.column
+                    +text_edit key='title' value='title' label='title' 
+                    +image_edit key='image_id' label='image' 
                     +image_edit key='image_id2' label='alt image' 
+                    +image_edit key='background_image' label='background image' 
                     +link_edit key='link' label='external link' 
                     // div
                     +float_edit key='price_usd' label='price' icon='us-dollar-circled'
