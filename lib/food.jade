@@ -24,14 +24,13 @@ template(name='food')
                 // button.ui.large.label.button.pick_tag(tabindex="0" class=result_class title=count)
                     // |#{name}
                     // small #{count}
-        .four.wide.column.scrolling
             .ui.header diets
             each diet_tag_results
                 button.ui.large.label.button.pick_tag(tabindex="0" class=result_class title=count)
                     |#{name}
                     small #{count}
 
-        .twelve.wide.column.scrolling
+        .sixteen.wide.column.scrolling
             if subs_ready
                 if one_recipe
                     each recipe_docs

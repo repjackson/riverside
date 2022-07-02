@@ -25,6 +25,12 @@
 
 
 @food_blocklist = [
+    'main course recipes'
+    'cookbook'
+    'good recipe'
+    'hand'
+    'fans'
+    'account'
     'cooking'
     'black-and-white films'
     'english-language films'

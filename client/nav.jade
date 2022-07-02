@@ -74,12 +74,12 @@ template(name='nav')
                 // i.yin.yang.large.loading.icon
         if subs_ready
             if is_connected
-                a.item.mobile.only(href="/search" title='global search')
+                a.item(href="/search" title='global search')
                     i.search.large.icon
-                .item.mobile.hidden
-                    .ui.icon.transparent.input
-                        i.search.icon
-                        input.global_search(type='text' placeholder='search...')
+                // .item.mobile.hidden
+                //     .ui.icon.transparent.input
+                //         i.search.icon
+                //         input.global_search(type='text' placeholder='search...')
         unless currentUser
             // a.item(href="/register" title='register')
             //     +i name='plus'
