@@ -55,8 +55,12 @@ template(name='products')
                     +ibig name='product' cl='spinning'
 template(name='product_card')
     .card
-        a.fly_right(href="/product/#{_id}")
-            img.ui.image.zoomer(src=image)
+        if image_id
+            a.fly_right(href="/product/#{_id}")
+                img.ui.image.zoomer(src="{{c.url image_id }}")
+        else 
+            a.fly_right(href="/product/#{_id}")
+                img.ui.image.zoomer(src=image)
         .content
             a.ui.header(href="/product/#{_id}")
                 | #{title}
@@ -78,7 +82,11 @@ template(name='product_item')
     .item
         a.fly_right(href="/product/#{_id}")
             if subs_ready
-                img.ui.inline.small.image.zoomer(src=image)
+                if image_id
+                    a.fly_right(href="/product/#{_id}")
+                        img.ui.image.zoomer(src="{{c.url image_id }}")
+                else if image            
+                    img.ui.inline.small.image.zoomer(src=image)
                 a.ui.inline.header(href="/product/#{_id}")
                     | #{title}
                 // .ui.label #{link}
@@ -103,17 +111,20 @@ template(name='product_item')
                 i.shopping.cart.loading.big.icon
 template(name='product_view')
     with current_doc 
-        img.ui.fluid.image.checkin_banner(src=image)
+        if image_id
+            img.ui.image.zoomer.checkin_banner(src="{{c.url image_id }}")
+        if image
+            img.ui.fluid.image.checkin_banner(src=image)
         .ui.stackable.padded.grid 
             .sixteen.wide.column 
-                a.ui.button(href="/products")
+                a.ui.circular.large.compact.button.fly_left(href="/products")
                     i.chevron.left.icon
                     +i name='product'
                     |shop
                 .ui.inline.header !{title}
                 if can_edit 
-                    a.ui.button(href="/product/#{_id}/edit")
-                        i.pencil.icon
+                    a.ui.large.compact.icon.circular.button(href="/product/#{_id}/edit")
+                        i.pencil.large.icon
                 .ui.big.label source: #{source}
                 with details
                     each breadcrumbs 
@@ -122,8 +133,16 @@ template(name='product_view')
                     .item 
                         |#{servings}
                         |servings
+                .ui.inline.header inventory:#{inventory_amount}
             .eight.wide.column
-                img(src=image)
+                if image_id
+                    a.fly_right(href="/product/#{_id}")
+                        img.ui.image.zoomer(src="{{c.url image_id }}")
+                else 
+                    img(src=image)
+                .ui.product orders 
+                
+                +buy_now_button
                 +comments
                 +voting_full
                 a.ui.label(href=link target='_window') #{link}
@@ -141,7 +160,6 @@ template(name='product_view')
                 if currentUser.admin_mode
                     .ui.button.get_details get details
                 // +viewing_info
-            .eight.wide.column 
                 with details
                     .ui.header details
                     .f7 #{generatedText}
@@ -162,7 +180,6 @@ template(name='product_view')
                             |important badges
                         each importantBadges
                             .ui.label #{this}
-            .eight.wide.column 
                 with details
                     .ui.small.inline.header 
                         +i name='ingredients'
@@ -195,7 +212,6 @@ template(name='product_view')
                         //         .item size #{size}
                         //         .item unit #{unit}
                         .item spoonacularScore #{spoonacularScore}
-            .eight.wide.column 
                 with details
                     .ui.header 
                         +i name='ingredients'
@@ -296,6 +312,8 @@ template(name='buy_now_button')
     else 
         .ui.disabled.button
             |not enough points to buy
+    .ui.header
+        |order history
     .ui.list 
         each product_orders
             .item #{_when} #{_author_username}
@@ -325,8 +343,8 @@ template(name='product_edit')
                     .ui.inline.header 
                         +i name='product'
                         |product
-                    +boolean_edit key='is_product' label='is product' icon='product'
-                    if is_product
+                    +boolean_edit key='is_food' label='is food' icon='food'
+                    if is_food
                         +boolean_edit key='gluten_free' label='gluten free' icon='no-gluten'
                         +boolean_edit key='paleo' label='paleo' icon='caveman'
                         +boolean_edit key='vegetarian' label='vegetarian' icon='vegetarian-mark'

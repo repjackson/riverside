@@ -31,18 +31,18 @@ template(name='latest_checkins')
     .ui.header 
         +i name='clock'
         |latest checkins 
-    .ui.selection.list
+    .ui.selection.divided.list
         each latest_checkin_docs 
-            a.item(href="/#{_parent.model}/#{parent_id" title="goto #{_parent.model}") #{body} #{_when}
+            a.item(href="/#{_parent_doc.model}/#{parent_id}" title="goto #{_parent.model}") #{body} #{_when}
                 +parent_info
                 +author_info
         
                 
 template(name='parent_info')
-    .ui.large.label #{parent_id}
-        with _parent 
-            |#{model}
+    .ui.large.label
+        with _parent_doc 
             +model_label
+            |#{title}
                 
 template(name='latest_orders')
     .ui.header 

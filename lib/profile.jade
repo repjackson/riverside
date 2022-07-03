@@ -48,7 +48,19 @@ template(name='profile_layout')
                                     +yield
         +footer     
                             
-template(name='user_dashboard')  
+template(name='user_orders')
+    .ui.inline.header 
+        +i name='order-history'
+        |orders
+    a.ui.icon.button.fly_left(href="/products")
+        +i name='shopping-card'
+    each user_order_docs 
+        a.item(href="/transfer/#{_id}")
+            |#{_parent_doc.title}
+            .ui.label #{amount}
+                            
+                            
+template(name='user_dashboard')
     +user_orders
     if is_current_user
         .ui.segment

@@ -72,8 +72,6 @@ if Meteor.isClient
     Template.parent_info.onCreated ->
         @autorun => Meteor.subscribe 'parent_doc', @data._id, ->
     Template.parent_info.helpers
-        _parent: ->
-            Docs.findOne _id:@parent_id
     Template.buy_now_button.onCreated ->
         @autorun => Meteor.subscribe 'orders_by_product_id', Router.current().params.doc_id, ->
 if Meteor.isServer 
@@ -103,12 +101,12 @@ if Meteor.isClient
             if @manage_inventory
                 Docs.update @_id, 
                     $inc:
-                        inventory:-1
+                        inventory_amount:-1
             else
                 Docs.update @_id, 
                     $set:
                         available:false
-                        inventory:0
+                        inventory_amount:0
                         purchased:true
                     
     Template.product_view.events

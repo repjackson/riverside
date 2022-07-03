@@ -59,6 +59,7 @@ Meteor.publish 'latest_checkin_docs', ()->
         model:'checkin'
     }, 
         sort:_timestamp:-1
+        limit:10
     
 Meteor.publish 'all_users_min', ()->
     Meteor.users.find({},

@@ -20,8 +20,22 @@ if Meteor.isClient
         'click .mark_all_read': ->
             $('.ui.toast').toast('close')
             Meteor.call 'mark_unread_logs_read', ->
+    Template.user_orders.onCreated ->
+        @autorun -> Meteor.subscribe 'latest_user_orders',->
+    Template.user_orders.events
+        'click .mark_all_read': ->
+            $('.ui.toast').toast('close')
+            Meteor.call 'mark_unread_logs_read', ->
             
 if Meteor.isServer
+    Meteor.publish 'latest_user_orders', (username)->
+        user = Meteor.users.findOne username:username
+        Docs.find {
+            model:'transfer'
+            transfer_type:'product_order'
+        }, 
+            sort:_timestamp:-1
+            limit:10
     Meteor.methods
         mark_unread_logs_read: ->
             Docs.update({
