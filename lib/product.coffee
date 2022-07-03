@@ -69,9 +69,18 @@ if Meteor.isClient
             console.log @details.analyzedInstructions[0]
             @details.analyzedInstructions[0].steps
             
+    Template.parent_info.onCreated ->
+        @autorun => Meteor.subscribe 'parent_doc', @data._id, ->
+    Template.parent_info.helpers
+        _parent: ->
+            Docs.findOne _id:@parent_id
     Template.buy_now_button.onCreated ->
         @autorun => Meteor.subscribe 'orders_by_product_id', Router.current().params.doc_id, ->
 if Meteor.isServer 
+    Meteor.publish 'parent_doc', (child_id)->
+        child = Docs.findOne child_id
+        Docs.find 
+            _id:child.parent_id
     Meteor.publish 'orders_by_product_id', (product_id)->
         Docs.find 
             model:'transfer'
