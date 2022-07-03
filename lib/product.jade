@@ -311,7 +311,8 @@ template(name='buy_now_button')
             |buy for #{price_points}pts
     else 
         .ui.disabled.button
-            |not enough points to buy
+            |buy for #{price_points}pts
+            // |not enough points to buy
     .ui.header
         |order history
     .ui.list 

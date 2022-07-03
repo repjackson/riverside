@@ -86,7 +86,8 @@ if Meteor.isServer
 if Meteor.isClient
     Template.buy_now_button.helpers
         can_buy: ->
-            Meteor.user() and Meteor.user().points > @price_points
+            if @inventory_amount > 0
+                Meteor.user() and Meteor.user().points > @price_points
         product_orders: ->
             Docs.find 
                 model:'transfer'

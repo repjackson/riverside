@@ -397,7 +397,9 @@ if Meteor.isClient
             _author_username:username
         }, sort:_timestamp:-1
         
-        
+    Template.registerHelper 'model_docs', (model) -> 
+        Docs.find 
+            model:model
         
     Template.registerHelper 'is_connected', () -> Meteor.status().connected
     
