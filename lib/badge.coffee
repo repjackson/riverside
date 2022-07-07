@@ -165,9 +165,3 @@ if Meteor.isClient
                 parent_id:Router.current().params.doc_id 
                 body:'marked incomplete'
                 
-                
-if Meteor.isServer
-    Meteor.publish 
-        child_docs: (parent_id)->
-            Docs.find 
-                parent_id:parent_id

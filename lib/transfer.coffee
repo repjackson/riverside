@@ -227,10 +227,6 @@ if Meteor.isClient
 
 
 if Meteor.isServer
-    Meteor.publish 'author_from_doc_id', (doc_id)->
-        doc = Docs.findOne doc_id
-        if doc
-            Meteor.users.find doc._author_id
     Meteor.publish 'target_from_doc_id', (transfer_id)->
         transfer = Docs.findOne transfer_id
         if transfer

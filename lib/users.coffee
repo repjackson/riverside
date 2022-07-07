@@ -255,38 +255,6 @@ if Meteor.isClient
 
 
 if Meteor.isServer
-    Meteor.publish 'user_tags', (picked_tags)->
-        # user = Meteor.users.findOne @userId
-        # current_herd = user.profile.current_herd
-    
-        self = @
-        match = {}
-    
-        # picked_tags.push current_herd
-        if picked_tags.length > 0
-            match.tags = $all: picked_tags
-        count = Meteor.users.find(match).count()
-        cloud = Meteor.users.aggregate [
-            { $match: match }
-            { $project: tags: 1 }
-            { $unwind: "$tags" }
-            { $group: _id: '$tags', count: $sum: 1 }
-            { $match: _id: $nin: picked_tags }
-            { $sort: count: -1, _id: 1 }
-            { $match: count: $lt: count }
-            { $limit: 20 }
-            { $project: _id: 0, name: '$_id', count: 1 }
-            ]
-        cloud.forEach (tag, i) ->
-            self.added 'results', Random.id(),
-                name: tag.name
-                count: tag.count
-                model:'user_tag'
-                index: i
-    
-        self.ready()
-        
-        
     Meteor.publish 'user_tags', (
         picked_tags
         picked_porn_tags
